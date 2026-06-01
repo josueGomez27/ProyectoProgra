@@ -1,5 +1,6 @@
 package cr.ac.una.turismolocal.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,6 +28,7 @@ public class Category {
 
     private LocalDateTime createdAt;
 
+    @JsonManagedReference(value = "category-places")
     @OneToMany(mappedBy = "category")
     private List<Place> places;
 }

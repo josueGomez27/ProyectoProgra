@@ -1,53 +1,61 @@
-    package cr.ac.una.turismolocal.entity;
+package cr.ac.una.turismolocal.entity;
 
-    import jakarta.persistence.*;
-    import lombok.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import lombok.*;
 
-    import java.math.BigDecimal;
-    import java.time.LocalDateTime;
-    import java.util.List;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 
-    @Entity
-    @Table(name = "places")
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public class Place {
+@Entity
+@Table(name = "places")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Place {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-        @ManyToOne
-        @JoinColumn(name = "town_id")
-        private Town town;
+    @JsonBackReference(value = "town-places")
+    @ManyToOne
+    @JoinColumn(name = "town_id")
+    private Town town;
 
-        @ManyToOne
-        @JoinColumn(name = "category_id")
-        private Category category;
+    @JsonBackReference(value = "category-places")
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-        private String name;
+    @Column(nullable = false)
+    private String name;
 
-        @Column(columnDefinition = "TEXT")
-        private String description;
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
-        private String address;
+    private String address;
 
-        @Column(columnDefinition = "TEXT")
-        private String imageUrl;
+    @Column(columnDefinition = "TEXT")
+    private String imageUrl;
 
-        private BigDecimal latitude;
+    @Column(precision = 10, scale = 8)
+    private BigDecimal latitude;
 
-        private BigDecimal longitude;
+    @Column(precision = 11, scale = 8)
+    private BigDecimal longitude;
 
-        private Boolean active;
+    private Boolean active;
 
-        private LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
-        private LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
-        @OneToMany(mappedBy = "place")
-        private List<PlaceImage> images;
-    }
+    @JsonManagedReference(value = "place-images")
+    @OneToMany(mappedBy = "place")
+    private List<PlaceImage> images;
+}

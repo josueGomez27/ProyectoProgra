@@ -1,5 +1,6 @@
 package cr.ac.una.turismolocal.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +19,7 @@ public class PlaceImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonBackReference(value = "place-images")
     @ManyToOne
     @JoinColumn(name = "place_id")
     private Place place;

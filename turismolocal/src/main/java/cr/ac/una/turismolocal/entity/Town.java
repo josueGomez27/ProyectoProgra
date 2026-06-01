@@ -1,5 +1,6 @@
 package cr.ac.una.turismolocal.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -42,9 +43,11 @@ public class Town {
 
     private LocalDateTime updatedAt;
 
+    @JsonManagedReference(value = "town-places")
     @OneToMany(mappedBy = "town")
     private List<Place> places;
 
+    @JsonManagedReference(value = "town-qrcodes")
     @OneToMany(mappedBy = "town")
     private List<QrCode> qrCodes;
 }
