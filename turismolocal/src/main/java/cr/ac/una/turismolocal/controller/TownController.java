@@ -10,6 +10,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/towns")
 @RequiredArgsConstructor
+
+@CrossOrigin(origins = "http://localhost:5173")
 public class TownController {
 
     private final TownService townService;

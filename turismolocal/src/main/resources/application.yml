@@ -6,9 +6,9 @@ spring:
     name: turismolocal
 
   datasource:
-    url: jdbc:mysql://localhost:3306/turismo_local
+    url: jdbc:mysql://localhost:3306/turismo_local_db
     username: root
-    password:
+    password: Adrian123
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
