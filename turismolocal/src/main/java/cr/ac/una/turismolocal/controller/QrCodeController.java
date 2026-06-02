@@ -10,6 +10,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/qrcodes")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class QrCodeController {
 
     private final QrCodeService qrCodeService;
@@ -32,5 +33,20 @@ public class QrCodeController {
     @DeleteMapping("/{id}")
     public void deleteQrCode(@PathVariable Long id) {
         qrCodeService.deleteQrCode(id);
+    }
+
+    @PostMapping("/generate/town/{townId}")
+    public QrCode generateQrForTown(@PathVariable Long townId) {
+        return qrCodeService.generateQrForTown(townId);
+    }
+
+    @PostMapping("/regenerate/town/{townId}")
+    public QrCode regenerateQrForTown(@PathVariable Long townId) {
+        return qrCodeService.regenerateQrForTown(townId);
+    }
+
+    @GetMapping("/town/{townId}/active")
+    public QrCode getActiveQrByTown(@PathVariable Long townId) {
+        return qrCodeService.getActiveQrByTown(townId);
     }
 }
