@@ -1,184 +1,630 @@
-.counter {
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
+:root {
+    --green-dark: #0b3d34;
+    --green: #14715f;
+    --gold: #d99b45;
+    --cream: #fff7e8;
+    --text: #172320;
+    --muted: #6c7773;
+}
 
-  &:hover {
-    border-color: var(--accent-border);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
+* {
+    box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: #f7f2e8;
+    color: var(--text);
+    overflow-x: hidden;
+}
+
+.custom-navbar {
+    width: 100%;
+    background: var(--green-dark);
+    padding: 14px 0;
+    box-shadow: 0 10px 25px rgba(11, 61, 52, 0.22);
+}
+
+.nav-content {
+    width: 92%;
+    max-width: 1250px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand-logo {
+    color: white;
+    font-size: 1.35rem;
+    font-weight: 900;
+    text-decoration: none;
+    letter-spacing: 0.4px;
+}
+
+.brand-logo:hover {
+    color: white;
+}
+
+.nav-links {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.access-btn {
+    background: rgba(255, 255, 255, 0.14);
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.access-btn:hover {
+    background: var(--gold);
+    color: white;
 }
 
 .hero {
-  position: relative;
-
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
-  }
-
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
-  }
-}
-
-#center {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
-
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
-}
-
-#next-steps {
-  display: flex;
-  border-top: 1px solid var(--border);
-  text-align: left;
-
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
-
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-}
-
-#next-steps ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
-
-  .logo {
-    height: 18px;
-  }
-
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
+    width: 100%;
+    min-height: 560px;
+    background:
+        linear-gradient(90deg, rgba(8, 44, 38, 0.92) 0%, rgba(8, 44, 38, 0.75) 45%, rgba(8, 44, 38, 0.35) 100%),
+        url("https://www.travelexcellence.com/wp-content/uploads/2020/09/liberia-guanacaste-01.jpg");
+    background-size: cover;
+    background-position: center;
     display: flex;
-    padding: 6px 12px;
     align-items: center;
-    gap: 8px;
+    color: white;
+}
+
+.hero-content {
+    max-width: 720px;
+}
+
+.hero-tag {
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: white;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.hero h1 {
+    color: white;
+    font-size: clamp(2.4rem, 5vw, 4.2rem);
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    color: white;
+    font-size: 1.15rem;
+    max-width: 620px;
+}
+
+.hero-button {
+    display: inline-block;
+    margin-top: 24px;
+    background: white;
+    color: var(--green-dark);
+    padding: 13px 28px;
+    border-radius: 999px;
     text-decoration: none;
-    transition: box-shadow 0.3s;
+    font-weight: 900;
+}
 
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
+.hero-button:hover {
+    background: var(--gold);
+    color: white;
+}
 
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
+.section-header {
+    text-align: center;
+    margin: 80px 0 42px;
+}
+
+.section-kicker {
+    color: var(--gold);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 0.8rem;
+}
+
+.section-title {
+    font-size: 2.4rem;
+    font-weight: 900;
+    color: var(--green-dark);
+}
+
+.section-subtitle {
+    color: var(--muted);
+    max-width: 650px;
+    margin: 10px auto 0;
+}
+
+.town-card {
+    border: none;
+    border-radius: 28px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 20px 50px rgba(11, 61, 52, 0.16);
+    transition: 0.25s ease;
+}
+
+.town-card:hover {
+    transform: translateY(-8px);
+}
+
+.town-img {
+    height: 250px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.town-card-body {
+    padding: 26px;
+}
+
+.location-pill {
+    display: inline-block;
+    background: #e7f3ee;
+    color: var(--green);
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    margin-bottom: 14px;
+}
+
+.town-title {
+    font-weight: 900;
+    color: var(--text);
+}
+
+.town-description {
+    color: var(--muted);
+}
+
+.btn-tour {
+    display: inline-block;
+    margin-top: 10px;
+    background: var(--green-dark);
+    color: white !important;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 999px;
+    font-weight: 900;
+}
+
+.btn-tour:hover {
+    background: var(--green);
+}
+
+.places-banner {
+    background:
+        linear-gradient(90deg, rgba(11, 61, 52, 0.92), rgba(11, 61, 52, 0.62)),
+        url("https://www.travelexcellence.com/wp-content/uploads/2020/09/liberia-guanacaste-01.jpg");
+    background-size: cover;
+    background-position: center;
+    color: white;
+    padding: 75px 0;
+}
+
+.places-tag {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-weight: 800;
+    margin-bottom: 18px;
+}
+
+.places-banner h1 {
+    font-size: 2.8rem;
+    font-weight: 900;
+    margin-bottom: 14px;
+}
+
+.places-banner p {
+    max-width: 650px;
+    font-size: 1.05rem;
+}
+
+.places-section {
+    padding-top: 45px;
+}
+
+.places-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+.view-btn {
+    border: none;
+    background: #e7f3ee;
+    color: var(--green-dark);
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-weight: 900;
+}
+
+.view-btn.active {
+    background: var(--green-dark);
+    color: white;
+}
+
+.place-tour-card {
+    background: white;
+    border-radius: 26px;
+    overflow: hidden;
+    box-shadow: 0 18px 45px rgba(11, 61, 52, 0.16);
+    transition: 0.25s ease;
+}
+
+.place-tour-card:hover {
+    transform: translateY(-7px);
+}
+
+.place-tour-card img {
+    width: 100%;
+    height: 230px;
+    object-fit: cover;
+}
+
+.place-tour-body {
+    padding: 24px;
+}
+
+.place-category {
+    display: inline-block;
+    background: #e7f3ee;
+    color: var(--green);
+    font-size: 0.78rem;
+    font-weight: 900;
+    padding: 6px 13px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+}
+
+.place-tour-body h3 {
+    font-size: 1.35rem;
+    font-weight: 900;
+    color: var(--green-dark);
+    margin-bottom: 10px;
+}
+
+.place-tour-body p {
+    color: var(--muted);
+    margin-bottom: 18px;
+}
+
+.place-address {
+    color: var(--text);
+    font-weight: 700;
+}
+
+.login-page,
+.error-page {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
     justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
-  }
+    padding: 45px 15px;
 }
 
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
+.glass-card {
+    width: 100%;
+    max-width: 650px;
+    background: white;
+    border-radius: 30px;
+    padding: 45px;
+    text-align: center;
+    box-shadow: 0 25px 65px rgba(11, 61, 52, 0.16);
 }
 
-.ticks {
-  position: relative;
-  width: 100%;
+.google-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 999px;
+    font-weight: 900;
+}
+.map-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 24px;
+    align-items: stretch;
+    margin-bottom: 50px;
+}
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
-  }
+.map-list {
+    background: white;
+    border-radius: 24px;
+    padding: 22px;
+    box-shadow: 0 18px 45px rgba(11, 61, 52, 0.14);
+}
 
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
-  }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
-  }
+.map-list h3 {
+    font-weight: 900;
+    color: var(--green-dark);
+    margin-bottom: 18px;
+}
+
+.map-place-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: #f7f2e8;
+    border-radius: 18px;
+    padding: 10px;
+    margin-bottom: 12px;
+}
+
+.map-place-item img {
+    width: 72px;
+    height: 58px;
+    object-fit: cover;
+    border-radius: 14px;
+}
+
+.map-place-item strong {
+    display: block;
+    color: var(--green-dark);
+    font-size: 0.92rem;
+}
+
+.map-place-item span {
+    display: inline-block;
+    color: var(--gold);
+    font-size: 0.78rem;
+    font-weight: 900;
+}
+
+.map-box {
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 18px 45px rgba(11, 61, 52, 0.14);
+    min-height: 520px;
+}
+
+.leaflet-map {
+    width: 100%;
+    height: 520px;
+}
+
+@media (max-width: 900px) {
+    .map-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .map-box,
+    .leaflet-map {
+        min-height: 420px;
+        height: 420px;
+    }
+}
+
+.admin-page {
+    display: flex;
+    min-height: calc(100vh - 60px);
+    background: #f7f2e8;
+}
+
+.admin-sidebar {
+    width: 240px;
+    background: white;
+    padding: 30px 22px;
+    box-shadow: 8px 0 30px rgba(11, 61, 52, 0.08);
+}
+
+.admin-sidebar h3 {
+    font-weight: 900;
+    color: var(--green-dark);
+    margin-bottom: 25px;
+}
+
+.admin-sidebar a {
+    display: block;
+    padding: 12px 16px;
+    border-radius: 14px;
+    color: var(--text);
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.admin-sidebar a.active {
+    background: var(--gold);
+    color: white;
+}
+
+.admin-content {
+    flex: 1;
+    padding: 35px;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+.admin-header h1 {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--green-dark);
+}
+
+.admin-add-btn {
+    background: var(--green-dark);
+    color: white;
+    border: none;
+    border-radius: 999px;
+    padding: 12px 22px;
+    font-weight: 900;
+}
+
+.admin-table-card {
+    background: white;
+    border-radius: 26px;
+    padding: 20px;
+    box-shadow: 0 20px 50px rgba(11, 61, 52, 0.12);
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th {
+    color: var(--green-dark);
+    padding: 14px;
+    border-bottom: 2px solid #e7f3ee;
+}
+
+.admin-table td {
+    padding: 14px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+.admin-table img {
+    width: 85px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 14px;
+}
+
+.admin-badge,
+.status {
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 900;
+}
+
+.admin-badge {
+    background: #fff1d8;
+    color: #b87518;
+}
+
+.status.active {
+    background: #e7f3ee;
+    color: var(--green);
+}
+
+.edit-btn,
+.delete-btn {
+    border: none;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-weight: 800;
+    margin-right: 6px;
+}
+
+.edit-btn {
+    background: #e7f3ee;
+    color: var(--green-dark);
+}
+
+.delete-btn {
+    background: #ffe2e2;
+    color: #b42323;
+}
+
+.status {
+    border: none;
+    cursor: pointer;
+}
+
+.status.inactive {
+    background: #ffe8d6;
+    color: #b85c00;
+}
+.modal-backdrop-custom {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 44, 38, 0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.admin-modal {
+    width: 100%;
+    max-width: 520px;
+    background: white;
+    border-radius: 26px;
+    padding: 28px;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.25);
+}
+
+.admin-modal h2 {
+    font-weight: 900;
+    color: var(--green-dark);
+    margin-bottom: 20px;
+}
+
+.admin-modal label {
+    display: block;
+    font-weight: 800;
+    margin: 12px 0 6px;
+}
+
+.admin-modal input {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 14px;
+    padding: 12px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.modal-actions button {
+    border: none;
+    border-radius: 999px;
+    padding: 11px 20px;
+    font-weight: 900;
+}
+
+.modal-actions button:first-child {
+    background: #e7f3ee;
+    color: var(--green-dark);
+}
+
+.modal-actions button:last-child {
+    background: var(--green-dark);
+    color: white;
 }
