@@ -4,20 +4,30 @@ import api from "../api/api";
 import "./login.css";
 
 function Login() {
+
     const { townId } = useParams();
     const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
     const [town, setTown] = useState(null);
 
     useEffect(() => {
+
         if (townId) {
+
             api.get(`/towns/${townId}`)
-                .then(response => setTown(response.data))
-                .catch(error => console.error("Error cargando pueblo:", error));
+                .then(response => {
+                    setTown(response.data);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
         }
+
     }, [townId]);
 
     const handleGoogleLogin = () => {
+
         if (townId) {
             localStorage.setItem("qrTownId", townId);
         }
@@ -27,44 +37,56 @@ function Login() {
 
     return (
         <div className="login-page">
+
             <header className="login-topbar">
                 Turismo Local UNA
             </header>
 
             <main className="login-main">
+
                 <section className="login-card">
+
                     <img
-                        src={town?.imageUrl || "/icons.svg"}
-                        alt={town?.name || "Pueblo turístico"}
+                        src="/icons.svg"
+                        alt="Turismo Local"
                         className="login-town-icon"
                     />
 
                     <h1>
-                        {town ? `Bienvenido a ${town.name}` : "Bienvenidos!!"}
+                        {
+                            town
+                                ? `Bienvenido a ${town.name}`
+                                : "Bienvenidos"
+                        }
                     </h1>
 
                     <p>
-                        Inicia sesión para descubrir los mejores lugares turísticos
-                        del pueblo.
+                        {
+                            town
+                                ? town.description
+                                : "Inicia sesión para descubrir los mejores lugares turísticos del pueblo."
+                        }
                     </p>
 
-                    {town && (
-                        <p className="login-town-id">
-                            {town.description}
-                        </p>
-                    )}
-
-                    <button className="login-google-btn" onClick={handleGoogleLogin}>
+                    <button
+                        className="login-google-btn"
+                        onClick={handleGoogleLogin}
+                    >
                         Continuar con Google <span>G</span>
                     </button>
 
-                    <small>Solo se aceptan cuentas @gmail.com</small>
+                    <small>
+                        Solo se aceptan cuentas @gmail.com
+                    </small>
+
                 </section>
+
             </main>
 
             <footer className="login-footer">
                 Universidad Nacional · Programación 4
             </footer>
+
         </div>
     );
 }
