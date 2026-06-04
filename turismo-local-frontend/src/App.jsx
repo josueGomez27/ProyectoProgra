@@ -5,6 +5,8 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Places from "./pages/Places";
 import AdminPlaces from "./pages/AdminPlaces";
+import QrGenerator from "./pages/QrGenerator";
+import OAuthSuccess from "./pages/OAuthSuccess";
 import Error404 from "./pages/Error404";
 
 import "./App.css";
@@ -12,22 +14,17 @@ import "./App.css";
 function App() {
     return (
         <BrowserRouter>
-            <Navbar />
-
             <Routes>
-                {/* Primero abre el login */}
                 <Route path="/" element={<Login />} />
+                <Route path="/login/town/:townId" element={<Login />} />
 
-                {/* Después del OAuth manda al menú */}
-                <Route path="/home" element={<Home />} />
+                <Route path="/oauth-success" element={<OAuthSuccess />} />
 
-                {/* Lugares turísticos por pueblo */}
-                <Route path="/places/:id" element={<Places />} />
+                <Route path="/home" element={<><Navbar /><Home /></>} />
+                <Route path="/places/:id" element={<><Navbar /><Places /></>} />
+                <Route path="/admin/places" element={<><Navbar /><AdminPlaces /></>} />
+                <Route path="/admin/qr" element={<><Navbar /><QrGenerator /></>} />
 
-                {/* Panel de administración */}
-                <Route path="/admin/places" element={<AdminPlaces />} />
-
-                {/* Página de error */}
                 <Route path="*" element={<Error404 />} />
             </Routes>
         </BrowserRouter>

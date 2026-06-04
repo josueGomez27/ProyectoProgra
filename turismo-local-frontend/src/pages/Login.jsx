@@ -1,43 +1,64 @@
-import "./Login.css";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import api from "../api/api";
+import "./login.css";
 
 function Login() {
+    const { townId } = useParams();
     const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
+    const [town, setTown] = useState(null);
+
+    useEffect(() => {
+        if (townId) {
+            api.get(`/towns/${townId}`)
+                .then(response => setTown(response.data))
+                .catch(error => console.error("Error cargando pueblo:", error));
+        }
+    }, [townId]);
+
     const handleGoogleLogin = () => {
+        if (townId) {
+            localStorage.setItem("qrTownId", townId);
+        }
+
         window.location.href = backendUrl + "/oauth2/authorization/google";
     };
 
     return (
         <div className="login-page">
-            <header className="login-header">
+            <header className="login-topbar">
                 Turismo Local UNA
             </header>
 
-            <main className="login-content">
+            <main className="login-main">
                 <section className="login-card">
-                    <div className="town-image-box">
-                        <img
-                            src="/icons.svg"
-                            alt="Turismo Local"
-                            className="town-image"
-                        />
-                    </div>
+                    <img
+                        src={town?.imageUrl || "/icons.svg"}
+                        alt={town?.name || "Pueblo turístico"}
+                        className="login-town-icon"
+                    />
 
-                    <h1>Bienvenido a Santa María</h1>
+                    <h1>
+                        {town ? `Bienvenido a ${town.name}` : "Bienvenidos!!"}
+                    </h1>
 
                     <p>
-                        Iniciá sesión para descubrir los lugares turísticos
-                        disponibles en este pueblo.
+                        Inicia sesión para descubrir los mejores lugares turísticos
+                        del pueblo.
                     </p>
 
-                    <button className="google-btn" onClick={handleGoogleLogin}>
-                        <span className="google-icon">G</span>
-                        Continuar con Google
+                    {town && (
+                        <p className="login-town-id">
+                            {town.description}
+                        </p>
+                    )}
+
+                    <button className="login-google-btn" onClick={handleGoogleLogin}>
+                        Continuar con Google <span>G</span>
                     </button>
 
-                    <small>
-                        Solo se aceptan cuentas registradas con Gmail.
-                    </small>
+                    <small>Solo se aceptan cuentas @gmail.com</small>
                 </section>
             </main>
 
