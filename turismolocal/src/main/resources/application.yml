@@ -1,14 +1,15 @@
 server:
-  port: 8080
+  port: ${PORT:8080}
+  forward-headers-strategy: framework
 
 spring:
   application:
-    name: turismolocal
+    name: turismo_local
 
   datasource:
-    url: jdbc:mysql://localhost:3306/turismo_local_db?useSSL=false&serverTimezone=America/Costa_Rica&allowPublicKeyRetrieval=true
-    username: root
-    password: Adrian123
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -30,3 +31,5 @@ spring:
               - openid
               - email
               - profile
+            client-name: Cliente web 1
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
