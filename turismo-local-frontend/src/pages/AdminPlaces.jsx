@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import api from "../api/api";
@@ -35,13 +36,23 @@ function LocationMarker({ position, setPosition, setForm }) {
 }
 
 function AdminPlaces() {
+       const navigate = useNavigate();
+
+
     const [places, setPlaces] = useState([]);
     const [towns, setTowns] = useState([]);
     const [categories, setCategories] = useState([]);
 
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState(null);
+const [showCategoryForm, setShowCategoryForm] = useState(false);
 
+
+
+const [categoryForm, setCategoryForm] = useState({
+    name: "",
+    color: "#d89b3d"
+});
 
     const [mapMarkerPos, setMapMarkerPos] = useState(null);
 
@@ -54,6 +65,16 @@ function AdminPlaces() {
         latitude: "",
         longitude: ""
     });
+
+const [showTownForm, setShowTownForm] = useState(false);
+
+const [townForm, setTownForm] = useState({
+    name: "",
+    province: "",
+    canton: "",
+    district: "",
+    description: ""
+});
 
     const loadData = async () => {
         try {
@@ -142,6 +163,72 @@ console.log("PAYLOAD:", lugarPayload);
         }
     };
 
+const saveCategory = async (e) => {
+    e.preventDefault();
+
+    const payload = {
+        name: categoryForm.name,
+        color: categoryForm.color,
+        active: true
+    };
+
+    try {
+
+        await api.post("/categories", payload);
+
+        await loadData();
+
+        setShowCategoryForm(false);
+
+        setCategoryForm({
+            name: "",
+            color: "#d89b3d"
+        });
+
+        alert("Categoría creada correctamente");
+
+    } catch (error) {
+        console.error("Error al guardar categoría:", error);
+        alert("No se pudo guardar la categoría");
+    }
+};
+
+const saveTown = async (e) => {
+    e.preventDefault();
+
+    const payload = {
+        name: townForm.name,
+        province: townForm.province,
+        canton: townForm.canton,
+        district: townForm.district,
+        description: townForm.description,
+        slug: townForm.name.toLowerCase().replaceAll(" ", "-"),
+        active: true
+    };
+
+    try {
+        await api.post("/towns", payload);
+
+        await loadData();
+
+        setShowTownForm(false);
+
+        setTownForm({
+            name: "",
+            province: "",
+            canton: "",
+            district: "",
+            description: ""
+        });
+
+        alert("Pueblo creado correctamente");
+
+    } catch (error) {
+        console.error("Error al guardar pueblo:", error);
+        alert("No se pudo guardar el pueblo");
+    }
+};
+
     const deletePlace = async (id) => {
         if (confirm("¿Seguro que desea eliminar este lugar de la base de datos?")) {
             try {
@@ -190,12 +277,37 @@ console.log("PAYLOAD:", lugarPayload);
             <main className="admin-content">
                 <div className="admin-header">
                     <div>
-                        <span className="section-kicker">Panel de administración</span>
+                        <span className="section-kicker">
+                            Panel de administración
+                        </span>
+
                         <h1>Gestión de lugares turísticos</h1>
                     </div>
-                    <button className="admin-add-btn" onClick={openAddForm}>
-                        + Agregar nuevo lugar
-                    </button>
+
+                    <div style={{ display: "flex", gap: "10px" }}>
+
+                        <button
+                            className="admin-add-btn"
+                            onClick={() => setShowTownForm(true)}
+                        >
+                            + Crear Pueblo
+                        </button>
+
+                        <button
+                            className="admin-add-btn"
+                            onClick={() => setShowCategoryForm(true)}
+                        >
+                            + Crear Categoría
+                        </button>
+
+                        <button
+                            className="admin-add-btn"
+                            onClick={openAddForm}
+                        >
+                            + Agregar Lugar
+                        </button>
+
+                    </div>
                 </div>
 
                 <div className="admin-table-card">
@@ -361,8 +473,166 @@ console.log("PAYLOAD:", lugarPayload);
                         </form>
                     </div>
                 </div>
-            )}
-        </div>
+                        )}
+
+                        {showCategoryForm && (
+                            <div className="modal-backdrop-custom">
+
+                                <div
+                                    className="admin-modal"
+                                    style={{ maxWidth: "500px" }}
+                                >
+
+                                    <h2>Nueva Categoría</h2>
+
+                                    <form onSubmit={saveCategory}>
+
+                                        <label>Nombre</label>
+
+                                        <input
+                                            type="text"
+                                            value={categoryForm.name}
+                                            onChange={(e) =>
+                                                setCategoryForm({
+                                                    ...categoryForm,
+                                                    name: e.target.value
+                                                })
+                                            }
+                                            required
+                                        />
+
+                                        <label>Color</label>
+
+                                        <input
+                                            type="color"
+                                            value={categoryForm.color}
+                                            onChange={(e) =>
+                                                setCategoryForm({
+                                                    ...categoryForm,
+                                                    color: e.target.value
+                                                })
+                                            }
+                                        />
+
+                                        <div
+                                            className="modal-actions"
+                                            style={{ marginTop: "20px" }}
+                                        >
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowCategoryForm(false)}
+                                            >
+                                                Cancelar
+                                            </button>
+
+                                            <button type="submit">
+                                                Guardar
+                                            </button>
+                                        </div>
+
+                                    </form>
+
+                                </div>
+
+                            </div>
+                        )}
+
+                    {showTownForm && (
+                        <div className="modal-backdrop-custom">
+
+                            <div
+                                className="admin-modal"
+                                style={{ maxWidth: "700px" }}
+                            >
+
+                                <h2>Nuevo Pueblo</h2>
+
+                                <form onSubmit={saveTown}>
+
+                                    <label>Nombre</label>
+                                    <input
+                                        value={townForm.name}
+                                        onChange={(e) =>
+                                            setTownForm({
+                                                ...townForm,
+                                                name: e.target.value
+                                            })
+                                        }
+                                        required
+                                    />
+
+                                    <label>Provincia</label>
+                                    <input
+                                        value={townForm.province}
+                                        onChange={(e) =>
+                                            setTownForm({
+                                                ...townForm,
+                                                province: e.target.value
+                                            })
+                                        }
+                                        required
+                                    />
+
+                                    <label>Cantón</label>
+                                    <input
+                                        value={townForm.canton}
+                                        onChange={(e) =>
+                                            setTownForm({
+                                                ...townForm,
+                                                canton: e.target.value
+                                            })
+                                        }
+                                        required
+                                    />
+
+                                    <label>Distrito</label>
+                                    <input
+                                        value={townForm.district}
+                                        onChange={(e) =>
+                                            setTownForm({
+                                                ...townForm,
+                                                district: e.target.value
+                                            })
+                                        }
+                                        required
+                                    />
+
+                                    <label>Descripción</label>
+                                    <textarea
+                                        rows="4"
+                                        value={townForm.description}
+                                        onChange={(e) =>
+                                            setTownForm({
+                                                ...townForm,
+                                                description: e.target.value
+                                            })
+                                        }
+                                    />
+
+                                    <div
+                                        className="modal-actions"
+                                        style={{ marginTop: "20px" }}
+                                    >
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowTownForm(false)}
+                                        >
+                                            Cancelar
+                                        </button>
+
+                                        <button type="submit">
+                                            Guardar
+                                        </button>
+                                    </div>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+                    )}
+
+                    </div>
     );
 }
 

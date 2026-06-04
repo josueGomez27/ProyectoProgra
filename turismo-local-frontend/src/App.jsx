@@ -5,6 +5,8 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Places from "./pages/Places";
 import AdminPlaces from "./pages/AdminPlaces";
+import AdminCategories from "./pages/AdminCategories";
+import AdminTowns from "./pages/AdminTowns";
 import QrGenerator from "./pages/QrGenerator";
 import OAuthSuccess from "./pages/OAuthSuccess";
 import Error404 from "./pages/Error404";
@@ -24,6 +26,8 @@ function App() {
                 <Route path="/places/:id" element={<><Navbar /><Places /></>} />
                 <Route path="/admin/places" element={<><Navbar /><AdminPlaces /></>} />
                 <Route path="/admin/qr" element={<><Navbar /><QrGenerator /></>} />
+                <Route path="/admin/categories" element={<AdminCategories />} />
+                <Route path="/admin/towns" element={<AdminTowns />} />
 
                 <Route path="*" element={<Error404 />} />
             </Routes>
