@@ -28,10 +28,10 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth -> oauth
-                        .defaultSuccessUrl(FRONTEND_PROD + "/places", true)
+                        .defaultSuccessUrl(FRONTEND_LOCAL + "/home", true)
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl(FRONTEND_PROD + "/")
+                        .logoutSuccessUrl(FRONTEND_LOCAL + "/")
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
                 );
