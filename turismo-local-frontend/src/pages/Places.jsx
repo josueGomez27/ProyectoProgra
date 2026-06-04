@@ -26,10 +26,15 @@ function Places() {
 
     const loadPlaces = async () => {
         try {
-            const response = await api.get(`/towns/${id}`);
 
-            setTown(response.data);
-            setPlaces(response.data.places || []);
+            const [townRes, placesRes] = await Promise.all([
+                api.get(`/towns/${id}`),
+                api.get(`/places/town/${id}`)
+            ]);
+
+            setTown(townRes.data);
+            setPlaces(placesRes.data);
+
         } catch (error) {
             console.error("Error cargando lugares", error);
         }
@@ -89,27 +94,31 @@ function Places() {
                         ) : (
                             places.map((place) => (
                                 <div className="col-md-6 col-lg-4 mb-4" key={place.id}>
-                                    <div className="place-tour-card h-100">
+                                    <div className="place-tour-card h-100 card shadow-sm border-0">
                                         <img
                                             src={
                                                 place.imageUrl ||
                                                 "https://www.travelexcellence.com/wp-content/uploads/2020/09/liberia-guanacaste-01.jpg"
                                             }
+                                            className="card-img-top"
                                             alt={place.name}
+                                            style={{ height: "220px", objectFit: "cover" }}
                                         />
 
-                                        <div className="place-tour-body">
-                                            <span className="place-category">
+                                        <div className="place-tour-body card-body d-flex flex-column">
+                                            <span className="place-category badge bg-success text-white align-self-start mb-2" style={{ fontSize: "0.8rem", textTransform: "uppercase" }}>
                                                 {place.category?.name || "Turístico"}
                                             </span>
 
-                                            <h3>{place.name}</h3>
+                                            <h3 className="card-title h5 mb-2 fw-bold text-dark">{place.name}</h3>
 
-                                            <p>{place.description}</p>
-
-                                            <div className="place-address">
-                                                📍 {place.address}
+                                            <div className="place-address text-muted small mb-3">
+                                                📍 {place.address}{town ? `, ${town.name}` : ""}
                                             </div>
+
+                                            <p className="card-text text-secondary" style={{ fontSize: "0.9rem", lineHeight: "1.5" }}>
+                                                {place.description}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -173,11 +182,11 @@ function Places() {
                                         icon={markerIcon}
                                     >
                                         <Popup>
-                                            <strong>{place.name}</strong>
-                                            <br />
-                                            {place.description}
-                                            <br />
-                                            {place.address}
+                                            <div style={{ padding: "2px" }}>
+                                                <strong style={{ fontSize: "1rem" }}>{place.name}</strong>
+                                                <div style={{ color: "#6c757d", margin: "4px 0", fontSize: "0.85rem" }}>📍 {place.address}</div>
+                                                <p style={{ margin: "0", fontSize: "0.85rem", color: "#495057" }}>{place.description}</p>
+                                            </div>
                                         </Popup>
                                     </Marker>
                                 ))}
