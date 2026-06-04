@@ -24,10 +24,11 @@ function App() {
 
                 <Route path="/home" element={<><Navbar /><Home /></>} />
                 <Route path="/places/:id" element={<><Navbar /><Places /></>} />
+
                 <Route path="/admin/places" element={<><Navbar /><AdminPlaces /></>} />
                 <Route path="/admin/qr" element={<><Navbar /><QrGenerator /></>} />
-                <Route path="/admin/categories" element={<AdminCategories />} />
-                <Route path="/admin/towns" element={<AdminTowns />} />
+                <Route path="/admin/categories" element={<><Navbar /><AdminCategories /></>} />
+                <Route path="/admin/towns" element={<><Navbar /><AdminTowns /></>} />
 
                 <Route path="*" element={<Error404 />} />
             </Routes>
