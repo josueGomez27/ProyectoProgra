@@ -13,6 +13,9 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
+    private static final String FRONTEND_LOCAL = "http://localhost:5173";
+    private static final String FRONTEND_PROD = "https://proyectoprogra-39n075agr-proyectouna1.vercel.app";
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -25,10 +28,10 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth -> oauth
-                        .defaultSuccessUrl("http://localhost:5173/places", true)
+                        .defaultSuccessUrl(FRONTEND_PROD + "/places", true)
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("http://localhost:5173/")
+                        .logoutSuccessUrl(FRONTEND_PROD + "/")
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
                 );
@@ -40,11 +43,16 @@ public class SecurityConfig {
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of(
-                "http://localhost:5173"
+        configuration.setAllowedOriginPatterns(List.of(
+                FRONTEND_LOCAL,
+                FRONTEND_PROD,
+                "https://*.vercel.app"
         ));
 
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of(
+                "GET", "POST", "PUT", "DELETE", "OPTIONS"
+        ));
+
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
