@@ -56,7 +56,7 @@ public class QrCodeServiceImpl implements QrCodeService {
         Town town = townRepository.findById(townId)
                 .orElseThrow(() -> new RuntimeException("Pueblo no encontrado"));
 
-        String qrValue = FRONTEND_URL + "/p/" + town.getSlug();
+        String qrValue = FRONTEND_URL + "/login/town/" + town.getId();
         String qrImageBase64 = generateQrBase64(qrValue);
 
         QrCode qrCode = QrCode.builder()
