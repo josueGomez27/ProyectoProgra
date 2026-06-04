@@ -13,6 +13,11 @@ function Home() {
     const loadTowns = async () => {
         try {
             const data = await getAllTowns();
+
+            console.log("DATA:", data);
+            console.log("TIPO:", typeof data);
+            console.log("ARRAY?", Array.isArray(data));
+
             setTowns(data);
         } catch (error) {
             console.error("Error cargando pueblos", error);
@@ -65,11 +70,22 @@ function Home() {
                 )}
 
                 <div className="row justify-content-center">
-                    {towns.map((town) => (
-                        <div className="col-md-6 col-lg-4 mb-4" key={town.id}>
-                            <PlaceCard town={town} />
+
+                    {Array.isArray(towns) ? (
+                        towns.map((town) => (
+                            <div
+                                className="col-md-6 col-lg-4 mb-4"
+                                key={town.id}
+                            >
+                                <PlaceCard town={town} />
+                            </div>
+                        ))
+                    ) : (
+                        <div className="alert alert-warning">
+                            towns NO es un arreglo
                         </div>
-                    ))}
+                    )}
+
                 </div>
             </main>
         </>

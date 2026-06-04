@@ -101,13 +101,14 @@ function QrGenerator() {
                             <strong>Valor:</strong> {qr.qrValue}
                         </p>
 
-                        {qr.qrImageUrl && (
+                        {qr.qrValue && (
                             <a
-                                href={qr.qrImageUrl}
+                                href={qr.qrValue}
                                 target="_blank"
                                 rel="noreferrer"
+                                className="qr-link"
                             >
-                                Abrir QR
+                                Ir al pueblo
                             </a>
                         )}
                     </div>
