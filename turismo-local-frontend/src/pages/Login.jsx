@@ -1,30 +1,49 @@
+import "./Login.css";
+
 function Login() {
+    const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
+
     const handleGoogleLogin = () => {
-        const backendUrl = import.meta.env.VITE_API_URL;
-
-        alert("Backend usado: " + backendUrl);
-
         window.location.href = backendUrl + "/oauth2/authorization/google";
     };
 
     return (
         <div className="login-page">
-            <div className="glass-card">
-                <span className="section-kicker">Acceso al sistema</span>
+            <header className="login-header">
+                Turismo Local UNA
+            </header>
 
-                <h1 className="section-title mt-2">
-                    Turismo Local UNA
-                </h1>
+            <main className="login-content">
+                <section className="login-card">
+                    <div className="town-image-box">
+                        <img
+                            src="/icons.svg"
+                            alt="Turismo Local"
+                            className="town-image"
+                        />
+                    </div>
 
-                <p className="section-subtitle mb-4">
-                    Iniciá sesión con tu cuenta de Google para administrar o consultar
-                    la información turística del sistema.
-                </p>
+                    <h1>Bienvenido a Santa María</h1>
 
-                <button className="google-btn" onClick={handleGoogleLogin}>
-                    Continuar con Google
-                </button>
-            </div>
+                    <p>
+                        Iniciá sesión para descubrir los lugares turísticos
+                        disponibles en este pueblo.
+                    </p>
+
+                    <button className="google-btn" onClick={handleGoogleLogin}>
+                        <span className="google-icon">G</span>
+                        Continuar con Google
+                    </button>
+
+                    <small>
+                        Solo se aceptan cuentas registradas con Gmail.
+                    </small>
+                </section>
+            </main>
+
+            <footer className="login-footer">
+                Universidad Nacional · Programación 4
+            </footer>
         </div>
     );
 }

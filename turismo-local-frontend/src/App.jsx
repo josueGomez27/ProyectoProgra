@@ -15,8 +15,13 @@ function App() {
             <Navbar />
 
             <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
+                {/* Primero abre el login */}
+                <Route path="/" element={<Login />} />
+
+                {/* Después del OAuth manda al menú */}
+                <Route path="/home" element={<Home />} />
+
+                {/* Lugares turísticos por pueblo */}
                 <Route path="/places/:id" element={<Places />} />
 
                 {/* Panel de administración */}
