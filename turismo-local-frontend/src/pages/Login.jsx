@@ -1,6 +1,10 @@
 function Login() {
     const handleGoogleLogin = () => {
-        window.location.href = import.meta.env.VITE_API_URL + "/oauth2/authorization/google";
+        const backendUrl = import.meta.env.VITE_API_URL;
+
+        alert("Backend usado: " + backendUrl);
+
+        window.location.href = backendUrl + "/oauth2/authorization/google";
     };
 
     return (
