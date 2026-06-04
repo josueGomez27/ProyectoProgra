@@ -16,7 +16,7 @@ public class SecurityConfig {
     private static final String FRONTEND_LOCAL = "http://localhost:5173";
 
     private static final String FRONTEND_PROD =
-            "https://proyectoprogra-39n075agr-proyectouna1.vercel.app";
+            "https://proyectoprogra-pi.vercel.app/";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
