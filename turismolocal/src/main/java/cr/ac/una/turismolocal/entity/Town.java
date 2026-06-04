@@ -1,9 +1,9 @@
 package cr.ac.una.turismolocal.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -43,7 +43,7 @@ public class Town {
 
     private LocalDateTime updatedAt;
 
-    @JsonManagedReference(value = "town-places")
+    @JsonIgnore
     @OneToMany(mappedBy = "town")
     private List<Place> places;
 
