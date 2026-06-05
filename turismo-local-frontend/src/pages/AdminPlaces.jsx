@@ -231,7 +231,13 @@ function AdminPlaces() {
                                     <td>{place.town?.name || "Sin pueblo"}</td>
 
                                     <td>
-                                        <span className="admin-badge">
+                                        <span
+                                            className="admin-badge"
+                                            style={{
+                                                backgroundColor: place.category?.color || "#d89b3d",
+                                                color: "#ffffff"
+                                            }}
+                                        >
                                             {place.category?.name || "Sin categoría"}
                                         </span>
                                     </td>

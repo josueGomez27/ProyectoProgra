@@ -26,7 +26,6 @@ function Places() {
 
     const loadPlaces = async () => {
         try {
-
             const [townRes, placesRes] = await Promise.all([
                 api.get(`/towns/${id}`),
                 api.get(`/places/town/${id}`)
@@ -34,7 +33,6 @@ function Places() {
 
             setTown(townRes.data);
             setPlaces(placesRes.data);
-
         } catch (error) {
             console.error("Error cargando lugares", error);
         }
@@ -53,7 +51,9 @@ function Places() {
         <>
             <section className="places-banner">
                 <div className="container">
-                    <span className="places-tag">Lugares para visitar</span>
+                    <span className="places-tag">
+                        Lugares para visitar
+                    </span>
 
                     <h1>
                         {town
@@ -93,7 +93,10 @@ function Places() {
                             </p>
                         ) : (
                             places.map((place) => (
-                                <div className="col-md-6 col-lg-4 mb-4" key={place.id}>
+                                <div
+                                    className="col-md-6 col-lg-4 mb-4"
+                                    key={place.id}
+                                >
                                     <div className="place-tour-card h-100 card shadow-sm border-0">
                                         <img
                                             src={
@@ -102,21 +105,39 @@ function Places() {
                                             }
                                             className="card-img-top"
                                             alt={place.name}
-                                            style={{ height: "220px", objectFit: "cover" }}
+                                            style={{
+                                                height: "220px",
+                                                objectFit: "cover"
+                                            }}
                                         />
 
                                         <div className="place-tour-body card-body d-flex flex-column">
-                                            <span className="place-category badge bg-success text-white align-self-start mb-2" style={{ fontSize: "0.8rem", textTransform: "uppercase" }}>
+                                            <span
+                                                className="place-category badge text-white align-self-start mb-2"
+                                                style={{
+                                                    fontSize: "0.8rem",
+                                                    textTransform: "uppercase",
+                                                    backgroundColor: place.category?.color || "#064635"
+                                                }}
+                                            >
                                                 {place.category?.name || "Turístico"}
                                             </span>
 
-                                            <h3 className="card-title h5 mb-2 fw-bold text-dark">{place.name}</h3>
+                                            <h3 className="card-title h5 mb-2 fw-bold text-dark">
+                                                {place.name}
+                                            </h3>
 
                                             <div className="place-address text-muted small mb-3">
                                                 📍 {place.address}{town ? `, ${town.name}` : ""}
                                             </div>
 
-                                            <p className="card-text text-secondary" style={{ fontSize: "0.9rem", lineHeight: "1.5" }}>
+                                            <p
+                                                className="card-text text-secondary"
+                                                style={{
+                                                    fontSize: "0.9rem",
+                                                    lineHeight: "1.5"
+                                                }}
+                                            >
                                                 {place.description}
                                             </p>
                                         </div>
@@ -138,7 +159,10 @@ function Places() {
                                 </p>
                             ) : (
                                 validPlaces.map((place, index) => (
-                                    <div className="map-place-item" key={place.id}>
+                                    <div
+                                        className="map-place-item"
+                                        key={place.id}
+                                    >
                                         <img
                                             src={
                                                 place.imageUrl ||
@@ -151,7 +175,13 @@ function Places() {
                                             <strong>
                                                 {index + 1}. {place.name}
                                             </strong>
-                                            <span>
+
+                                            <span
+                                                style={{
+                                                    color: place.category?.color || "#064635",
+                                                    fontWeight: "800"
+                                                }}
+                                            >
                                                 {place.category?.name || "Turístico"}
                                             </span>
                                         </div>
@@ -183,9 +213,44 @@ function Places() {
                                     >
                                         <Popup>
                                             <div style={{ padding: "2px" }}>
-                                                <strong style={{ fontSize: "1rem" }}>{place.name}</strong>
-                                                <div style={{ color: "#6c757d", margin: "4px 0", fontSize: "0.85rem" }}>📍 {place.address}</div>
-                                                <p style={{ margin: "0", fontSize: "0.85rem", color: "#495057" }}>{place.description}</p>
+                                                <strong style={{ fontSize: "1rem" }}>
+                                                    {place.name}
+                                                </strong>
+
+                                                <div
+                                                    style={{
+                                                        color: "#6c757d",
+                                                        margin: "4px 0",
+                                                        fontSize: "0.85rem"
+                                                    }}
+                                                >
+                                                    📍 {place.address}
+                                                </div>
+
+                                                <span
+                                                    style={{
+                                                        display: "inline-block",
+                                                        backgroundColor: place.category?.color || "#064635",
+                                                        color: "white",
+                                                        padding: "4px 10px",
+                                                        borderRadius: "20px",
+                                                        fontSize: "0.75rem",
+                                                        fontWeight: "800",
+                                                        marginBottom: "6px"
+                                                    }}
+                                                >
+                                                    {place.category?.name || "Turístico"}
+                                                </span>
+
+                                                <p
+                                                    style={{
+                                                        margin: "0",
+                                                        fontSize: "0.85rem",
+                                                        color: "#495057"
+                                                    }}
+                                                >
+                                                    {place.description}
+                                                </p>
                                             </div>
                                         </Popup>
                                     </Marker>
