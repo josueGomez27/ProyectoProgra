@@ -176,14 +176,37 @@ function Places() {
                                                 {index + 1}. {place.name}
                                             </strong>
 
-                                            <span
+                                            <div
                                                 style={{
-                                                    color: place.category?.color || "#064635",
-                                                    fontWeight: "800"
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    gap: "8px",
+                                                    marginTop: "6px"
                                                 }}
                                             >
-                                                {place.category?.name || "Turístico"}
-                                            </span>
+                                                <div
+                                                    style={{
+                                                        width: "12px",
+                                                        height: "12px",
+                                                        borderRadius: "50%",
+                                                        backgroundColor: place.category?.color || "#064635"
+                                                    }}
+                                                ></div>
+
+                                                <span
+                                                    style={{
+                                                        backgroundColor: place.category?.color || "#064635",
+                                                        color: "white",
+                                                        padding: "3px 10px",
+                                                        borderRadius: "20px",
+                                                        fontSize: "0.8rem",
+                                                        fontWeight: "800",
+                                                        textTransform: "uppercase"
+                                                    }}
+                                                >
+                                                    {place.category?.name || "Turístico"}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 ))
@@ -236,7 +259,8 @@ function Places() {
                                                         borderRadius: "20px",
                                                         fontSize: "0.75rem",
                                                         fontWeight: "800",
-                                                        marginBottom: "6px"
+                                                        marginBottom: "6px",
+                                                        textTransform: "uppercase"
                                                     }}
                                                 >
                                                     {place.category?.name || "Turístico"}
