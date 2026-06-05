@@ -18,6 +18,7 @@ public class SecurityConfig {
     private static final String FRONTEND_PROD =
             "https://proyecto-progra-three.vercel.app";
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
