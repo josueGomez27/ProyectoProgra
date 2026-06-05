@@ -27,12 +27,13 @@ function Login() {
 
     return (
         <div className="login-page">
-
             <div className="login-container">
 
                 <section className="login-left">
+                    <div className="brand-badge">Turismo local · Costa Rica</div>
+
                     <h2>Turismo Local UNA</h2>
-                    <span>Explora Costa Rica</span>
+                    <span>Explora destinos únicos</span>
 
                     <h1>
                         {town ? `Bienvenido a ${town.name}` : "Comienza tu aventura"}
@@ -59,20 +60,25 @@ function Login() {
 
                 <section className="login-right">
                     <div className="image-card">
-                        <div className="floating-box">
+
+                        <div className="floating-box floating-main">
                             <strong>Descubre lugares increíbles</strong>
                             <p>Playas, montañas, pueblos y cultura local.</p>
                         </div>
 
+                        <div className="floating-pill floating-one">🌊 Playas</div>
+                        <div className="floating-pill floating-two">🌿 Bosques</div>
+                        <div className="floating-pill floating-three">🏘️ Pueblos</div>
+
                         <div className="image-text">
-                            <h3>Explora pueblos con historia</h3>
-                            <p>Turismo local · Costa Rica</p>
+                            <h3>Descubre Costa Rica</h3>
+                            <p>Playas • Bosques • Cultura • Aventuras</p>
                         </div>
+
                     </div>
                 </section>
 
             </div>
-
         </div>
     );
 }
