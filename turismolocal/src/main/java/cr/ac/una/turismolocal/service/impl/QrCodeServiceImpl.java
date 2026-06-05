@@ -26,7 +26,8 @@ public class QrCodeServiceImpl implements QrCodeService {
     private final QrCodeRepository qrCodeRepository;
     private final TownRepository townRepository;
 
-    private static final String FRONTEND_URL = "http://localhost:5173";
+    private static final String FRONTEND_URL =
+            "https://proyecto-progra-three.vercel.app";
 
     @Override
     public List<QrCode> getAllQrCodes() {
