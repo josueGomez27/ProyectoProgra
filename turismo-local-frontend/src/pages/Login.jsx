@@ -4,30 +4,20 @@ import api from "../api/api";
 import "./login.css";
 
 function Login() {
-
     const { townId } = useParams();
     const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
     const [town, setTown] = useState(null);
 
     useEffect(() => {
-
         if (townId) {
-
             api.get(`/towns/${townId}`)
-                .then(response => {
-                    setTown(response.data);
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-
+                .then(response => setTown(response.data))
+                .catch(error => console.error(error));
         }
-
     }, [townId]);
 
     const handleGoogleLogin = () => {
-
         if (townId) {
             localStorage.setItem("qrTownId", townId);
         }
@@ -39,12 +29,16 @@ function Login() {
         <div className="login-page">
 
             <header className="login-topbar">
-                Turismo Local UNA
+                <span>Turismo Local UNA</span>
             </header>
 
             <main className="login-main">
 
                 <section className="login-card">
+
+                    <div className="login-badge">
+                        🌿 Explora Costa Rica
+                    </div>
 
                     <img
                         src="/icons.svg"
@@ -53,18 +47,14 @@ function Login() {
                     />
 
                     <h1>
-                        {
-                            town
-                                ? `Bienvenido a ${town.name}`
-                                : "Bienvenidos"
-                        }
+                        {town ? `Bienvenido a ${town.name}` : "Bienvenidos"}
                     </h1>
 
                     <p>
                         {
                             town
                                 ? town.description
-                                : "Inicia sesión para descubrir los mejores lugares turísticos del pueblo."
+                                : "Inicia sesión para descubrir pueblos, cultura, naturaleza y lugares únicos cerca de ti."
                         }
                     </p>
 
