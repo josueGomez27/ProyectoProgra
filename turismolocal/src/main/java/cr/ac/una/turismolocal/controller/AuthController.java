@@ -13,7 +13,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -30,11 +29,9 @@ public class AuthController {
 
         String email = principal.getAttribute("email");
 
-        User user = userRepository.findByEmail(email)
-                .orElse(null);
+        User user = userRepository.findByEmail(email).orElse(null);
 
         if (user == null) {
-
             user = User.builder()
                     .googleId(principal.getName())
                     .name(principal.getAttribute("name"))
