@@ -27,8 +27,9 @@ function Login() {
 
     return (
         <div className="login-page">
-            <div className="login-container">
+            <div className="login-overlay"></div>
 
+            <div className="login-container">
                 <section className="login-left">
                     <div className="brand-badge">Turismo local · Costa Rica</div>
 
@@ -52,7 +53,12 @@ function Login() {
                         className="login-google-btn"
                         onClick={handleGoogleLogin}
                     >
-                        Continuar con Google <span>G</span>
+                        <img
+                            src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
+                            alt="Google"
+                            className="google-icon"
+                        />
+                        <span className="google-text">Continuar con Google</span>
                     </button>
 
                     <small>Acceso seguro con cuenta de Google</small>
@@ -60,7 +66,6 @@ function Login() {
 
                 <section className="login-right">
                     <div className="image-card">
-
                         <div className="floating-box floating-main">
                             <strong>Descubre lugares increíbles</strong>
                             <p>Playas, montañas, pueblos y cultura local.</p>
@@ -69,15 +74,14 @@ function Login() {
                         <div className="floating-pill floating-one">🌊 Playas</div>
                         <div className="floating-pill floating-two">🌿 Bosques</div>
                         <div className="floating-pill floating-three">🏘️ Pueblos</div>
+                        <div className="floating-pill floating-four">⛰️ Montañas</div>
 
                         <div className="image-text">
                             <h3>Descubre Costa Rica</h3>
                             <p>Playas • Bosques • Cultura • Aventuras</p>
                         </div>
-
                     </div>
                 </section>
-
             </div>
         </div>
     );

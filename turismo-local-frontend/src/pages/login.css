@@ -1,40 +1,68 @@
-html, body, #root {
+* {
+    box-sizing: border-box;
+}
+
+html,
+body,
+#root {
     margin: 0;
-    min-height: 100%;
-    background: #f4efe3;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    overflow: hidden;
 }
 
 .login-page {
-    min-height: 100vh;
-    background:
-        linear-gradient(rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.18)),
-        url("https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?auto=format&fit=crop&w=2000&q=80");
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-
+    height: 100vh;
+    width: 100%;
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 22px;
     font-family: Arial, sans-serif;
-    padding: 40px;
+    overflow: hidden;
+
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.12)),
+        url("https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?auto=format&fit=crop&w=2200&q=90");
+    background-size: cover;
+    background-position: center;
+}
+
+.login-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.22), transparent 30%),
+        linear-gradient(135deg, rgba(6, 70, 53, 0.18), rgba(0, 0, 0, 0.12));
+    z-index: 0;
 }
 
 .login-container {
-    width: 1050px;
-    min-height: 650px;
-    background: rgba(255, 255, 255, 0.94);
-    backdrop-filter: blur(12px);
-    border-radius: 32px;
+    position: relative;
+    z-index: 1;
+    width: min(1080px, 94vw);
+    height: 560px;
+    min-height: 0;
+
+    background: rgba(255, 255, 255, 0.93);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    border-radius: 34px;
+
     display: grid;
     grid-template-columns: 1fr 1fr;
     overflow: hidden;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.38);
+
+    box-shadow: 0 35px 90px rgba(0, 0, 0, 0.42);
     animation: aparecer 0.8s ease;
 }
 
 .login-left {
-    padding: 65px 60px;
+    padding: 42px 55px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -48,83 +76,114 @@ html, body, #root {
     border-radius: 30px;
     font-size: 13px;
     font-weight: 900;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 22px rgba(216, 144, 47, 0.18);
 }
 
 .login-left h2 {
     font-size: 28px;
     color: #064635;
-    margin-bottom: 6px;
+    margin: 0 0 6px;
 }
 
-.login-left span {
+.login-left > span {
     color: #d8902f;
-    font-weight: 800;
+    font-weight: 900;
     letter-spacing: 1px;
-    margin-bottom: 42px;
+    margin-bottom: 32px;
 }
 
 .login-left h1 {
-    font-size: 42px;
+    font-size: 40px;
     color: #111827;
-    margin-bottom: 18px;
+    margin: 0 0 16px;
+    line-height: 1.15;
 }
 
 .login-left p {
     color: #4b5563;
-    line-height: 1.7;
-    margin-bottom: 32px;
-    font-size: 16px;
+    line-height: 1.6;
+    margin: 0 0 26px;
+    font-size: 15.5px;
 }
 
 .login-google-btn {
-    width: 100%;
-    padding: 16px;
+    width: 280px;
+    height: 56px;
+    align-self: center;
+
     border: none;
-    border-radius: 14px;
-    background: #064635;
-    color: white;
-    font-size: 16px;
-    font-weight: 900;
+    border-radius: 18px;
+
+    background: linear-gradient(135deg, #064635, #0b6b4f);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+
     cursor: pointer;
     transition: 0.25s ease;
-    box-shadow: 0 12px 28px rgba(6, 70, 53, 0.28);
-}
 
-.login-google-btn span {
-    background: white;
-    color: #4285f4;
-    margin-left: 8px;
-    padding: 4px 8px;
-    border-radius: 50%;
+    box-shadow: 0 14px 30px rgba(6, 70, 53, 0.30);
 }
 
 .login-google-btn:hover {
-    background: #0b6b4f;
     transform: translateY(-3px);
+    box-shadow: 0 18px 38px rgba(6, 70, 53, 0.42);
+}
+
+.google-icon {
+    width: 24px;
+    height: 24px;
+
+    background: white;
+    border-radius: 50%;
+    padding: 4px;
+
+    flex-shrink: 0;
+
+    box-shadow:
+        0 0 10px rgba(255, 255, 255, 0.4),
+        0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.google-text {
+    color: #ffffff !important;
+    font-size: 15px;
+    font-weight: 900;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    letter-spacing: 0 !important;
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
 }
 
 .login-left small {
     text-align: center;
     color: #6b7280;
-    margin-top: 18px;
+    margin-top: 16px;
 }
 
 .login-right {
-    padding: 35px;
+    padding: 26px 30px 26px 0;
 }
 
 .image-card {
     height: 100%;
-    border-radius: 28px;
+    border-radius: 30px;
     position: relative;
     overflow: hidden;
     background:
-        linear-gradient(to bottom, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.50)),
-        url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=80");
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.55)),
+        url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1500&q=90");
     background-size: cover;
     background-position: center;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+    box-shadow: 0 24px 55px rgba(0, 0, 0, 0.25);
     transition: 0.35s ease;
 }
 
@@ -135,81 +194,96 @@ html, body, #root {
 .floating-box {
     position: absolute;
     background: rgba(255, 255, 255, 0.92);
-    padding: 18px;
+    padding: 15px;
     border-radius: 18px;
     color: #064635;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.22);
     animation: flotar 3s ease-in-out infinite;
 }
 
 .floating-main {
-    top: 30px;
-    right: 26px;
-    width: 210px;
+    top: 24px;
+    right: 24px;
+    width: 205px;
+}
+
+.floating-box strong {
+    font-size: 15px;
 }
 
 .floating-box p {
     font-size: 12px;
     color: #475569;
-    margin-bottom: 0;
+    margin: 6px 0 0;
+    line-height: 1.4;
 }
 
 .floating-pill {
     position: absolute;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.92);
     color: #064635;
-    padding: 10px 16px;
+    padding: 9px 15px;
     border-radius: 30px;
     font-size: 13px;
-    font-weight: 800;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+    font-weight: 900;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.20);
     animation: flotar 3s ease-in-out infinite;
 }
 
 .floating-one {
-    top: 205px;
-    left: 25px;
+    top: 172px;
+    left: 28px;
     animation-delay: 0.2s;
 }
 
 .floating-two {
-    top: 300px;
-    right: 22px;
+    top: 245px;
+    right: 24px;
     animation-delay: 0.5s;
 }
 
 .floating-three {
-    bottom: 140px;
-    left: 32px;
+    bottom: 130px;
+    left: 30px;
     animation-delay: 0.8s;
+}
+
+.floating-four {
+    top: 322px;
+    right: 58px;
+    animation-delay: 1s;
 }
 
 .image-text {
     position: absolute;
-    bottom: 35px;
-    left: 35px;
-    right: 35px;
+    bottom: 32px;
+    left: 32px;
+    right: 32px;
     color: white;
+    text-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
 }
 
 .image-text h3 {
-    font-size: 32px;
-    margin-bottom: 8px;
+    font-size: 30px;
+    margin: 0 0 8px;
+    line-height: 1.15;
 }
 
 .image-text p {
     font-size: 15px;
+    margin: 0;
+    font-weight: 700;
 }
 
 @keyframes aparecer {
     from {
         opacity: 0;
-        transform: scale(0.96);
+        transform: scale(0.96) translateY(18px);
     }
 
     to {
         opacity: 1;
-        transform: scale(1);
+        transform: scale(1) translateY(0);
     }
 }
 
@@ -219,17 +293,56 @@ html, body, #root {
     }
 
     50% {
-        transform: translateY(-10px);
+        transform: translateY(-9px);
+    }
+}
+
+@media (max-height: 720px) {
+    .login-container {
+        height: 520px;
+    }
+
+    .login-left {
+        padding: 35px 50px;
+    }
+
+    .login-left h1 {
+        font-size: 36px;
+    }
+
+    .login-left > span {
+        margin-bottom: 24px;
+    }
+
+    .floating-one {
+        top: 155px;
+    }
+
+    .floating-two {
+        top: 225px;
+    }
+
+    .floating-four {
+        top: 292px;
+        right: 55px;
     }
 }
 
 @media (max-width: 900px) {
+    body {
+        overflow-y: auto;
+    }
+
     .login-page {
-        padding: 25px;
+        min-height: 100vh;
+        height: auto;
+        padding: 22px;
+        overflow-y: auto;
     }
 
     .login-container {
         grid-template-columns: 1fr;
+        height: auto;
         min-height: auto;
     }
 
@@ -238,10 +351,14 @@ html, body, #root {
     }
 
     .login-left {
-        padding: 50px 35px;
+        padding: 45px 32px;
     }
 
     .login-left h1 {
         font-size: 34px;
+    }
+
+    .login-google-btn {
+        width: 100%;
     }
 }
