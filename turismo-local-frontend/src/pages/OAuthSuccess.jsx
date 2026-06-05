@@ -19,10 +19,10 @@ function OAuthSuccess() {
 
                 console.log("Usuario OAuth:", response.data);
 
-                localStorage.setItem(
-                    "user",
-                    JSON.stringify(response.data)
-                );
+
+if (response.data.authenticated) {
+    localStorage.setItem("user", JSON.stringify(response.data));
+}
 
                 const townId = localStorage.getItem("qrTownId");
 
