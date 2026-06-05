@@ -12,12 +12,8 @@ function Login() {
     useEffect(() => {
         if (townId) {
             api.get(`/towns/${townId}`)
-                .then(response => {
-                    setTown(response.data);
-                })
-                .catch(error => {
-                    console.error("Error cargando pueblo:", error);
-                });
+                .then(response => setTown(response.data))
+                .catch(error => console.error("Error cargando pueblo:", error));
         }
     }, [townId]);
 
@@ -32,33 +28,21 @@ function Login() {
     return (
         <div className="login-page">
 
-            <header className="login-topbar">
-                Turismo Local UNA
-            </header>
+            <div className="login-container">
 
-            <main className="login-main">
-
-                <section className="login-card">
-
-                    <div className="login-badge">
-                        Turismo local · Costa Rica
-                    </div>
-
-                    <img
-                        src="/icons.svg"
-                        alt="Turismo Local"
-                        className="login-town-icon"
-                    />
+                <section className="login-left">
+                    <h2>Turismo Local UNA</h2>
+                    <span>Explora Costa Rica</span>
 
                     <h1>
-                        {town ? `Bienvenido a ${town.name}` : "Bienvenidos"}
+                        {town ? `Bienvenido a ${town.name}` : "Comienza tu aventura"}
                     </h1>
 
                     <p>
                         {
                             town
                                 ? town.description
-                                : "Inicia sesión para descubrir pueblos con historia, naturaleza y cultura en Costa Rica."
+                                : "Inicia sesión para descubrir pueblos, cultura, naturaleza y lugares turísticos únicos."
                         }
                     </p>
 
@@ -70,17 +54,24 @@ function Login() {
                         Continuar con Google <span>G</span>
                     </button>
 
-                    <small>
-                        Acceso seguro con cuenta de Google
-                    </small>
-
+                    <small>Acceso seguro con cuenta de Google</small>
                 </section>
 
-            </main>
+                <section className="login-right">
+                    <div className="image-card">
+                        <div className="floating-box">
+                            <strong>Descubre lugares increíbles</strong>
+                            <p>Playas, montañas, pueblos y cultura local.</p>
+                        </div>
 
-            <footer className="login-footer">
-                Universidad Nacional · Programación 4
-            </footer>
+                        <div className="image-text">
+                            <h3>Explora pueblos con historia</h3>
+                            <p>Turismo local · Costa Rica</p>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
 
         </div>
     );

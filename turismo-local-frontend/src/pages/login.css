@@ -1,117 +1,77 @@
 html, body, #root {
     margin: 0;
     min-height: 100%;
-    background: #f4efe3;
+    background: #064635;
 }
 
 .login-page {
     min-height: 100vh;
     background:
-        linear-gradient(90deg, rgba(3, 47, 38, 0.90), rgba(3, 47, 38, 0.55)),
-        url("https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1800&q=80");
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    flex-direction: column;
-    font-family: Arial, sans-serif;
-    overflow: hidden;
-}
-
-.login-topbar {
-    width: fit-content;
-    margin: 38px auto 0;
-    background: #064635;
-    color: white;
-    padding: 18px 42px;
-    font-size: 22px;
-    font-weight: 700;
-    border-radius: 0 0 18px 18px;
-    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.28);
-    animation: bajar 0.8s ease;
-}
-
-.login-main {
-    flex: 1;
+        radial-gradient(circle at top left, rgba(255,255,255,0.12), transparent 35%),
+        linear-gradient(135deg, #064635, #0b6b4f);
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 45px 20px;
+    font-family: Arial, sans-serif;
+    padding: 40px;
 }
 
-.login-card {
-    position: relative;
-    width: 430px;
-    background: rgba(255, 255, 255, 0.94);
-    text-align: center;
-    padding: 44px 38px;
-    border-radius: 28px;
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(12px);
-    animation: aparecer 0.9s ease;
+.login-container {
+    width: 1050px;
+    min-height: 650px;
+    background: white;
+    border-radius: 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+    animation: aparecer 0.8s ease;
 }
 
-.login-card::before {
-    content: "Costa Rica";
-    position: absolute;
-    top: -16px;
-    left: 34px;
-    background: #d8902f;
-    color: white;
-    padding: 9px 20px;
-    border-radius: 30px;
-    font-size: 13px;
+.login-left {
+    padding: 70px 65px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login-left h2 {
+    font-size: 28px;
+    color: #064635;
+    margin-bottom: 6px;
+}
+
+.login-left span {
+    color: #d8902f;
     font-weight: 800;
     letter-spacing: 1px;
+    margin-bottom: 45px;
 }
 
-.login-badge {
-    display: inline-block;
-    background: #eaf6ef;
-    color: #064635;
-    padding: 9px 20px;
-    border-radius: 30px;
-    font-size: 13px;
-    font-weight: 800;
-    margin-bottom: 20px;
+.login-left h1 {
+    font-size: 42px;
+    color: #111827;
+    margin-bottom: 18px;
 }
 
-.login-town-icon {
-    width: 100px;
-    height: 100px;
-    object-fit: contain;
-    margin-bottom: 16px;
-    border-radius: 50%;
-    background: #f1faf5;
-    padding: 14px;
-    box-shadow: 0 10px 28px rgba(6, 70, 53, 0.25);
-    animation: flotar 3s ease-in-out infinite;
-}
-
-.login-card h1 {
-    color: #064635;
-    font-size: 30px;
-    margin-bottom: 14px;
-}
-
-.login-card p {
-    font-size: 15px;
-    color: #43515a;
+.login-left p {
+    color: #4b5563;
     line-height: 1.7;
-    margin-bottom: 28px;
+    margin-bottom: 32px;
+    font-size: 16px;
 }
 
 .login-google-btn {
     width: 100%;
-    padding: 15px 18px;
-    background: linear-gradient(135deg, #064635, #0b6b4f);
+    padding: 16px;
     border: none;
-    border-radius: 40px;
+    border-radius: 12px;
+    background: #064635;
     color: white;
-    font-size: 15px;
-    font-weight: 800;
+    font-size: 16px;
+    font-weight: 900;
     cursor: pointer;
     transition: 0.25s ease;
-    box-shadow: 0 12px 28px rgba(6, 70, 53, 0.35);
 }
 
 .login-google-btn span {
@@ -120,52 +80,79 @@ html, body, #root {
     margin-left: 8px;
     padding: 4px 8px;
     border-radius: 50%;
-    font-weight: bold;
 }
 
 .login-google-btn:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 18px 35px rgba(6, 70, 53, 0.45);
+    background: #0b6b4f;
+    transform: translateY(-3px);
 }
 
-.login-card small {
-    display: block;
-    margin-top: 18px;
-    color: #6b7280;
-    font-size: 12px;
-}
-
-.login-footer {
-    width: fit-content;
-    margin: 0 auto 35px;
+.login-left small {
     text-align: center;
-    font-size: 13px;
-    padding: 14px 28px;
+    color: #6b7280;
+    margin-top: 18px;
+}
+
+.login-right {
+    padding: 35px;
+}
+
+.image-card {
+    height: 100%;
+    border-radius: 28px;
+    position: relative;
+    overflow: hidden;
+    background:
+        linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.45)),
+        url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80");
+    background-size: cover;
+    background-position: center;
+}
+
+.floating-box {
+    position: absolute;
+    top: 35px;
+    right: 28px;
+    width: 210px;
+    background: rgba(255,255,255,0.92);
+    padding: 18px;
+    border-radius: 18px;
+    color: #064635;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+    animation: flotar 3s ease-in-out infinite;
+}
+
+.floating-box p {
+    font-size: 12px;
+    color: #475569;
+    margin-bottom: 0;
+}
+
+.image-text {
+    position: absolute;
+    bottom: 35px;
+    left: 35px;
+    right: 35px;
     color: white;
-    background: rgba(6, 70, 53, 0.85);
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+.image-text h3 {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.image-text p {
+    font-size: 15px;
 }
 
 @keyframes aparecer {
     from {
         opacity: 0;
-        transform: translateY(35px);
+        transform: scale(0.96);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes bajar {
-    from {
-        opacity: 0;
-        transform: translateY(-25px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+        transform: scale(1);
     }
 }
 
@@ -174,23 +161,20 @@ html, body, #root {
         transform: translateY(0);
     }
     50% {
-        transform: translateY(-8px);
+        transform: translateY(-10px);
     }
 }
 
-@media (max-width: 480px) {
-    .login-topbar {
-        margin-top: 20px;
-        font-size: 18px;
-        padding: 14px 28px;
+@media (max-width: 900px) {
+    .login-container {
+        grid-template-columns: 1fr;
     }
 
-    .login-card {
-        width: 90%;
-        padding: 38px 26px;
+    .login-right {
+        display: none;
     }
 
-    .login-card h1 {
-        font-size: 25px;
+    .login-left {
+        padding: 50px 35px;
     }
 }
