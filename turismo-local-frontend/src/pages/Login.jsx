@@ -12,8 +12,12 @@ function Login() {
     useEffect(() => {
         if (townId) {
             api.get(`/towns/${townId}`)
-                .then(response => setTown(response.data))
-                .catch(error => console.error(error));
+                .then(response => {
+                    setTown(response.data);
+                })
+                .catch(error => {
+                    console.error("Error cargando pueblo:", error);
+                });
         }
     }, [townId]);
 
@@ -22,14 +26,14 @@ function Login() {
             localStorage.setItem("qrTownId", townId);
         }
 
-        window.location.href = backendUrl + "/oauth2/authorization/google";
+        window.location.href = `${backendUrl}/oauth2/authorization/google`;
     };
 
     return (
         <div className="login-page">
 
             <header className="login-topbar">
-                <span>Turismo Local UNA</span>
+                Turismo Local UNA
             </header>
 
             <main className="login-main">
@@ -37,7 +41,7 @@ function Login() {
                 <section className="login-card">
 
                     <div className="login-badge">
-                        🌿 Explora Costa Rica
+                        Turismo local · Costa Rica
                     </div>
 
                     <img
@@ -54,11 +58,12 @@ function Login() {
                         {
                             town
                                 ? town.description
-                                : "Inicia sesión para descubrir pueblos, cultura, naturaleza y lugares únicos cerca de ti."
+                                : "Inicia sesión para descubrir pueblos con historia, naturaleza y cultura en Costa Rica."
                         }
                     </p>
 
                     <button
+                        type="button"
                         className="login-google-btn"
                         onClick={handleGoogleLogin}
                     >
@@ -66,7 +71,7 @@ function Login() {
                     </button>
 
                     <small>
-                        Solo se aceptan cuentas @gmail.com
+                        Acceso seguro con cuenta de Google
                     </small>
 
                 </section>

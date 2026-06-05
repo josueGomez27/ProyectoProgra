@@ -1,23 +1,33 @@
+html, body, #root {
+    margin: 0;
+    min-height: 100%;
+    background: #f4efe3;
+}
+
 .login-page {
     min-height: 100vh;
     background:
-        linear-gradient(rgba(5, 48, 61, 0.55), rgba(5, 48, 61, 0.55)),
-        url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80");
+        linear-gradient(90deg, rgba(3, 47, 38, 0.90), rgba(3, 47, 38, 0.55)),
+        url("https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1800&q=80");
     background-size: cover;
     background-position: center;
     display: flex;
     flex-direction: column;
     font-family: Arial, sans-serif;
+    overflow: hidden;
 }
 
 .login-topbar {
-    background: rgba(0, 88, 156, 0.85);
+    width: fit-content;
+    margin: 38px auto 0;
+    background: #064635;
     color: white;
-    padding: 18px 36px;
-    font-size: 21px;
+    padding: 18px 42px;
+    font-size: 22px;
     font-weight: 700;
-    letter-spacing: 0.4px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 0 0 18px 18px;
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.28);
+    animation: bajar 0.8s ease;
 }
 
 .login-main {
@@ -25,80 +35,97 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 35px;
+    padding: 45px 20px;
 }
 
 .login-card {
-    width: 410px;
+    position: relative;
+    width: 430px;
     background: rgba(255, 255, 255, 0.94);
     text-align: center;
-    padding: 38px 34px;
-    border-radius: 24px;
-    box-shadow: 0 22px 55px rgba(0, 0, 0, 0.32);
-    backdrop-filter: blur(10px);
+    padding: 44px 38px;
+    border-radius: 28px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(12px);
+    animation: aparecer 0.9s ease;
+}
+
+.login-card::before {
+    content: "Costa Rica";
+    position: absolute;
+    top: -16px;
+    left: 34px;
+    background: #d8902f;
+    color: white;
+    padding: 9px 20px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1px;
 }
 
 .login-badge {
     display: inline-block;
-    background: #e7f7ef;
-    color: #137547;
-    padding: 8px 18px;
+    background: #eaf6ef;
+    color: #064635;
+    padding: 9px 20px;
     border-radius: 30px;
     font-size: 13px;
-    font-weight: 700;
-    margin-bottom: 18px;
+    font-weight: 800;
+    margin-bottom: 20px;
 }
 
 .login-town-icon {
-    width: 105px;
-    height: 105px;
+    width: 100px;
+    height: 100px;
     object-fit: contain;
     margin-bottom: 16px;
     border-radius: 50%;
     background: #f1faf5;
-    padding: 13px;
-    box-shadow: 0 8px 24px rgba(19, 117, 71, 0.25);
+    padding: 14px;
+    box-shadow: 0 10px 28px rgba(6, 70, 53, 0.25);
+    animation: flotar 3s ease-in-out infinite;
 }
 
 .login-card h1 {
-    color: #12324a;
-    font-size: 28px;
-    margin-bottom: 12px;
+    color: #064635;
+    font-size: 30px;
+    margin-bottom: 14px;
 }
 
 .login-card p {
     font-size: 15px;
-    color: #425466;
-    line-height: 1.6;
-    margin-bottom: 26px;
+    color: #43515a;
+    line-height: 1.7;
+    margin-bottom: 28px;
 }
 
 .login-google-btn {
     width: 100%;
-    padding: 14px 18px;
-    background: linear-gradient(135deg, #0077b6, #00a86b);
+    padding: 15px 18px;
+    background: linear-gradient(135deg, #064635, #0b6b4f);
     border: none;
-    border-radius: 30px;
+    border-radius: 40px;
     color: white;
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 800;
     cursor: pointer;
     transition: 0.25s ease;
-    box-shadow: 0 10px 24px rgba(0, 119, 182, 0.28);
+    box-shadow: 0 12px 28px rgba(6, 70, 53, 0.35);
 }
 
 .login-google-btn span {
     background: white;
     color: #4285f4;
     margin-left: 8px;
-    padding: 3px 7px;
+    padding: 4px 8px;
     border-radius: 50%;
     font-weight: bold;
 }
 
 .login-google-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 14px 30px rgba(0, 119, 182, 0.38);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 18px 35px rgba(6, 70, 53, 0.45);
 }
 
 .login-card small {
@@ -109,20 +136,61 @@
 }
 
 .login-footer {
+    width: fit-content;
+    margin: 0 auto 35px;
     text-align: center;
     font-size: 13px;
-    padding: 16px;
+    padding: 14px 28px;
     color: white;
-    background: rgba(5, 48, 61, 0.65);
+    background: rgba(6, 70, 53, 0.85);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(35px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bajar {
+    from {
+        opacity: 0;
+        transform: translateY(-25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes flotar {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
 }
 
 @media (max-width: 480px) {
-    .login-card {
-        width: 90%;
-        padding: 32px 24px;
+    .login-topbar {
+        margin-top: 20px;
+        font-size: 18px;
+        padding: 14px 28px;
     }
 
-    .login-topbar {
-        text-align: center;
+    .login-card {
+        width: 90%;
+        padding: 38px 26px;
+    }
+
+    .login-card h1 {
+        font-size: 25px;
     }
 }
