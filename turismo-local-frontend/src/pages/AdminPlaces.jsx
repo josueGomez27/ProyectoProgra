@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import api from "../api/api";
@@ -39,9 +40,6 @@ function AdminPlaces() {
     const [categories, setCategories] = useState([]);
 
     const [showForm, setShowForm] = useState(false);
-    const [showTownForm, setShowTownForm] = useState(false);
-    const [showCategoryForm, setShowCategoryForm] = useState(false);
-
     const [editingId, setEditingId] = useState(null);
     const [mapMarkerPos, setMapMarkerPos] = useState(null);
 
@@ -53,20 +51,6 @@ function AdminPlaces() {
         townId: "",
         latitude: "",
         longitude: ""
-    });
-
-    const [townForm, setTownForm] = useState({
-        name: "",
-        province: "",
-        canton: "",
-        district: "",
-        description: "",
-        imageUrl: ""
-    });
-
-    const [categoryForm, setCategoryForm] = useState({
-        name: "",
-        color: "#d89b3d"
     });
 
     const loadData = async () => {
@@ -81,7 +65,7 @@ function AdminPlaces() {
             setTowns(townsRes.data);
             setCategories(categoriesRes.data);
         } catch (error) {
-            console.error("Error al sincronizar con la DB:", error);
+            console.error("Error al cargar datos:", error);
         }
     };
 
@@ -122,7 +106,7 @@ function AdminPlaces() {
             name: place.name,
             categoryId: place.category?.id || "",
             address: place.address,
-            imageUrl: place.imageUrl,
+            imageUrl: place.imageUrl || "",
             townId: place.town?.id || "",
             latitude: place.latitude || "",
             longitude: place.longitude || ""
@@ -134,7 +118,7 @@ function AdminPlaces() {
     const savePlace = async (e) => {
         e.preventDefault();
 
-        const lugarPayload = {
+        const payload = {
             name: form.name,
             address: form.address,
             imageUrl: form.imageUrl,
@@ -149,89 +133,24 @@ function AdminPlaces() {
 
         try {
             if (editingId) {
-                await api.put(`/places/${editingId}`, lugarPayload);
+                await api.put(`/places/${editingId}`, payload);
             } else {
-                await api.post("/places", lugarPayload);
+                await api.post("/places", payload);
             }
 
             await loadData();
             setShowForm(false);
         } catch (error) {
-            console.error("Error al guardar:", error);
-            alert("Error al intentar guardar el registro.");
-        }
-    };
-
-    const saveTown = async (e) => {
-        e.preventDefault();
-
-        const payload = {
-            name: townForm.name,
-            province: townForm.province,
-            canton: townForm.canton,
-            district: townForm.district,
-            description: townForm.description,
-            imageUrl: townForm.imageUrl,
-            slug: townForm.name.toLowerCase().replaceAll(" ", "-"),
-            active: true
-        };
-
-        try {
-            await api.post("/towns", payload);
-
-            await loadData();
-
-            setShowTownForm(false);
-
-            setTownForm({
-                name: "",
-                province: "",
-                canton: "",
-                district: "",
-                description: "",
-                imageUrl: ""
-            });
-
-            alert("Pueblo creado correctamente");
-        } catch (error) {
-            console.error("Error al guardar pueblo:", error);
-            alert("No se pudo guardar el pueblo");
-        }
-    };
-
-    const saveCategory = async (e) => {
-        e.preventDefault();
-
-        const payload = {
-            name: categoryForm.name,
-            color: categoryForm.color,
-            active: true
-        };
-
-        try {
-            await api.post("/categories", payload);
-
-            await loadData();
-
-            setShowCategoryForm(false);
-
-            setCategoryForm({
-                name: "",
-                color: "#d89b3d"
-            });
-
-            alert("Categoría creada correctamente");
-        } catch (error) {
-            console.error("Error al guardar categoría:", error);
-            alert("No se pudo guardar la categoría");
+            console.error("Error al guardar lugar:", error);
+            alert("No se pudo guardar el lugar.");
         }
     };
 
     const deletePlace = async (id) => {
-        if (confirm("¿Seguro que desea eliminar este lugar de la base de datos?")) {
+        if (confirm("¿Seguro que desea eliminar este lugar?")) {
             try {
                 await api.delete(`/places/${id}`);
-                loadData();
+                await loadData();
             } catch (error) {
                 console.error("Error al eliminar:", error);
             }
@@ -240,33 +159,34 @@ function AdminPlaces() {
 
     const toggleStatus = async (place) => {
         try {
-            const lugarModificado = {
+            const payload = {
                 name: place.name,
                 address: place.address,
                 imageUrl: place.imageUrl,
                 active: !place.active,
-                townId: place.town?.id ? parseInt(place.town.id) : null,
-                categoryId: place.category?.id ? parseInt(place.category.id) : null,
-                latitude: place.latitude ? parseFloat(place.latitude) : null,
-                longitude: place.longitude ? parseFloat(place.longitude) : null
+                townId: place.town?.id || null,
+                categoryId: place.category?.id || null,
+                latitude: place.latitude || null,
+                longitude: place.longitude || null
             };
 
-            await api.put(`/places/${place.id}`, lugarModificado);
-            loadData();
+            await api.put(`/places/${place.id}`, payload);
+            await loadData();
         } catch (error) {
-            console.error("Error al mutar estado:", error);
+            console.error("Error al cambiar estado:", error);
         }
     };
 
-    const defaultCenter = mapMarkerPos ? mapMarkerPos : [10.6346, -85.4377];
+    const defaultCenter = mapMarkerPos || [10.6346, -85.4377];
 
     return (
         <div className="admin-page">
             <aside className="admin-sidebar">
                 <h3>Administración</h3>
-                <a>Panel</a>
-                <a>Pueblos</a>
-                <a className="active">Lugares</a>
+                <Link to="/admin/places">Panel</Link>
+                <Link to="/admin/towns">Pueblos</Link>
+                <Link className="active" to="/admin/places">Lugares</Link>
+                <Link to="/admin/categories">Categorías</Link>
                 <a>Usuarios</a>
                 <a>Estadísticas</a>
             </aside>
@@ -274,35 +194,13 @@ function AdminPlaces() {
             <main className="admin-content">
                 <div className="admin-header">
                     <div>
-                        <span className="section-kicker">
-                            Panel de administración
-                        </span>
-
+                        <span className="section-kicker">Panel de administración</span>
                         <h1>Gestión de lugares turísticos</h1>
                     </div>
 
-                    <div style={{ display: "flex", gap: "10px" }}>
-                        <button
-                            className="admin-add-btn"
-                            onClick={() => setShowTownForm(true)}
-                        >
-                            + Crear Pueblo
-                        </button>
-
-                        <button
-                            className="admin-add-btn"
-                            onClick={() => setShowCategoryForm(true)}
-                        >
-                            + Crear Categoría
-                        </button>
-
-                        <button
-                            className="admin-add-btn"
-                            onClick={openAddForm}
-                        >
-                            + Agregar Lugar
-                        </button>
-                    </div>
+                    <button className="admin-add-btn" onClick={openAddForm}>
+                        + Agregar Lugar
+                    </button>
                 </div>
 
                 <div className="admin-table-card">
@@ -324,16 +222,12 @@ function AdminPlaces() {
                                 <tr key={place.id}>
                                     <td>
                                         <img
-                                            src={
-                                                place.imageUrl ||
-                                                "https://placehold.co/100x100"
-                                            }
+                                            src={place.imageUrl || "https://placehold.co/100x100"}
                                             alt={place.name}
                                         />
                                     </td>
 
                                     <td>{place.name}</td>
-
                                     <td>{place.town?.name || "Sin pueblo"}</td>
 
                                     <td>
@@ -346,11 +240,7 @@ function AdminPlaces() {
 
                                     <td>
                                         <button
-                                            className={
-                                                place.active
-                                                    ? "status active"
-                                                    : "status inactive"
-                                            }
+                                            className={place.active ? "status active" : "status inactive"}
                                             onClick={() => toggleStatus(place)}
                                         >
                                             {place.active ? "Activo" : "Inactivo"}
@@ -358,17 +248,11 @@ function AdminPlaces() {
                                     </td>
 
                                     <td>
-                                        <button
-                                            className="edit-btn"
-                                            onClick={() => openEditForm(place)}
-                                        >
+                                        <button className="edit-btn" onClick={() => openEditForm(place)}>
                                             Editar
                                         </button>
 
-                                        <button
-                                            className="delete-btn"
-                                            onClick={() => deletePlace(place.id)}
-                                        >
+                                        <button className="delete-btn" onClick={() => deletePlace(place.id)}>
                                             Eliminar
                                         </button>
                                     </td>
@@ -379,220 +263,35 @@ function AdminPlaces() {
                 </div>
             </main>
 
-            {showTownForm && (
-                <div className="modal-backdrop-custom">
-                    <div
-                        className="admin-modal"
-                        style={{ maxWidth: "700px" }}
-                    >
-                        <h2>Nuevo Pueblo</h2>
-
-                        <form onSubmit={saveTown}>
-                            <label>Nombre</label>
-                            <input
-                                value={townForm.name}
-                                onChange={(e) =>
-                                    setTownForm({
-                                        ...townForm,
-                                        name: e.target.value
-                                    })
-                                }
-                                required
-                            />
-
-                            <label>Provincia</label>
-                            <input
-                                value={townForm.province}
-                                onChange={(e) =>
-                                    setTownForm({
-                                        ...townForm,
-                                        province: e.target.value
-                                    })
-                                }
-                                required
-                            />
-
-                            <label>Cantón</label>
-                            <input
-                                value={townForm.canton}
-                                onChange={(e) =>
-                                    setTownForm({
-                                        ...townForm,
-                                        canton: e.target.value
-                                    })
-                                }
-                                required
-                            />
-
-                            <label>Distrito</label>
-                            <input
-                                value={townForm.district}
-                                onChange={(e) =>
-                                    setTownForm({
-                                        ...townForm,
-                                        district: e.target.value
-                                    })
-                                }
-                                required
-                            />
-
-                            <label>Descripción</label>
-                            <textarea
-                                rows="4"
-                                value={townForm.description}
-                                onChange={(e) =>
-                                    setTownForm({
-                                        ...townForm,
-                                        description: e.target.value
-                                    })
-                                }
-                            />
-
-                            <label>URL de imagen del pueblo</label>
-                            <input
-                                type="text"
-                                value={townForm.imageUrl}
-                                onChange={(e) =>
-                                    setTownForm({
-                                        ...townForm,
-                                        imageUrl: e.target.value
-                                    })
-                                }
-                                placeholder="https://ejemplo.com/imagen.jpg"
-                                required
-                            />
-
-                            <div
-                                className="modal-actions"
-                                style={{ marginTop: "20px" }}
-                            >
-                                <button
-                                    type="button"
-                                    onClick={() => setShowTownForm(false)}
-                                >
-                                    Cancelar
-                                </button>
-
-                                <button type="submit">
-                                    Guardar
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-
-            {showCategoryForm && (
-                <div className="modal-backdrop-custom">
-                    <div
-                        className="admin-modal"
-                        style={{ maxWidth: "500px" }}
-                    >
-                        <h2>Nueva Categoría</h2>
-
-                        <form onSubmit={saveCategory}>
-                            <label>Nombre</label>
-
-                            <input
-                                type="text"
-                                value={categoryForm.name}
-                                onChange={(e) =>
-                                    setCategoryForm({
-                                        ...categoryForm,
-                                        name: e.target.value
-                                    })
-                                }
-                                required
-                            />
-
-                            <label>Color</label>
-
-                            <input
-                                type="color"
-                                value={categoryForm.color}
-                                onChange={(e) =>
-                                    setCategoryForm({
-                                        ...categoryForm,
-                                        color: e.target.value
-                                    })
-                                }
-                            />
-
-                            <div
-                                className="modal-actions"
-                                style={{ marginTop: "20px" }}
-                            >
-                                <button
-                                    type="button"
-                                    onClick={() => setShowCategoryForm(false)}
-                                >
-                                    Cancelar
-                                </button>
-
-                                <button type="submit">
-                                    Guardar
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-
             {showForm && (
                 <div className="modal-backdrop-custom">
-                    <div
-                        className="admin-modal"
-                        style={{ maxWidth: "900px", width: "90%" }}
-                    >
+                    <div className="admin-modal" style={{ maxWidth: "900px", width: "90%" }}>
                         <h2>{editingId ? "Editar lugar" : "Agregar nuevo lugar"}</h2>
 
                         <form onSubmit={savePlace}>
-                            <div
-                                style={{
-                                    display: "grid",
-                                    gridTemplateColumns: "1fr 1fr",
-                                    gap: "20px",
-                                    alignItems: "start"
-                                }}
-                            >
+                            <div style={{
+                                display: "grid",
+                                gridTemplateColumns: "1fr 1fr",
+                                gap: "20px"
+                            }}>
                                 <div>
                                     <label>Nombre</label>
                                     <input
                                         value={form.name}
-                                        onChange={(e) =>
-                                            setForm({
-                                                ...form,
-                                                name: e.target.value
-                                            })
-                                        }
+                                        onChange={(e) => setForm({ ...form, name: e.target.value })}
                                         required
                                     />
 
                                     <label>Pueblo</label>
                                     <select
                                         value={form.townId}
-                                        onChange={(e) =>
-                                            setForm({
-                                                ...form,
-                                                townId: e.target.value
-                                            })
-                                        }
+                                        onChange={(e) => setForm({ ...form, townId: e.target.value })}
                                         required
-                                        style={{
-                                            width: "100%",
-                                            padding: "8px",
-                                            marginBottom: "12px",
-                                            borderRadius: "6px",
-                                            border: "1px solid #ccc"
-                                        }}
                                     >
-                                        <option value="">
-                                            Seleccione un pueblo...
-                                        </option>
-
-                                        {towns.map((t) => (
-                                            <option key={t.id} value={t.id}>
-                                                {t.name}
+                                        <option value="">Seleccione un pueblo...</option>
+                                        {towns.map((town) => (
+                                            <option key={town.id} value={town.id}>
+                                                {town.name}
                                             </option>
                                         ))}
                                     </select>
@@ -600,28 +299,13 @@ function AdminPlaces() {
                                     <label>Categoría</label>
                                     <select
                                         value={form.categoryId}
-                                        onChange={(e) =>
-                                            setForm({
-                                                ...form,
-                                                categoryId: e.target.value
-                                            })
-                                        }
+                                        onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
                                         required
-                                        style={{
-                                            width: "100%",
-                                            padding: "8px",
-                                            marginBottom: "12px",
-                                            borderRadius: "6px",
-                                            border: "1px solid #ccc"
-                                        }}
                                     >
-                                        <option value="">
-                                            Seleccione una categoría...
-                                        </option>
-
-                                        {categories.map((c) => (
-                                            <option key={c.id} value={c.id}>
-                                                {c.name}
+                                        <option value="">Seleccione una categoría...</option>
+                                        {categories.map((category) => (
+                                            <option key={category.id} value={category.id}>
+                                                {category.name}
                                             </option>
                                         ))}
                                     </select>
@@ -629,60 +313,32 @@ function AdminPlaces() {
                                     <label>Dirección</label>
                                     <input
                                         value={form.address}
-                                        onChange={(e) =>
-                                            setForm({
-                                                ...form,
-                                                address: e.target.value
-                                            })
-                                        }
+                                        onChange={(e) => setForm({ ...form, address: e.target.value })}
                                         required
                                     />
 
                                     <label>URL de imagen</label>
                                     <input
                                         value={form.imageUrl}
-                                        onChange={(e) =>
-                                            setForm({
-                                                ...form,
-                                                imageUrl: e.target.value
-                                            })
-                                        }
+                                        onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
                                         required
                                     />
                                 </div>
 
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        height: "100%"
-                                    }}
-                                >
-                                    <label
-                                        style={{
-                                            fontWeight: "bold",
-                                            marginBottom: "6px"
-                                        }}
-                                    >
-                                        Ubicación Geográfica
-                                    </label>
+                                <div>
+                                    <label>Ubicación Geográfica</label>
 
-                                    <div
-                                        style={{
-                                            height: "260px",
-                                            borderRadius: "8px",
-                                            overflow: "hidden",
-                                            border: "1px solid #ccc",
-                                            marginBottom: "12px"
-                                        }}
-                                    >
+                                    <div style={{
+                                        height: "260px",
+                                        borderRadius: "8px",
+                                        overflow: "hidden",
+                                        border: "1px solid #ccc",
+                                        marginBottom: "12px"
+                                    }}>
                                         <MapContainer
                                             center={defaultCenter}
                                             zoom={13}
-                                            style={{
-                                                height: "100%",
-                                                width: "100%"
-                                            }}
+                                            style={{ height: "100%", width: "100%" }}
                                         >
                                             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
@@ -694,81 +350,30 @@ function AdminPlaces() {
                                         </MapContainer>
                                     </div>
 
-                                    <span
-                                        style={{
-                                            fontSize: "11px",
-                                            color: "#6c757d",
-                                            marginBottom: "12px",
-                                            marginTop: "-6px"
-                                        }}
-                                    >
-                                        💡 Haz un clic en el mapa para marcar el punto exacto.
-                                    </span>
+                                    <small>Haz clic en el mapa para marcar el punto exacto.</small>
 
-                                    <div style={{ display: "flex", gap: "10px" }}>
-                                        <div style={{ flex: 1 }}>
-                                            <label style={{ fontSize: "12px" }}>
-                                                Latitud
-                                            </label>
+                                    <label>Latitud</label>
+                                    <input
+                                        type="number"
+                                        step="any"
+                                        value={form.latitude}
+                                        onChange={(e) => setForm({ ...form, latitude: e.target.value })}
+                                        required
+                                    />
 
-                                            <input
-                                                type="number"
-                                                step="any"
-                                                value={form.latitude}
-                                                onChange={(e) => {
-                                                    setForm({
-                                                        ...form,
-                                                        latitude: e.target.value
-                                                    });
-
-                                                    if (e.target.value && form.longitude) {
-                                                        setMapMarkerPos([
-                                                            Number(e.target.value),
-                                                            Number(form.longitude)
-                                                        ]);
-                                                    }
-                                                }}
-                                                required
-                                            />
-                                        </div>
-
-                                        <div style={{ flex: 1 }}>
-                                            <label style={{ fontSize: "12px" }}>
-                                                Longitud
-                                            </label>
-
-                                            <input
-                                                type="number"
-                                                step="any"
-                                                value={form.longitude}
-                                                onChange={(e) => {
-                                                    setForm({
-                                                        ...form,
-                                                        longitude: e.target.value
-                                                    });
-
-                                                    if (form.latitude && e.target.value) {
-                                                        setMapMarkerPos([
-                                                            Number(form.latitude),
-                                                            Number(e.target.value)
-                                                        ]);
-                                                    }
-                                                }}
-                                                required
-                                            />
-                                        </div>
-                                    </div>
+                                    <label>Longitud</label>
+                                    <input
+                                        type="number"
+                                        step="any"
+                                        value={form.longitude}
+                                        onChange={(e) => setForm({ ...form, longitude: e.target.value })}
+                                        required
+                                    />
                                 </div>
                             </div>
 
-                            <div
-                                className="modal-actions"
-                                style={{ marginTop: "20px" }}
-                            >
-                                <button
-                                    type="button"
-                                    onClick={() => setShowForm(false)}
-                                >
+                            <div className="modal-actions" style={{ marginTop: "20px" }}>
+                                <button type="button" onClick={() => setShowForm(false)}>
                                     Cancelar
                                 </button>
 
