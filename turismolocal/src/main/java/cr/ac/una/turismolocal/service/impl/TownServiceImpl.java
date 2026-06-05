@@ -41,6 +41,9 @@ public class TownServiceImpl implements TownService {
             existingTown.setCanton(town.getCanton());
             existingTown.setDistrict(town.getDistrict());
 
+            // NUEVO
+            existingTown.setImageUrl(town.getImageUrl());
+
             return townRepository.save(existingTown);
         }
 

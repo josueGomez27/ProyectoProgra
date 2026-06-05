@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,6 +34,9 @@ public class Town {
     private String canton;
 
     private String district;
+
+    @Column(columnDefinition = "TEXT")
+    private String imageUrl;
 
     @Column(columnDefinition = "TEXT")
     private String qrCodeUrl;
