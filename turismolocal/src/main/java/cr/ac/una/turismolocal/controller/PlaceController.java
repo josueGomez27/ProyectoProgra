@@ -30,7 +30,7 @@ public class PlaceController {
         private Double latitude;
         private Double longitude;
     }
-
+//hola bro
     @GetMapping
     public List<Place> getAllPlaces() {
         return placeService.getAllPlaces();
