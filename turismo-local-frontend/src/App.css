@@ -1260,9 +1260,7 @@ img {
     font-size: 14px;
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
+
 
 @media (max-width: 992px) {
     .nav-content {
@@ -1390,28 +1388,31 @@ img {
     }
 }
 
-/* ADMIN MÓVIL: menú de opciones fijo debajo del navbar */
+/* ADMIN MÓVIL */
 @media (max-width: 768px) {
+
+    .custom-navbar,
+    .travel-navbar {
+        position: relative !important;
+        top: auto !important;
+    }
+
     .admin-page {
         flex-direction: column;
     }
 
-    .custom-navbar,
-    .travel-navbar {
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-    }
-
     .admin-sidebar {
-        position: sticky;
-        top: 0;
-        z-index: 999;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 5000 !important;
+
         width: 100%;
-        padding: 18px 18px 14px;
+        padding: 14px 18px;
         background: white;
+
         overflow-x: auto;
         white-space: nowrap;
+
         box-shadow: 0 12px 35px rgba(11, 61, 52, 0.16);
     }
 
@@ -1423,11 +1424,14 @@ img {
         display: inline-flex;
         align-items: center;
         justify-content: center;
+
         min-width: max-content;
-        margin-right: 12px;
+        margin-right: 14px;
         margin-bottom: 0;
+
         padding: 12px 18px;
         border-radius: 999px;
+        font-weight: 900;
     }
 
     .admin-content {
