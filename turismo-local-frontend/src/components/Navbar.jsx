@@ -1,92 +1,55 @@
 import { Link } from "react-router-dom";
 
 function Navbar() {
-
     const user = JSON.parse(localStorage.getItem("user"));
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-dark custom-navbar">
-            <div className="container">
-
-                <Link className="navbar-brand" to="/home">
+        <nav className="custom-navbar travel-navbar">
+            <div className="nav-content">
+                <Link className="brand-logo" to="/home">
+                    <span className="brand-icon">🌴</span>
                     Turismo Local UNA
                 </Link>
 
-                <div className="ms-auto d-flex align-items-center">
-
-                    <Link
-                        className="nav-link d-inline text-white me-4"
-                        to="/home"
-                    >
+                <div className="nav-links">
+                    <Link to="/home" className="nav-pill">
                         Inicio
                     </Link>
 
                     {user?.role === "ADMIN" && (
                         <>
-                            <Link
-                                className="nav-link d-inline text-white me-4"
-                                to="/admin/places"
-                            >
+                            <Link to="/admin" className="nav-pill">
                                 Administración
                             </Link>
 
-                            <Link
-                                className="nav-link d-inline text-white me-4"
-                                to="/admin/qr"
-                            >
+                            <Link to="/admin/qr" className="nav-pill nav-pill-gold">
                                 Generar QR
                             </Link>
                         </>
                     )}
 
                     {user && (
-                        <div
-                            className="d-flex align-items-center me-4"
-                            style={{ color: "white" }}
-                        >
-
+                        <div className="user-pill">
                             <img
                                 src={user.picture}
                                 alt="Perfil"
-                                style={{
-                                    width: "42px",
-                                    height: "42px",
-                                    borderRadius: "50%",
-                                    objectFit: "cover",
-                                    marginRight: "10px",
-                                    border: "2px solid white"
-                                }}
+                                className="user-avatar"
                             />
 
-                            <div style={{ lineHeight: "1.2" }}>
-
-                                <div
-                                    style={{
-                                        fontSize: "14px",
-                                        fontWeight: "500"
-                                    }}
-                                >
+                            <div>
+                                <strong>
                                     Bienvenido, {user.name.split(" ")[0]}
-                                </div>
+                                </strong>
 
                                 {user.role === "ADMIN" && (
-                                    <small
-                                        style={{
-                                            color: "#FFD700",
-                                            fontWeight: "bold"
-                                        }}
-                                    >
-                                        ADMIN
-                                    </small>
+                                    <span>ADMIN</span>
                                 )}
-
                             </div>
-
                         </div>
                     )}
 
                     <Link
-                        className="nav-link d-inline text-white"
+                        className="logout-pill"
                         to="/"
                         onClick={() => {
                             localStorage.removeItem("user");
@@ -94,7 +57,6 @@ function Navbar() {
                     >
                         Cerrar sesión
                     </Link>
-
                 </div>
             </div>
         </nav>

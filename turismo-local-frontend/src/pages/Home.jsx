@@ -34,24 +34,80 @@ function Home() {
 
     return (
         <>
-            <section className="hero">
-                <div className="container hero-content">
-                    <span className="hero-tag">
-                        Turismo local · Costa Rica
-                    </span>
+            <section className="travel-hero">
+                <div className="travel-hero-overlay"></div>
 
-                    <h1>
-                        Explorá pueblos con historia, naturaleza y cultura.
-                    </h1>
+                <div className="container travel-hero-content">
+                    <div className="hero-left">
+                        <span className="travel-kicker">
+                            Turismo local · Costa Rica
+                        </span>
 
-                    <p>
-                        Conocé destinos turísticos de Costa Rica, sus lugares más
-                        representativos y la información necesaria para visitarlos.
-                    </p>
+                        <h1>
+                            Encuentra tu próximo destino en Costa Rica
+                        </h1>
 
-                    <a href="#pueblos" className="hero-button">
-                        Ver destinos
-                    </a>
+                        <p>
+                            Explora pueblos llenos de cultura, naturaleza, playas,
+                            historia y experiencias auténticas.
+                        </p>
+
+                        <div className="hero-search-card">
+                            <label>Buscar destino</label>
+
+                            <div className="hero-search-row">
+                                <input
+                                    type="text"
+                                    placeholder="Buscar pueblo, provincia o cantón..."
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                />
+
+                                <a href="#pueblos" className="hero-search-btn">
+                                    Buscar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="hero-feature-card">
+                        <img
+                            src="https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?auto=format&fit=crop&w=1200&q=90"
+                            alt="Costa Rica"
+                        />
+
+                        <div className="hero-feature-info">
+                            <span>Destino destacado</span>
+                            <h3>Explora naturaleza, playas y cultura</h3>
+                            <p>Descubre lugares turísticos seleccionados por pueblo.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section className="container travel-categories">
+                <div className="travel-category-card">
+                    <span>🏖️</span>
+                    <h3>Playas</h3>
+                    <p>Costas, sol y arena.</p>
+                </div>
+
+                <div className="travel-category-card">
+                    <span>🌳</span>
+                    <h3>Bosques</h3>
+                    <p>Naturaleza y senderos.</p>
+                </div>
+
+                <div className="travel-category-card">
+                    <span>🏛️</span>
+                    <h3>Cultura</h3>
+                    <p>Historia y tradición.</p>
+                </div>
+
+                <div className="travel-category-card">
+                    <span>⛰️</span>
+                    <h3>Montañas</h3>
+                    <p>Miradores y aventura.</p>
                 </div>
             </section>
 
@@ -68,15 +124,6 @@ function Home() {
                     <p className="section-subtitle">
                         Seleccioná un destino para conocer sus principales lugares turísticos.
                     </p>
-                </div>
-
-                <div className="filter-box">
-                    <input
-                        type="text"
-                        placeholder="Buscar pueblo, provincia o cantón..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
                 </div>
 
                 {error && (
