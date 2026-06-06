@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import api from "../api/api";
 
@@ -32,6 +32,28 @@ const getCategoryIcon = (color = "#064635") => {
     });
 };
 
+function FlyToPlace({ selectedPlace }) {
+    const map = useMap();
+
+    useEffect(() => {
+        if (selectedPlace?.latitude && selectedPlace?.longitude) {
+            map.flyTo(
+                [
+                    Number(selectedPlace.latitude),
+                    Number(selectedPlace.longitude)
+                ],
+                18,
+                {
+                    animate: true,
+                    duration: 1.2
+                }
+            );
+        }
+    }, [selectedPlace, map]);
+
+    return null;
+}
+
 function Places() {
     const { id } = useParams();
 
@@ -40,6 +62,7 @@ function Places() {
     const [view, setView] = useState("list");
     const [search, setSearch] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("ALL");
+    const [selectedPlace, setSelectedPlace] = useState(null);
 
     useEffect(() => {
         loadPlaces();
@@ -91,6 +114,11 @@ function Places() {
         validPlaces.length > 0
             ? [Number(validPlaces[0].latitude), Number(validPlaces[0].longitude)]
             : [10.6346, -85.4377];
+
+    const handlePlaceClick = (place) => {
+        setSelectedPlace(place);
+        setView("map");
+    };
 
     return (
         <>
@@ -207,6 +235,17 @@ function Places() {
                                             >
                                                 {place.description}
                                             </p>
+
+                                            {place.latitude && place.longitude && (
+                                                <button
+                                                    type="button"
+                                                    className="view-btn mt-auto"
+                                                    onClick={() => handlePlaceClick(place)}
+                                                    style={{ alignSelf: "flex-start" }}
+                                                >
+                                                    Ver en mapa
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -229,6 +268,8 @@ function Places() {
                                     <div
                                         className="map-place-item"
                                         key={place.id}
+                                        onClick={() => handlePlaceClick(place)}
+                                        style={{ cursor: "pointer" }}
                                     >
                                         <img
                                             src={
@@ -287,6 +328,8 @@ function Places() {
                                 scrollWheelZoom={true}
                                 className="leaflet-map"
                             >
+                                <FlyToPlace selectedPlace={selectedPlace} />
+
                                 <TileLayer
                                     attribution='&copy; OpenStreetMap contributors'
                                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
