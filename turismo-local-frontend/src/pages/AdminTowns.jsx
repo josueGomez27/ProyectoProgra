@@ -17,6 +17,10 @@ function AdminTowns() {
         active: true
     });
 
+    useEffect(() => {
+        loadTowns();
+    }, []);
+
     const loadTowns = async () => {
         try {
             const response = await api.get("/towns");
@@ -25,10 +29,6 @@ function AdminTowns() {
             console.error("Error cargando pueblos:", error);
         }
     };
-
-    useEffect(() => {
-        loadTowns();
-    }, []);
 
     const resetForm = () => {
         setForm({
@@ -97,6 +97,27 @@ function AdminTowns() {
         }
     };
 
+    const toggleTownStatus = async (town) => {
+        const payload = {
+            name: town.name,
+            province: town.province,
+            canton: town.canton,
+            district: town.district,
+            description: town.description,
+            imageUrl: town.imageUrl,
+            slug: town.slug || town.name.toLowerCase().replaceAll(" ", "-"),
+            active: !town.active
+        };
+
+        try {
+            await api.put(`/towns/${town.id}`, payload);
+            await loadTowns();
+        } catch (error) {
+            console.error("Error cambiando estado del pueblo:", error);
+            alert("No se pudo cambiar el estado del pueblo.");
+        }
+    };
+
     const deleteTown = async (id) => {
         const confirmDelete = confirm(
             "¿Seguro que deseas eliminar este pueblo? Si tiene lugares asociados, puede dar error."
@@ -119,12 +140,12 @@ function AdminTowns() {
             <aside className="admin-sidebar">
                 <h3>Administración</h3>
 
-               <Link to="/admin">Dashboard</Link>
-               <Link className="active" to="/admin/towns">Pueblos</Link>
-               <Link to="/admin/places">Lugares</Link>
-               <Link to="/admin/categories">Categorías</Link>
-               <Link to="/admin/users">Usuarios</Link>
-               <Link to="/admin/stats">Estadísticas</Link>
+                <Link to="/admin">Dashboard</Link>
+                <Link className="active" to="/admin/towns">Pueblos</Link>
+                <Link to="/admin/places">Lugares</Link>
+                <Link to="/admin/categories">Categorías</Link>
+                <Link to="/admin/users">Usuarios</Link>
+                <Link to="/admin/stats">Estadísticas</Link>
             </aside>
 
             <main className="admin-content">
@@ -172,15 +193,14 @@ function AdminTowns() {
                                     <td>{town.district}</td>
 
                                     <td>
-                                        <span
-                                            className={
-                                                town.active
-                                                    ? "status active"
-                                                    : "status inactive"
-                                            }
+                                        <button
+                                            type="button"
+                                            className={`status ${town.active ? "active" : "inactive"}`}
+                                            onClick={() => toggleTownStatus(town)}
+                                            title="Cambiar estado"
                                         >
                                             {town.active ? "Activo" : "Inactivo"}
-                                        </span>
+                                        </button>
                                     </td>
 
                                     <td>
@@ -252,10 +272,7 @@ function AdminTowns() {
                                 rows="4"
                                 value={form.description}
                                 onChange={(e) =>
-                                    setForm({
-                                        ...form,
-                                        description: e.target.value
-                                    })
+                                    setForm({ ...form, description: e.target.value })
                                 }
                             />
 
@@ -284,10 +301,7 @@ function AdminTowns() {
                                 <option value="false">Inactivo</option>
                             </select>
 
-                            <div
-                                className="modal-actions"
-                                style={{ marginTop: "20px" }}
-                            >
+                            <div className="modal-actions" style={{ marginTop: "20px" }}>
                                 <button
                                     type="button"
                                     onClick={() => {
