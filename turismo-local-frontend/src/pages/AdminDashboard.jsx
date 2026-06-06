@@ -56,25 +56,29 @@ function AdminDashboard() {
             const categories = categoriesRes.data || [];
             const users = usersRes.data || [];
 
+            const activePlaces = places.filter((place) => place.active === true);
+            const activeTowns = towns.filter((town) => town.active === true);
+            const activeCategories = categories.filter((category) => category.active === true);
+
             const admins = users.filter((user) => user.role === "ADMIN").length;
             const normalUsers = users.filter((user) => user.role === "USER").length;
 
             const categoryCounter = {};
-            places.forEach((place) => {
+            activePlaces.forEach((place) => {
                 const categoryName = place.category?.name || "Sin categoría";
                 categoryCounter[categoryName] = (categoryCounter[categoryName] || 0) + 1;
             });
 
             const townCounter = {};
-            places.forEach((place) => {
+            activePlaces.forEach((place) => {
                 const townName = place.town?.name || "Sin pueblo";
                 townCounter[townName] = (townCounter[townName] || 0) + 1;
             });
 
             setStats({
-                places: places.length,
-                towns: towns.length,
-                categories: categories.length,
+                places: activePlaces.length,
+                towns: activeTowns.length,
+                categories: activeCategories.length,
                 users: users.length,
                 admins,
                 normalUsers
@@ -83,7 +87,7 @@ function AdminDashboard() {
             setPlacesByCategory(categoryCounter);
             setPlacesByTown(townCounter);
 
-            setLatestPlaces([...places].slice(-4).reverse());
+            setLatestPlaces([...activePlaces].slice(-4).reverse());
 
         } catch (error) {
             console.error("Error cargando dashboard:", error);
@@ -101,7 +105,7 @@ function AdminDashboard() {
                     "#14715f",
                     "#2196F3",
                     "#9C27B0",
-                    "#ffff00",
+                    "#d89b3d",
                     "#8B5A1A"
                 ]
             }
@@ -156,17 +160,17 @@ function AdminDashboard() {
 
                 <div className="dashboard-grid">
                     <div className="dashboard-card">
-                        <h3>Lugares turísticos</h3>
+                        <h3>Lugares turísticos activos</h3>
                         <h2>{stats.places}</h2>
                     </div>
 
                     <div className="dashboard-card">
-                        <h3>Pueblos</h3>
+                        <h3>Pueblos activos</h3>
                         <h2>{stats.towns}</h2>
                     </div>
 
                     <div className="dashboard-card">
-                        <h3>Categorías</h3>
+                        <h3>Categorías activas</h3>
                         <h2>{stats.categories}</h2>
                     </div>
 
@@ -210,7 +214,7 @@ function AdminDashboard() {
 
                 <div className="dashboard-charts">
                     <div className="chart-card">
-                        <h3>Lugares por categoría</h3>
+                        <h3>Lugares activos por categoría</h3>
                         <Pie data={categoryChartData} />
                     </div>
 
@@ -220,16 +224,16 @@ function AdminDashboard() {
                     </div>
 
                     <div className="chart-card chart-wide">
-                        <h3>Lugares por pueblo</h3>
+                        <h3>Lugares activos por pueblo</h3>
                         <Bar data={townChartData} />
                     </div>
                 </div>
 
                 <div className="latest-card">
-                    <h3>Últimos lugares agregados</h3>
+                    <h3>Últimos lugares activos agregados</h3>
 
                     {latestPlaces.length === 0 ? (
-                        <p>No hay lugares registrados.</p>
+                        <p>No hay lugares activos registrados.</p>
                     ) : (
                         <div className="latest-list">
                             {latestPlaces.map((place) => (

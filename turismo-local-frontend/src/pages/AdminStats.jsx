@@ -26,14 +26,21 @@ function AdminStats() {
                     api.get("/users")
                 ]);
 
+            const towns = townsRes.data || [];
+            const places = placesRes.data || [];
+            const categories = categoriesRes.data || [];
             const users = usersRes.data || [];
 
+            const activeTowns = towns.filter((town) => town.active === true);
+            const activePlaces = places.filter((place) => place.active === true);
+            const activeCategories = categories.filter((category) => category.active === true);
+
             setStats({
-                towns: townsRes.data.length,
-                places: placesRes.data.length,
-                categories: categoriesRes.data.length,
+                towns: activeTowns.length,
+                places: activePlaces.length,
+                categories: activeCategories.length,
                 users: users.length,
-                activeUsers: users.filter((u) => u.active).length,
+                activeUsers: users.filter((u) => u.active === true).length,
                 admins: users.filter((u) => u.role === "ADMIN").length
             });
         } catch (error) {
@@ -70,19 +77,19 @@ function AdminStats() {
                     <div className="stats-card">
                         <span>🏘️</span>
                         <h3>{stats.towns}</h3>
-                        <p>Pueblos registrados</p>
+                        <p>Pueblos activos</p>
                     </div>
 
                     <div className="stats-card">
                         <span>📍</span>
                         <h3>{stats.places}</h3>
-                        <p>Lugares turísticos</p>
+                        <p>Lugares turísticos activos</p>
                     </div>
 
                     <div className="stats-card">
                         <span>🏷️</span>
                         <h3>{stats.categories}</h3>
-                        <p>Categorías registradas</p>
+                        <p>Categorías activas</p>
                     </div>
 
                     <div className="stats-card">
