@@ -752,3 +752,134 @@ body {
     font-size:3rem;
     font-weight:700;
 }
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.dashboard-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 28px 30px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-card h3 {
+    color: #555;
+    margin: 0 0 18px;
+    font-size: 20px;
+}
+
+.dashboard-card h2 {
+    color: #064635;
+    font-size: 44px;
+    font-weight: 900;
+    margin: 0;
+}
+
+.quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin: 10px 0 30px;
+}
+
+.quick-action-btn {
+    background: #064635;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 14px 22px;
+    border-radius: 30px;
+    font-weight: 900;
+    box-shadow: 0 12px 28px rgba(6, 70, 53, 0.22);
+    transition: 0.25s ease;
+}
+
+.quick-action-btn:hover {
+    transform: translateY(-2px);
+    color: #ffffff;
+}
+
+.dashboard-charts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 30px;
+}
+
+.chart-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 26px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.08);
+    min-height: 360px;
+}
+
+.chart-card h3 {
+    color: #064635;
+    margin-bottom: 20px;
+    font-weight: 900;
+}
+
+.chart-wide {
+    grid-column: span 2;
+}
+
+.latest-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.08);
+}
+
+.latest-card h3 {
+    color: #064635;
+    font-weight: 900;
+    margin-bottom: 20px;
+}
+
+.latest-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+}
+
+.latest-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #f7f3ea;
+    padding: 14px;
+    border-radius: 18px;
+}
+
+.latest-item img {
+    width: 70px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 14px;
+}
+
+.latest-item strong {
+    color: #064635;
+    font-weight: 900;
+}
+
+.latest-item p {
+    margin: 4px 0 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+@media (max-width: 900px) {
+    .dashboard-charts {
+        grid-template-columns: 1fr;
+    }
+
+    .chart-wide {
+        grid-column: span 1;
+    }
+}
