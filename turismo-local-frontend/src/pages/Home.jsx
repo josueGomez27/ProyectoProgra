@@ -114,7 +114,7 @@ function Home() {
 
                 <div className="travel-category-card image-category-card culture-card">
                     <img
-                        src="https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?auto=format&fit=crop&w=600&q=90"
+                        src="https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=600&q=90"
                         alt="Cultura"
                     />
 
