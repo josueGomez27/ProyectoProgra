@@ -15,10 +15,17 @@ function QrGenerator() {
     const loadTowns = async () => {
         try {
             const response = await api.get("/towns");
-            setTowns(response.data);
 
-            if (response.data.length > 0) {
-                setTownId(response.data[0].id);
+            const activeTowns = response.data.filter(
+                (town) => town.active === true
+            );
+
+            setTowns(activeTowns);
+
+            if (activeTowns.length > 0) {
+                setTownId(activeTowns[0].id);
+            } else {
+                setTownId("");
             }
         } catch (error) {
             console.error("Error cargando pueblos:", error);
@@ -28,7 +35,7 @@ function QrGenerator() {
 
     const validateTownSelected = () => {
         if (!townId) {
-            setError("Seleccione un pueblo antes de continuar.");
+            setError("Seleccione un pueblo activo antes de continuar.");
             return false;
         }
 
@@ -93,7 +100,7 @@ function QrGenerator() {
                 <h1>Gestión de códigos QR</h1>
 
                 <p>
-                    Seleccioná un pueblo para generar, regenerar o consultar
+                    Seleccioná un pueblo activo para generar, regenerar o consultar
                     su código QR de acceso al sistema.
                 </p>
 
@@ -112,7 +119,7 @@ function QrGenerator() {
                 >
                     {towns.length === 0 ? (
                         <option value="">
-                            No hay pueblos registrados
+                            No hay pueblos activos registrados
                         </option>
                     ) : (
                         towns.map((town) => (

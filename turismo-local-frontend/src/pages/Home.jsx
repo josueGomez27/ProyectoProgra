@@ -14,7 +14,12 @@ function Home() {
     const loadTowns = async () => {
         try {
             const data = await getAllTowns();
-            setTowns(data);
+
+            const activeTowns = Array.isArray(data)
+                ? data.filter((town) => town.active === true)
+                : [];
+
+            setTowns(activeTowns);
         } catch (error) {
             console.error("Error cargando pueblos", error);
             setError("No se pudieron cargar los pueblos turísticos.");
@@ -159,7 +164,7 @@ function Home() {
                 )}
 
                 <div className="row justify-content-center">
-                    {Array.isArray(filteredTowns) && filteredTowns.length > 0 ? (
+                    {filteredTowns.length > 0 ? (
                         filteredTowns.map((town) => (
                             <div
                                 className="col-md-6 col-lg-4 mb-4"
@@ -170,7 +175,7 @@ function Home() {
                         ))
                     ) : (
                         <p className="text-center text-muted">
-                            No se encontraron pueblos con esa búsqueda.
+                            No hay pueblos activos disponibles o no se encontraron resultados.
                         </p>
                     )}
                 </div>

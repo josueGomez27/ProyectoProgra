@@ -57,6 +57,7 @@ function Places() {
     const [search, setSearch] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("ALL");
     const [selectedPlace, setSelectedPlace] = useState(null);
+    const [message, setMessage] = useState("");
 
     useEffect(() => {
         loadPlaces();
@@ -64,22 +65,42 @@ function Places() {
 
     const loadPlaces = async () => {
         try {
+            setMessage("");
+
             const [townRes, placesRes] = await Promise.all([
                 api.get(`/towns/${id}`),
                 api.get(`/places/town/${id}`)
             ]);
 
+            if (!townRes.data || townRes.data.active === false) {
+                setTown(null);
+                setPlaces([]);
+                setMessage("Este pueblo no está activo o no se encuentra disponible.");
+                return;
+            }
+
+            const activePlaces = Array.isArray(placesRes.data)
+                ? placesRes.data.filter((place) => place.active === true)
+                : [];
+
             setTown(townRes.data);
-            setPlaces(placesRes.data);
+            setPlaces(activePlaces);
+
+            if (activePlaces.length === 0) {
+                setMessage("Este pueblo no tiene lugares turísticos activos disponibles.");
+            }
         } catch (error) {
             console.error("Error cargando lugares", error);
+            setTown(null);
+            setPlaces([]);
+            setMessage("No se pudieron cargar los lugares turísticos.");
         }
     };
 
     const categories = [
         ...new Map(
             places
-                .filter((place) => place.category)
+                .filter((place) => place.category && place.category.active !== false)
                 .map((place) => [place.category.id, place.category])
         ).values()
     ];
@@ -125,7 +146,7 @@ function Places() {
                     <h1>
                         {town
                             ? `Lugares turísticos en ${town.name}`
-                            : "Cargando destino..."}
+                            : "Destino no disponible"}
                     </h1>
 
                     <p>
@@ -136,292 +157,302 @@ function Places() {
             </section>
 
             <main className="container places-section">
-                <div className="places-filter-box">
-                    <input
-                        type="text"
-                        placeholder="Buscar lugar, dirección o categoría..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-
-                    <select
-                        value={categoryFilter}
-                        onChange={(e) => setCategoryFilter(e.target.value)}
-                    >
-                        <option value="ALL">Todas las categorías</option>
-
-                        {categories.map((category) => (
-                            <option key={category.id} value={category.id}>
-                                {category.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                <div className="places-actions">
-                    <button
-                        className={view === "list" ? "view-btn active" : "view-btn"}
-                        onClick={() => setView("list")}
-                    >
-                        Vista Lista
-                    </button>
-
-                    <button
-                        className={view === "map" ? "view-btn active" : "view-btn"}
-                        onClick={() => setView("map")}
-                    >
-                        Vista Mapa
-                    </button>
-                </div>
-
-                {view === "list" && (
-                    <div className="row">
-                        {filteredPlaces.length === 0 ? (
-                            <p className="text-center text-muted">
-                                No hay lugares que coincidan con la búsqueda o categoría.
-                            </p>
-                        ) : (
-                            filteredPlaces.map((place) => (
-                                <div
-                                    className="col-md-6 col-lg-4 mb-4"
-                                    key={place.id}
-                                >
-                                    <div className="place-tour-card h-100 card shadow-sm border-0">
-                                        <img
-                                            src={
-                                                place.imageUrl ||
-                                                "https://www.travelexcellence.com/wp-content/uploads/2020/09/liberia-guanacaste-01.jpg"
-                                            }
-                                            className="card-img-top"
-                                            alt={place.name}
-                                            style={{
-                                                height: "220px",
-                                                objectFit: "cover"
-                                            }}
-                                        />
-
-                                        <div className="place-tour-body card-body d-flex flex-column">
-                                            <span
-                                                className="place-category badge text-white align-self-start mb-2"
-                                                style={{
-                                                    fontSize: "0.8rem",
-                                                    textTransform: "uppercase",
-                                                    backgroundColor: place.category?.color || "#064635"
-                                                }}
-                                            >
-                                                {place.category?.name || "Turístico"}
-                                            </span>
-
-                                            <h3 className="card-title h5 mb-2 fw-bold text-dark">
-                                                {place.name}
-                                            </h3>
-
-                                            <div className="place-address text-muted small mb-3">
-                                                📍 {place.address}
-                                                {town ? `, ${town.name}` : ""}
-                                            </div>
-
-                                            <p
-                                                className="card-text text-secondary"
-                                                style={{
-                                                    fontSize: "0.9rem",
-                                                    lineHeight: "1.5"
-                                                }}
-                                            >
-                                                {place.description}
-                                            </p>
-
-                                            {place.latitude && place.longitude && (
-                                                <button
-                                                    type="button"
-                                                    className="view-btn mt-auto"
-                                                    onClick={() => handlePlaceClick(place)}
-                                                    style={{ alignSelf: "flex-start" }}
-                                                >
-                                                    Ver en mapa
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))
-                        )}
+                {message && (
+                    <div className="alert alert-warning text-center">
+                        {message}
                     </div>
                 )}
 
-                {view === "map" && (
-                    <div className="map-layout">
-                        <div className="map-list">
-                            <h3>Lugares ubicados</h3>
+                {town && (
+                    <>
+                        <div className="places-filter-box">
+                            <input
+                                type="text"
+                                placeholder="Buscar lugar, dirección o categoría..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                            />
 
-                            {validPlaces.length === 0 ? (
-                                <p className="text-muted">
-                                    No hay coordenadas registradas para esta búsqueda.
-                                </p>
-                            ) : (
-                                validPlaces.map((place, index) => (
-                                    <div
-                                        className="map-place-item"
-                                        key={place.id}
-                                        onClick={() => handlePlaceClick(place)}
-                                        style={{ cursor: "pointer" }}
-                                    >
-                                        <img
-                                            src={
-                                                place.imageUrl ||
-                                                "https://www.travelexcellence.com/wp-content/uploads/2020/09/liberia-guanacaste-01.jpg"
-                                            }
-                                            alt={place.name}
-                                        />
+                            <select
+                                value={categoryFilter}
+                                onChange={(e) => setCategoryFilter(e.target.value)}
+                            >
+                                <option value="ALL">Todas las categorías</option>
 
-                                        <div>
-                                            <strong>
-                                                {index + 1}. {place.name}
-                                            </strong>
-
-                                            <div
-                                                style={{
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    gap: "8px",
-                                                    marginTop: "6px"
-                                                }}
-                                            >
-                                                <div
-                                                    style={{
-                                                        width: "12px",
-                                                        height: "12px",
-                                                        borderRadius: "50%",
-                                                        backgroundColor: place.category?.color || "#064635"
-                                                    }}
-                                                ></div>
-
-                                                <span
-                                                    style={{
-                                                        backgroundColor: place.category?.color || "#064635",
-                                                        color: "white",
-                                                        padding: "3px 10px",
-                                                        borderRadius: "20px",
-                                                        fontSize: "0.8rem",
-                                                        fontWeight: "800",
-                                                        textTransform: "uppercase"
-                                                    }}
-                                                >
-                                                    {place.category?.name || "Turístico"}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))
-                            )}
+                                {categories.map((category) => (
+                                    <option key={category.id} value={category.id}>
+                                        {category.name}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
 
-                        <div className="map-box">
-                            <MapContainer
-                                center={mapCenter}
-                                zoom={15}
-                                scrollWheelZoom={true}
-                                className="leaflet-map"
+                        <div className="places-actions">
+                            <button
+                                className={view === "list" ? "view-btn active" : "view-btn"}
+                                onClick={() => setView("list")}
                             >
-                                <FlyToPlace selectedPlace={selectedPlace} />
+                                Vista Lista
+                            </button>
 
-                                <TileLayer
-                                    attribution='&copy; OpenStreetMap contributors'
-                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                />
+                            <button
+                                className={view === "map" ? "view-btn active" : "view-btn"}
+                                onClick={() => setView("map")}
+                            >
+                                Vista Mapa
+                            </button>
+                        </div>
 
-                                {validPlaces.map((place) => (
-                                    <Marker
-                                        key={place.id}
-                                        position={[
-                                            Number(place.latitude),
-                                            Number(place.longitude),
-                                        ]}
-                                        icon={getCategoryIcon(place.category?.color)}
-                                    >
-                                        <Popup>
-                                            <div style={{ width: "220px" }}>
+                        {view === "list" && (
+                            <div className="row">
+                                {filteredPlaces.length === 0 ? (
+                                    <p className="text-center text-muted">
+                                        No hay lugares activos que coincidan con la búsqueda o categoría.
+                                    </p>
+                                ) : (
+                                    filteredPlaces.map((place) => (
+                                        <div
+                                            className="col-md-6 col-lg-4 mb-4"
+                                            key={place.id}
+                                        >
+                                            <div className="place-tour-card h-100 card shadow-sm border-0">
+                                                <img
+                                                    src={
+                                                        place.imageUrl ||
+                                                        "https://www.travelexcellence.com/wp-content/uploads/2020/09/liberia-guanacaste-01.jpg"
+                                                    }
+                                                    className="card-img-top"
+                                                    alt={place.name}
+                                                    style={{
+                                                        height: "220px",
+                                                        objectFit: "cover"
+                                                    }}
+                                                />
+
+                                                <div className="place-tour-body card-body d-flex flex-column">
+                                                    <span
+                                                        className="place-category badge text-white align-self-start mb-2"
+                                                        style={{
+                                                            fontSize: "0.8rem",
+                                                            textTransform: "uppercase",
+                                                            backgroundColor: place.category?.color || "#064635"
+                                                        }}
+                                                    >
+                                                        {place.category?.name || "Turístico"}
+                                                    </span>
+
+                                                    <h3 className="card-title h5 mb-2 fw-bold text-dark">
+                                                        {place.name}
+                                                    </h3>
+
+                                                    <div className="place-address text-muted small mb-3">
+                                                        📍 {place.address}
+                                                        {town ? `, ${town.name}` : ""}
+                                                    </div>
+
+                                                    <p
+                                                        className="card-text text-secondary"
+                                                        style={{
+                                                            fontSize: "0.9rem",
+                                                            lineHeight: "1.5"
+                                                        }}
+                                                    >
+                                                        {place.description}
+                                                    </p>
+
+                                                    {place.latitude && place.longitude && (
+                                                        <button
+                                                            type="button"
+                                                            className="view-btn mt-auto"
+                                                            onClick={() => handlePlaceClick(place)}
+                                                            style={{ alignSelf: "flex-start" }}
+                                                        >
+                                                            Ver en mapa
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        )}
+
+                        {view === "map" && (
+                            <div className="map-layout">
+                                <div className="map-list">
+                                    <h3>Lugares ubicados</h3>
+
+                                    {validPlaces.length === 0 ? (
+                                        <p className="text-muted">
+                                            No hay coordenadas registradas para esta búsqueda.
+                                        </p>
+                                    ) : (
+                                        validPlaces.map((place, index) => (
+                                            <div
+                                                className="map-place-item"
+                                                key={place.id}
+                                                onClick={() => handlePlaceClick(place)}
+                                                style={{ cursor: "pointer" }}
+                                            >
                                                 <img
                                                     src={
                                                         place.imageUrl ||
                                                         "https://www.travelexcellence.com/wp-content/uploads/2020/09/liberia-guanacaste-01.jpg"
                                                     }
                                                     alt={place.name}
-                                                    style={{
-                                                        width: "100%",
-                                                        height: "110px",
-                                                        objectFit: "cover",
-                                                        borderRadius: "10px",
-                                                        marginBottom: "10px"
-                                                    }}
                                                 />
 
-                                                <h6
-                                                    style={{
-                                                        fontWeight: "800",
-                                                        marginBottom: "8px",
-                                                        color: "#064635"
-                                                    }}
-                                                >
-                                                    {place.name}
-                                                </h6>
+                                                <div>
+                                                    <strong>
+                                                        {index + 1}. {place.name}
+                                                    </strong>
 
-                                                <span
-                                                    style={{
-                                                        display: "inline-block",
-                                                        backgroundColor: place.category?.color || "#064635",
-                                                        color: "white",
-                                                        padding: "4px 10px",
-                                                        borderRadius: "20px",
-                                                        fontSize: "0.75rem",
-                                                        fontWeight: "800",
-                                                        marginBottom: "10px",
-                                                        textTransform: "uppercase"
-                                                    }}
-                                                >
-                                                    {place.category?.name || "Turístico"}
-                                                </span>
+                                                    <div
+                                                        style={{
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            gap: "8px",
+                                                            marginTop: "6px"
+                                                        }}
+                                                    >
+                                                        <div
+                                                            style={{
+                                                                width: "12px",
+                                                                height: "12px",
+                                                                borderRadius: "50%",
+                                                                backgroundColor: place.category?.color || "#064635"
+                                                            }}
+                                                        ></div>
 
-                                                <p
-                                                    style={{
-                                                        fontSize: "0.85rem",
-                                                        color: "#6c757d",
-                                                        marginBottom: "8px"
-                                                    }}
-                                                >
-                                                    {place.description?.substring(0, 80)}...
-                                                </p>
-
-                                                <div
-                                                    style={{
-                                                        fontSize: "0.8rem",
-                                                        color: "#495057",
-                                                        marginBottom: "10px"
-                                                    }}
-                                                >
-                                                    📍 {place.address}
+                                                        <span
+                                                            style={{
+                                                                backgroundColor: place.category?.color || "#064635",
+                                                                color: "white",
+                                                                padding: "3px 10px",
+                                                                borderRadius: "20px",
+                                                                fontSize: "0.8rem",
+                                                                fontWeight: "800",
+                                                                textTransform: "uppercase"
+                                                            }}
+                                                        >
+                                                            {place.category?.name || "Turístico"}
+                                                        </span>
+                                                    </div>
                                                 </div>
-
-                                                <Link
-                                                    to={`/place/${place.id}`}
-                                                    className="btn-tour"
-                                                    style={{
-                                                        display: "inline-block",
-                                                        width: "100%",
-                                                        textAlign: "center",
-                                                        padding: "8px 12px",
-                                                        fontSize: "0.8rem"
-                                                    }}
-                                                >
-                                                    Ver información completa
-                                                </Link>
                                             </div>
-                                        </Popup>
-                                    </Marker>
-                                ))}
-                            </MapContainer>
-                        </div>
-                    </div>
+                                        ))
+                                    )}
+                                </div>
+
+                                <div className="map-box">
+                                    <MapContainer
+                                        center={mapCenter}
+                                        zoom={15}
+                                        scrollWheelZoom={true}
+                                        className="leaflet-map"
+                                    >
+                                        <FlyToPlace selectedPlace={selectedPlace} />
+
+                                        <TileLayer
+                                            attribution='&copy; OpenStreetMap contributors'
+                                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                        />
+
+                                        {validPlaces.map((place) => (
+                                            <Marker
+                                                key={place.id}
+                                                position={[
+                                                    Number(place.latitude),
+                                                    Number(place.longitude),
+                                                ]}
+                                                icon={getCategoryIcon(place.category?.color)}
+                                            >
+                                                <Popup>
+                                                    <div style={{ width: "220px" }}>
+                                                        <img
+                                                            src={
+                                                                place.imageUrl ||
+                                                                "https://www.travelexcellence.com/wp-content/uploads/2020/09/liberia-guanacaste-01.jpg"
+                                                            }
+                                                            alt={place.name}
+                                                            style={{
+                                                                width: "100%",
+                                                                height: "110px",
+                                                                objectFit: "cover",
+                                                                borderRadius: "10px",
+                                                                marginBottom: "10px"
+                                                            }}
+                                                        />
+
+                                                        <h6
+                                                            style={{
+                                                                fontWeight: "800",
+                                                                marginBottom: "8px",
+                                                                color: "#064635"
+                                                            }}
+                                                        >
+                                                            {place.name}
+                                                        </h6>
+
+                                                        <span
+                                                            style={{
+                                                                display: "inline-block",
+                                                                backgroundColor: place.category?.color || "#064635",
+                                                                color: "white",
+                                                                padding: "4px 10px",
+                                                                borderRadius: "20px",
+                                                                fontSize: "0.75rem",
+                                                                fontWeight: "800",
+                                                                marginBottom: "10px",
+                                                                textTransform: "uppercase"
+                                                            }}
+                                                        >
+                                                            {place.category?.name || "Turístico"}
+                                                        </span>
+
+                                                        <p
+                                                            style={{
+                                                                fontSize: "0.85rem",
+                                                                color: "#6c757d",
+                                                                marginBottom: "8px"
+                                                            }}
+                                                        >
+                                                            {place.description?.substring(0, 80)}...
+                                                        </p>
+
+                                                        <div
+                                                            style={{
+                                                                fontSize: "0.8rem",
+                                                                color: "#495057",
+                                                                marginBottom: "10px"
+                                                            }}
+                                                        >
+                                                            📍 {place.address}
+                                                        </div>
+
+                                                        <Link
+                                                            to={`/place/${place.id}`}
+                                                            className="btn-tour"
+                                                            style={{
+                                                                display: "inline-block",
+                                                                width: "100%",
+                                                                textAlign: "center",
+                                                                padding: "8px 12px",
+                                                                fontSize: "0.8rem"
+                                                            }}
+                                                        >
+                                                            Ver información completa
+                                                        </Link>
+                                                    </div>
+                                                </Popup>
+                                            </Marker>
+                                        ))}
+                                    </MapContainer>
+                                </div>
+                            </div>
+                        )}
+                    </>
                 )}
             </main>
         </>

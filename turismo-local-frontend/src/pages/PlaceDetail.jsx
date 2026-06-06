@@ -5,6 +5,7 @@ import api from "../api/api";
 function PlaceDetail() {
     const { id } = useParams();
     const [place, setPlace] = useState(null);
+    const [message, setMessage] = useState("Cargando lugar...");
 
     useEffect(() => {
         loadPlace();
@@ -13,16 +14,31 @@ function PlaceDetail() {
     const loadPlace = async () => {
         try {
             const response = await api.get(`/places/${id}`);
+
+            if (!response.data || response.data.active === false) {
+                setPlace(null);
+                setMessage("Este lugar turístico no está activo o no se encuentra disponible.");
+                return;
+            }
+
             setPlace(response.data);
         } catch (error) {
             console.error("Error cargando lugar:", error);
+            setPlace(null);
+            setMessage("No se pudo cargar la información del lugar.");
         }
     };
 
     if (!place) {
         return (
             <div className="container places-section">
-                <p>Cargando lugar...</p>
+                <div className="alert alert-warning text-center">
+                    {message}
+                </div>
+
+                <Link className="btn-tour" to="/home">
+                    Volver al inicio
+                </Link>
             </div>
         );
     }
