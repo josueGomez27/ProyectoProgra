@@ -4,14 +4,33 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import api from "../api/api";
 
-const markerIcon = new L.Icon({
-    iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41],
-});
+const getCategoryIcon = (color = "#064635") => {
+    return L.divIcon({
+        className: "",
+        html: `
+            <div style="
+                width: 28px;
+                height: 28px;
+                background: ${color};
+                border: 3px solid white;
+                border-radius: 50% 50% 50% 0;
+                transform: rotate(-45deg);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+            ">
+                <div style="
+                    width: 9px;
+                    height: 9px;
+                    background: white;
+                    border-radius: 50%;
+                    margin: 6px auto;
+                "></div>
+            </div>
+        `,
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32],
+    });
+};
 
 function Places() {
     const { id } = useParams();
@@ -232,7 +251,7 @@ function Places() {
                                             Number(place.latitude),
                                             Number(place.longitude),
                                         ]}
-                                        icon={markerIcon}
+                                        icon={getCategoryIcon(place.category?.color)}
                                     >
                                         <Popup>
                                             <div style={{ padding: "2px" }}>
