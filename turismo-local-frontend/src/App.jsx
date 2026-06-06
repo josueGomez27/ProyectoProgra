@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Places from "./pages/Places";
+import PlaceDetail from "./pages/PlaceDetail";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminPlaces from "./pages/AdminPlaces";
 import AdminCategories from "./pages/AdminCategories";
@@ -27,6 +28,7 @@ function App() {
 
                 <Route path="/home" element={<><Navbar /><Home /></>} />
                 <Route path="/places/:id" element={<><Navbar /><Places /></>} />
+                <Route path="/place/:id" element={<><Navbar /><PlaceDetail /></>} />
 
                 <Route path="/admin" element={<><Navbar /><AdminDashboard /></>} />
                 <Route path="/admin/places" element={<><Navbar /><AdminPlaces /></>} />

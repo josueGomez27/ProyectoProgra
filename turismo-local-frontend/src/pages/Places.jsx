@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import api from "../api/api";
@@ -38,15 +38,9 @@ function FlyToPlace({ selectedPlace }) {
     useEffect(() => {
         if (selectedPlace?.latitude && selectedPlace?.longitude) {
             map.flyTo(
-                [
-                    Number(selectedPlace.latitude),
-                    Number(selectedPlace.longitude)
-                ],
+                [Number(selectedPlace.latitude), Number(selectedPlace.longitude)],
                 18,
-                {
-                    animate: true,
-                    duration: 1.2
-                }
+                { animate: true, duration: 1.2 }
             );
         }
     }, [selectedPlace, map]);
@@ -223,7 +217,8 @@ function Places() {
                                             </h3>
 
                                             <div className="place-address text-muted small mb-3">
-                                                📍 {place.address}{town ? `, ${town.name}` : ""}
+                                                📍 {place.address}
+                                                {town ? `, ${town.name}` : ""}
                                             </div>
 
                                             <p
@@ -345,20 +340,31 @@ function Places() {
                                         icon={getCategoryIcon(place.category?.color)}
                                     >
                                         <Popup>
-                                            <div style={{ padding: "2px" }}>
-                                                <strong style={{ fontSize: "1rem" }}>
-                                                    {place.name}
-                                                </strong>
-
-                                                <div
+                                            <div style={{ width: "220px" }}>
+                                                <img
+                                                    src={
+                                                        place.imageUrl ||
+                                                        "https://www.travelexcellence.com/wp-content/uploads/2020/09/liberia-guanacaste-01.jpg"
+                                                    }
+                                                    alt={place.name}
                                                     style={{
-                                                        color: "#6c757d",
-                                                        margin: "4px 0",
-                                                        fontSize: "0.85rem"
+                                                        width: "100%",
+                                                        height: "110px",
+                                                        objectFit: "cover",
+                                                        borderRadius: "10px",
+                                                        marginBottom: "10px"
+                                                    }}
+                                                />
+
+                                                <h6
+                                                    style={{
+                                                        fontWeight: "800",
+                                                        marginBottom: "8px",
+                                                        color: "#064635"
                                                     }}
                                                 >
-                                                    📍 {place.address}
-                                                </div>
+                                                    {place.name}
+                                                </h6>
 
                                                 <span
                                                     style={{
@@ -369,7 +375,7 @@ function Places() {
                                                         borderRadius: "20px",
                                                         fontSize: "0.75rem",
                                                         fontWeight: "800",
-                                                        marginBottom: "6px",
+                                                        marginBottom: "10px",
                                                         textTransform: "uppercase"
                                                     }}
                                                 >
@@ -378,13 +384,37 @@ function Places() {
 
                                                 <p
                                                     style={{
-                                                        margin: "0",
                                                         fontSize: "0.85rem",
-                                                        color: "#495057"
+                                                        color: "#6c757d",
+                                                        marginBottom: "8px"
                                                     }}
                                                 >
-                                                    {place.description}
+                                                    {place.description?.substring(0, 80)}...
                                                 </p>
+
+                                                <div
+                                                    style={{
+                                                        fontSize: "0.8rem",
+                                                        color: "#495057",
+                                                        marginBottom: "10px"
+                                                    }}
+                                                >
+                                                    📍 {place.address}
+                                                </div>
+
+                                                <Link
+                                                    to={`/place/${place.id}`}
+                                                    className="btn-tour"
+                                                    style={{
+                                                        display: "inline-block",
+                                                        width: "100%",
+                                                        textAlign: "center",
+                                                        padding: "8px 12px",
+                                                        fontSize: "0.8rem"
+                                                    }}
+                                                >
+                                                    Ver información completa
+                                                </Link>
                                             </div>
                                         </Popup>
                                     </Marker>
