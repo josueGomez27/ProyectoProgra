@@ -88,7 +88,7 @@ function Home() {
             <section className="container travel-categories image-categories">
                 <div className="travel-category-card image-category-card beach-card">
                     <img
-                        src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=90"
+                        src="https://www.twoweeksincostarica.com/wp-content/uploads/2017/08/Playa-Conchal-Costa-Rica.jpg"
                         alt="Playas"
                     />
 
@@ -101,7 +101,7 @@ function Home() {
 
                 <div className="travel-category-card image-category-card forest-card">
                     <img
-                        src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=600&q=90"
+                        src="https://www.twoweeksincostarica.com/wp-content/uploads/2018/01/Monteverde-Cloud-Forest.jpg"
                         alt="Bosques"
                     />
 
@@ -113,10 +113,10 @@ function Home() {
                 </div>
 
                 <div className="travel-category-card image-category-card culture-card">
-                    <img
-                        src="https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=600&q=90"
-                        alt="Cultura"
-                    />
+                   <img
+                       src="https://upload.wikimedia.org/wikipedia/commons/3/39/Teatro_Nacional_de_Costa_Rica.jpg"
+                       alt="Cultura"
+                   />
 
                     <div>
                         <span>Historia local</span>
@@ -127,14 +127,14 @@ function Home() {
 
                 <div className="travel-category-card image-category-card mountain-card">
                     <img
-                        src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=90"
-                        alt="Montañas"
+                        src="https://www.costarica.com/contentAsset/image/89ec5a90-899f-4eb6-bba8-cab4f9512de9/fileAsset/filter/Resize,Jpeg/resize_w/1200/jpeg_q/80"
+                        alt="Volcanes"
                     />
 
                     <div>
-                        <span>Aventura</span>
-                        <h3>Montañas</h3>
-                        <p>Miradores, rutas y paisajes para explorar.</p>
+                        <span>Aventura natural</span>
+                        <h3>Volcanes</h3>
+                        <p>Volcán Arenal, Rincón de la Vieja y paisajes únicos.</p>
                     </div>
                 </div>
             </section>
