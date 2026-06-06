@@ -20,7 +20,8 @@ function PlaceCard({ town }) {
 
             <div className="town-card-body">
                 <span className="location-pill">
-                    📍 {town.province} · {town.canton}
+                    <i className="bi bi-geo-alt-fill"></i>
+                    {town.province} · {town.canton}
                 </span>
 
                 <h3 className="town-title">{town.name}</h3>
@@ -30,7 +31,8 @@ function PlaceCard({ town }) {
                 </p>
 
                 <Link className="btn-tour travel-card-btn" to={`/places/${town.id}`}>
-                    Ver lugares turísticos →
+                    Ver lugares turísticos
+                    <i className="bi bi-arrow-right ms-2"></i>
                 </Link>
             </div>
         </div>

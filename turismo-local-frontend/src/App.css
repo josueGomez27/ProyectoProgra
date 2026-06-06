@@ -1386,3 +1386,258 @@ body {
         margin-top: -45px;
     }
 }
+
+/* Corrección del Home turístico */
+
+.travel-hero {
+    min-height: 760px;
+    padding-bottom: 150px;
+}
+
+.travel-categories {
+    margin-top: -95px;
+    margin-bottom: 90px;
+}
+
+#pueblos {
+    background:
+        radial-gradient(circle at top, rgba(217, 155, 69, 0.12), transparent 35%),
+        linear-gradient(180deg, #fff8ec 0%, #f7f2e8 45%, #fffaf0 100%);
+    border-radius: 45px 45px 0 0;
+    padding-top: 40px;
+    padding-bottom: 70px;
+    max-width: 100%;
+}
+
+#pueblos .section-header {
+    margin-top: 30px;
+}
+
+#pueblos .row {
+    max-width: 1250px;
+    margin: 0 auto;
+}
+
+.travel-category-card {
+    min-height: 150px;
+}
+
+.hero-search-card {
+    position: relative;
+    z-index: 20;
+}
+
+.travel-categories {
+    position: relative;
+    z-index: 10;
+}
+.category-circle {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fff1d8, #f8dca2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+    box-shadow: 0 12px 28px rgba(217, 155, 69, 0.22);
+}
+
+.category-icon {
+    font-size: 32px;
+    color: #0b3d34;
+    display: block;
+}
+/* NAVBAR PREMIUM */
+
+.travel-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(8, 61, 50, 0.94);
+    backdrop-filter: blur(16px);
+    padding: 12px 0;
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.18);
+}
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+    font-size: 1.35rem;
+    font-weight: 950;
+}
+
+.brand-icon {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, #d99b45, #f4bd67);
+    color: #083d32;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    font-size: 19px;
+    box-shadow: 0 10px 22px rgba(217, 155, 69, 0.3);
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-pill,
+.logout-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: white;
+    padding: 10px 17px;
+    border-radius: 999px;
+    font-weight: 900;
+    transition: 0.25s ease;
+}
+
+.nav-pill:hover,
+.logout-pill:hover {
+    background: rgba(255, 255, 255, 0.16);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.nav-pill-gold {
+    background: linear-gradient(135deg, #d99b45, #f4bd67);
+    color: #083d32 !important;
+    box-shadow: 0 10px 25px rgba(217, 155, 69, 0.25);
+}
+
+.user-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.13);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 7px 15px 7px 8px;
+    border-radius: 999px;
+    color: white;
+}
+
+.user-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #f4bd67;
+}
+
+.user-pill strong {
+    display: block;
+    font-size: 13px;
+    line-height: 1.1;
+}
+
+.user-pill span {
+    display: block;
+    color: #ffd76a;
+    font-size: 11px;
+    font-weight: 950;
+}
+
+/* TARJETAS DE PUEBLOS PREMIUM */
+
+.travel-town-card {
+    border-radius: 34px;
+    overflow: hidden;
+    background: white;
+    border: none;
+    box-shadow: 0 25px 65px rgba(11, 61, 52, 0.16);
+    transition: 0.3s ease;
+}
+
+.travel-town-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 32px 80px rgba(11, 61, 52, 0.24);
+}
+
+.travel-town-img-wrap {
+    position: relative;
+    overflow: hidden;
+}
+
+.travel-town-card .town-img {
+    height: 290px;
+    width: 100%;
+    object-fit: cover;
+    transition: 0.4s ease;
+}
+
+.travel-town-card:hover .town-img {
+    transform: scale(1.08);
+}
+
+.travel-town-badge {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #083d32;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 950;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18);
+}
+
+.travel-town-card .town-card-body {
+    padding: 28px;
+}
+
+.travel-town-card .location-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #e7f3ee;
+    color: #0b6b4f;
+    box-shadow: 0 10px 24px rgba(20, 113, 95, 0.12);
+}
+
+.travel-town-card .town-title {
+    font-size: 1.65rem;
+    font-weight: 950;
+    color: #172320;
+    margin-top: 14px;
+}
+
+.travel-town-card .town-description {
+    color: #6c7773;
+    line-height: 1.6;
+}
+
+.travel-card-btn {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(135deg, #083d32, #14715f);
+    box-shadow: 0 14px 28px rgba(8, 61, 50, 0.24);
+}
+
+.travel-card-btn:hover {
+    background: linear-gradient(135deg, #d99b45, #f4bd67);
+    color: #083d32 !important;
+    transform: translateY(-2px);
+}
+
+/* Responsive navbar */
+
+@media (max-width: 992px) {
+    .nav-content {
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}

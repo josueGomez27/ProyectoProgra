@@ -7,22 +7,25 @@ function Navbar() {
         <nav className="custom-navbar travel-navbar">
             <div className="nav-content">
                 <Link className="brand-logo" to="/home">
-                    <span className="brand-icon">🌴</span>
-                    Turismo Local UNA
+                    <span className="brand-icon">✈</span>
+                    <span>Turismo Local UNA</span>
                 </Link>
 
                 <div className="nav-links">
                     <Link to="/home" className="nav-pill">
+                        <i className="bi bi-house-door-fill"></i>
                         Inicio
                     </Link>
 
                     {user?.role === "ADMIN" && (
                         <>
                             <Link to="/admin" className="nav-pill">
+                                <i className="bi bi-speedometer2"></i>
                                 Administración
                             </Link>
 
                             <Link to="/admin/qr" className="nav-pill nav-pill-gold">
+                                <i className="bi bi-qr-code"></i>
                                 Generar QR
                             </Link>
                         </>
@@ -37,12 +40,10 @@ function Navbar() {
                             />
 
                             <div>
-                                <strong>
-                                    Bienvenido, {user.name.split(" ")[0]}
-                                </strong>
+                                <strong>Hola, {user.name.split(" ")[0]}</strong>
 
                                 {user.role === "ADMIN" && (
-                                    <span>ADMIN</span>
+                                    <span>ADMINISTRACIÓN</span>
                                 )}
                             </div>
                         </div>
@@ -51,11 +52,10 @@ function Navbar() {
                     <Link
                         className="logout-pill"
                         to="/"
-                        onClick={() => {
-                            localStorage.removeItem("user");
-                        }}
+                        onClick={() => localStorage.removeItem("user")}
                     >
-                        Cerrar sesión
+                        <i className="bi bi-box-arrow-right"></i>
+                        Salir
                     </Link>
                 </div>
             </div>

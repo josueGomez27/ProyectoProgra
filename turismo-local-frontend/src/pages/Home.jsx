@@ -87,25 +87,33 @@ function Home() {
 
             <section className="container travel-categories">
                 <div className="travel-category-card">
-                    <span>🏖️</span>
+                    <div className="category-circle">
+                        <i className="bi bi-water category-icon"></i>
+                    </div>
                     <h3>Playas</h3>
                     <p>Costas, sol y arena.</p>
                 </div>
 
                 <div className="travel-category-card">
-                    <span>🌳</span>
+                    <div className="category-circle">
+                        <i className="bi bi-tree-fill category-icon"></i>
+                    </div>
                     <h3>Bosques</h3>
                     <p>Naturaleza y senderos.</p>
                 </div>
 
                 <div className="travel-category-card">
-                    <span>🏛️</span>
+                    <div className="category-circle">
+                        <i className="bi bi-bank category-icon"></i>
+                    </div>
                     <h3>Cultura</h3>
                     <p>Historia y tradición.</p>
                 </div>
 
                 <div className="travel-category-card">
-                    <span>⛰️</span>
+                    <div className="category-circle">
+                        <i className="bi bi-image-fill category-icon"></i>
+                    </div>
                     <h3>Montañas</h3>
                     <p>Miradores y aventura.</p>
                 </div>
