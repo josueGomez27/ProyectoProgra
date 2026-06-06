@@ -38,6 +38,8 @@ function Places() {
     const [town, setTown] = useState(null);
     const [places, setPlaces] = useState([]);
     const [view, setView] = useState("list");
+    const [search, setSearch] = useState("");
+    const [categoryFilter, setCategoryFilter] = useState("ALL");
 
     useEffect(() => {
         loadPlaces();
@@ -57,7 +59,31 @@ function Places() {
         }
     };
 
-    const validPlaces = places.filter(
+    const categories = [
+        ...new Map(
+            places
+                .filter((place) => place.category)
+                .map((place) => [place.category.id, place.category])
+        ).values()
+    ];
+
+    const filteredPlaces = places.filter((place) => {
+        const text = search.toLowerCase();
+
+        const matchesSearch =
+            place.name?.toLowerCase().includes(text) ||
+            place.address?.toLowerCase().includes(text) ||
+            place.description?.toLowerCase().includes(text) ||
+            place.category?.name?.toLowerCase().includes(text);
+
+        const matchesCategory =
+            categoryFilter === "ALL" ||
+            String(place.category?.id) === String(categoryFilter);
+
+        return matchesSearch && matchesCategory;
+    });
+
+    const validPlaces = filteredPlaces.filter(
         (place) => place.latitude && place.longitude
     );
 
@@ -88,6 +114,28 @@ function Places() {
             </section>
 
             <main className="container places-section">
+                <div className="places-filter-box">
+                    <input
+                        type="text"
+                        placeholder="Buscar lugar, dirección o categoría..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+
+                    <select
+                        value={categoryFilter}
+                        onChange={(e) => setCategoryFilter(e.target.value)}
+                    >
+                        <option value="ALL">Todas las categorías</option>
+
+                        {categories.map((category) => (
+                            <option key={category.id} value={category.id}>
+                                {category.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
                 <div className="places-actions">
                     <button
                         className={view === "list" ? "view-btn active" : "view-btn"}
@@ -106,12 +154,12 @@ function Places() {
 
                 {view === "list" && (
                     <div className="row">
-                        {places.length === 0 ? (
+                        {filteredPlaces.length === 0 ? (
                             <p className="text-center text-muted">
-                                No hay lugares registrados para este pueblo.
+                                No hay lugares que coincidan con la búsqueda o categoría.
                             </p>
                         ) : (
-                            places.map((place) => (
+                            filteredPlaces.map((place) => (
                                 <div
                                     className="col-md-6 col-lg-4 mb-4"
                                     key={place.id}
@@ -174,7 +222,7 @@ function Places() {
 
                             {validPlaces.length === 0 ? (
                                 <p className="text-muted">
-                                    No hay coordenadas registradas.
+                                    No hay coordenadas registradas para esta búsqueda.
                                 </p>
                             ) : (
                                 validPlaces.map((place, index) => (

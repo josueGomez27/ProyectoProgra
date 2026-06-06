@@ -5,6 +5,7 @@ import PlaceCard from "../components/PlaceCard";
 function Home() {
     const [towns, setTowns] = useState([]);
     const [error, setError] = useState("");
+    const [search, setSearch] = useState("");
 
     useEffect(() => {
         loadTowns();
@@ -13,17 +14,23 @@ function Home() {
     const loadTowns = async () => {
         try {
             const data = await getAllTowns();
-
-            console.log("DATA:", data);
-            console.log("TIPO:", typeof data);
-            console.log("ARRAY?", Array.isArray(data));
-
             setTowns(data);
         } catch (error) {
             console.error("Error cargando pueblos", error);
             setError("No se pudieron cargar los pueblos turísticos.");
         }
     };
+
+    const filteredTowns = towns.filter((town) => {
+        const text = search.toLowerCase();
+
+        return (
+            town.name?.toLowerCase().includes(text) ||
+            town.province?.toLowerCase().includes(text) ||
+            town.canton?.toLowerCase().includes(text) ||
+            town.district?.toLowerCase().includes(text)
+        );
+    });
 
     return (
         <>
@@ -63,6 +70,15 @@ function Home() {
                     </p>
                 </div>
 
+                <div className="filter-box">
+                    <input
+                        type="text"
+                        placeholder="Buscar pueblo, provincia o cantón..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                </div>
+
                 {error && (
                     <div className="alert alert-danger text-center">
                         {error}
@@ -70,9 +86,8 @@ function Home() {
                 )}
 
                 <div className="row justify-content-center">
-
-                    {Array.isArray(towns) ? (
-                        towns.map((town) => (
+                    {Array.isArray(filteredTowns) && filteredTowns.length > 0 ? (
+                        filteredTowns.map((town) => (
                             <div
                                 className="col-md-6 col-lg-4 mb-4"
                                 key={town.id}
@@ -81,11 +96,10 @@ function Home() {
                             </div>
                         ))
                     ) : (
-                        <div className="alert alert-warning">
-                            towns NO es un arreglo
-                        </div>
+                        <p className="text-center text-muted">
+                            No se encontraron pueblos con esa búsqueda.
+                        </p>
                     )}
-
                 </div>
             </main>
         </>

@@ -883,3 +883,37 @@ body {
         grid-column: span 1;
     }
 }
+
+
+.filter-box,
+.places-filter-box {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin: 0 auto 35px;
+    flex-wrap: wrap;
+}
+
+.filter-box input,
+.places-filter-box input,
+.places-filter-box select {
+    width: min(420px, 100%);
+    padding: 14px 18px;
+    border: 2px solid #e6dfd1;
+    border-radius: 18px;
+    outline: none;
+    font-weight: 700;
+    color: #064635;
+    background: white;
+}
+
+.places-filter-box select {
+    width: min(260px, 100%);
+    cursor: pointer;
+}
+
+.filter-box input:focus,
+.places-filter-box input:focus,
+.places-filter-box select:focus {
+    border-color: #064635;
+}
