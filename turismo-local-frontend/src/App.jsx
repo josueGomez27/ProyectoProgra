@@ -7,6 +7,7 @@ import Places from "./pages/Places";
 import AdminPlaces from "./pages/AdminPlaces";
 import AdminCategories from "./pages/AdminCategories";
 import AdminTowns from "./pages/AdminTowns";
+import AdminUsers from "./pages/AdminUsers";
 import QrGenerator from "./pages/QrGenerator";
 import OAuthSuccess from "./pages/OAuthSuccess";
 import Error404 from "./pages/Error404";
@@ -29,6 +30,7 @@ function App() {
                 <Route path="/admin/qr" element={<><Navbar /><QrGenerator /></>} />
                 <Route path="/admin/categories" element={<><Navbar /><AdminCategories /></>} />
                 <Route path="/admin/towns" element={<><Navbar /><AdminTowns /></>} />
+                <Route path="/admin/users" element={<><Navbar /><AdminUsers /></>} />
 
                 <Route path="*" element={<Error404 />} />
             </Routes>

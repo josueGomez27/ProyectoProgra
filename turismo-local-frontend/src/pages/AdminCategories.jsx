@@ -56,12 +56,26 @@ function AdminCategories() {
             <aside className="admin-sidebar">
                 <h3>Administración</h3>
 
-                <Link to="/admin/places">Panel</Link>
-                <Link to="/admin/towns">Pueblos</Link>
-                <Link to="/admin/places">Lugares</Link>
-                <Link className="active" to="/admin/categories">Categorías</Link>
+                <Link to="/admin/places">
+                    Panel
+                </Link>
 
-                <a>Usuarios</a>
+                <Link to="/admin/towns">
+                    Pueblos
+                </Link>
+
+                <Link to="/admin/places">
+                    Lugares
+                </Link>
+
+                <Link className="active" to="/admin/categories">
+                    Categorías
+                </Link>
+
+                <Link to="/admin/users">
+                    Usuarios
+                </Link>
+
                 <a>Estadísticas</a>
             </aside>
 

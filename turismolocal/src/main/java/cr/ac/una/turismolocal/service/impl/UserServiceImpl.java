@@ -6,6 +6,7 @@ import cr.ac.una.turismolocal.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +38,35 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User saveUser(User user) {
+        if (user.getActive() == null) {
+            user.setActive(true);
+        }
+
+        if (user.getCreatedAt() == null) {
+            user.setCreatedAt(LocalDateTime.now());
+        }
+
+        user.setUpdatedAt(LocalDateTime.now());
+
         return userRepository.save(user);
+    }
+
+    @Override
+    public User updateUser(Long id, User user) {
+        User existingUser = userRepository.findById(id).orElse(null);
+
+        if (existingUser != null) {
+            existingUser.setName(user.getName());
+            existingUser.setEmail(user.getEmail());
+            existingUser.setPictureUrl(user.getPictureUrl());
+            existingUser.setRole(user.getRole());
+            existingUser.setActive(user.getActive());
+            existingUser.setUpdatedAt(LocalDateTime.now());
+
+            return userRepository.save(existingUser);
+        }
+
+        return null;
     }
 
     @Override
