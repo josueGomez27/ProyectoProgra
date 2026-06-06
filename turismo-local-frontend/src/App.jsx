@@ -36,6 +36,7 @@ function App() {
                 <Route path="/admin/users" element={<><Navbar /><AdminUsers /></>} />
                 <Route path="/admin/stats" element={<><Navbar /><AdminStats /></>} />
 
+                <Route path="/error" element={<Error404 />} />
                 <Route path="*" element={<Error404 />} />
             </Routes>
         </BrowserRouter>

@@ -1,13 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../api/api";
 import "./QrGenerator.css";
 
 function QrGenerator() {
+    const [towns, setTowns] = useState([]);
     const [townId, setTownId] = useState("");
     const [qr, setQr] = useState(null);
     const [error, setError] = useState("");
 
+    useEffect(() => {
+        loadTowns();
+    }, []);
+
+    const loadTowns = async () => {
+        try {
+            const response = await api.get("/towns");
+            setTowns(response.data);
+
+            if (response.data.length > 0) {
+                setTownId(response.data[0].id);
+            }
+        } catch (error) {
+            console.error("Error cargando pueblos:", error);
+            setError("No se pudieron cargar los pueblos.");
+        }
+    };
+
+    const validateTownSelected = () => {
+        if (!townId) {
+            setError("Seleccione un pueblo antes de continuar.");
+            return false;
+        }
+
+        return true;
+    };
+
     const generateQr = async () => {
+        if (!validateTownSelected()) return;
+
         try {
             setError("");
             setQr(null);
@@ -22,6 +52,8 @@ function QrGenerator() {
     };
 
     const regenerateQr = async () => {
+        if (!validateTownSelected()) return;
+
         try {
             setError("");
             setQr(null);
@@ -36,6 +68,8 @@ function QrGenerator() {
     };
 
     const getActiveQr = async () => {
+        if (!validateTownSelected()) return;
+
         try {
             setError("");
             setQr(null);
@@ -49,22 +83,54 @@ function QrGenerator() {
         }
     };
 
+    const selectedTown = towns.find(
+        (town) => String(town.id) === String(townId)
+    );
+
     return (
         <div className="qr-page">
             <div className="qr-card">
                 <h1>Gestión de códigos QR</h1>
 
                 <p>
-                    Ingresá el ID del pueblo para generar, regenerar o consultar
-                    su código QR de acceso.
+                    Seleccioná un pueblo para generar, regenerar o consultar
+                    su código QR de acceso al sistema.
                 </p>
 
-                <input
-                    type="number"
-                    placeholder="ID del pueblo"
+                <label className="qr-label">
+                    Seleccione un pueblo
+                </label>
+
+                <select
+                    className="qr-select"
                     value={townId}
-                    onChange={(e) => setTownId(e.target.value)}
-                />
+                    onChange={(e) => {
+                        setTownId(e.target.value);
+                        setQr(null);
+                        setError("");
+                    }}
+                >
+                    {towns.length === 0 ? (
+                        <option value="">
+                            No hay pueblos registrados
+                        </option>
+                    ) : (
+                        towns.map((town) => (
+                            <option key={town.id} value={town.id}>
+                                {town.name} - {town.canton}
+                            </option>
+                        ))
+                    )}
+                </select>
+
+                {selectedTown && (
+                    <div className="qr-town-preview">
+                        <strong>{selectedTown.name}</strong>
+                        <span>
+                            {selectedTown.province} · {selectedTown.canton}
+                        </span>
+                    </div>
+                )}
 
                 <div className="qr-buttons">
                     <button onClick={generateQr}>
@@ -108,7 +174,7 @@ function QrGenerator() {
                                 rel="noreferrer"
                                 className="qr-link"
                             >
-                                Ir al pueblo
+                                Probar enlace del QR
                             </a>
                         )}
                     </div>

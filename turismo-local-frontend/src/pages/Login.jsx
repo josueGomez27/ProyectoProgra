@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/api";
 import "./login.css";
 
 function Login() {
     const { townId } = useParams();
+    const navigate = useNavigate();
     const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
     const [town, setTown] = useState(null);
@@ -12,10 +13,19 @@ function Login() {
     useEffect(() => {
         if (townId) {
             api.get(`/towns/${townId}`)
-                .then(response => setTown(response.data))
-                .catch(error => console.error("Error cargando pueblo:", error));
+                .then((response) => {
+                    if (!response.data) {
+                        navigate("/error");
+                        return;
+                    }
+
+                    setTown(response.data);
+                })
+                .catch(() => {
+                    navigate("/error");
+                });
         }
-    }, [townId]);
+    }, [townId, navigate]);
 
     const handleGoogleLogin = () => {
         if (townId) {
@@ -41,11 +51,9 @@ function Login() {
                     </h1>
 
                     <p>
-                        {
-                            town
-                                ? town.description
-                                : "Inicia sesión para descubrir pueblos, cultura, naturaleza y lugares turísticos únicos."
-                        }
+                        {town
+                            ? town.description
+                            : "Inicia sesión para descubrir pueblos, cultura, naturaleza y lugares turísticos únicos."}
                     </p>
 
                     <button
