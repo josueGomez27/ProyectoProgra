@@ -612,6 +612,70 @@ body {
     margin-top: 22px;
 }
 
+
+.places-table {
+    table-layout: fixed;
+}
+
+.places-table th:nth-child(1),
+.places-table td:nth-child(1) {
+    width: 120px;
+}
+
+.places-table th:nth-child(2),
+.places-table td:nth-child(2) {
+    width: 230px;
+}
+
+.places-table th:nth-child(3),
+.places-table td:nth-child(3) {
+    width: 120px;
+}
+
+.places-table th:nth-child(4),
+.places-table td:nth-child(4) {
+    width: 170px;
+}
+
+.places-table th:nth-child(5),
+.places-table td:nth-child(5) {
+    width: 420px;
+}
+
+.places-table th:nth-child(6),
+.places-table td:nth-child(6) {
+    width: 110px;
+}
+
+.places-table th:nth-child(7),
+.places-table td:nth-child(7) {
+    width: 140px;
+}
+
+.places-table img {
+    width: 88px;
+    height: 62px;
+    object-fit: cover;
+    border-radius: 12px;
+    display: block;
+}
+
+.places-table .admin-badge {
+    min-width: 120px;
+    max-width: 140px;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.2;
+    padding: 8px 10px;
+}
+
+.places-table td:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+}
+
 .modal-actions button {
     border: none;
     border-radius: 999px;
