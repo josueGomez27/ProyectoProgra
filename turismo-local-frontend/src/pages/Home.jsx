@@ -85,37 +85,57 @@ function Home() {
                 </div>
             </section>
 
-            <section className="container travel-categories">
-                <div className="travel-category-card">
-                    <div className="category-circle">
-                        <i className="bi bi-water category-icon"></i>
+            <section className="container travel-categories image-categories">
+                <div className="travel-category-card image-category-card beach-card">
+                    <img
+                        src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=90"
+                        alt="Playas"
+                    />
+
+                    <div>
+                        <span>Experiencias costeras</span>
+                        <h3>Playas</h3>
+                        <p>Costas, sol y arena para disfrutar Costa Rica.</p>
                     </div>
-                    <h3>Playas</h3>
-                    <p>Costas, sol y arena.</p>
                 </div>
 
-                <div className="travel-category-card">
-                    <div className="category-circle">
-                        <i className="bi bi-tree-fill category-icon"></i>
+                <div className="travel-category-card image-category-card forest-card">
+                    <img
+                        src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=600&q=90"
+                        alt="Bosques"
+                    />
+
+                    <div>
+                        <span>Naturaleza viva</span>
+                        <h3>Bosques</h3>
+                        <p>Senderos, reservas naturales y paisajes verdes.</p>
                     </div>
-                    <h3>Bosques</h3>
-                    <p>Naturaleza y senderos.</p>
                 </div>
 
-                <div className="travel-category-card">
-                    <div className="category-circle">
-                        <i className="bi bi-bank category-icon"></i>
+                <div className="travel-category-card image-category-card culture-card">
+                    <img
+                        src="https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?auto=format&fit=crop&w=600&q=90"
+                        alt="Cultura"
+                    />
+
+                    <div>
+                        <span>Historia local</span>
+                        <h3>Cultura</h3>
+                        <p>Tradiciones, arquitectura e identidad del pueblo.</p>
                     </div>
-                    <h3>Cultura</h3>
-                    <p>Historia y tradición.</p>
                 </div>
 
-                <div className="travel-category-card">
-                    <div className="category-circle">
-                        <i className="bi bi-image-fill category-icon"></i>
+                <div className="travel-category-card image-category-card mountain-card">
+                    <img
+                        src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=90"
+                        alt="Montañas"
+                    />
+
+                    <div>
+                        <span>Aventura</span>
+                        <h3>Montañas</h3>
+                        <p>Miradores, rutas y paisajes para explorar.</p>
                     </div>
-                    <h3>Montañas</h3>
-                    <p>Miradores y aventura.</p>
                 </div>
             </section>
 
