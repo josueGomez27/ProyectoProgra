@@ -32,6 +32,24 @@ const getCategoryIcon = (color = "#064635") => {
     });
 };
 
+const getUserLocationIcon = () => {
+    return L.divIcon({
+        className: "",
+        html: `
+            <div style="
+                width: 22px;
+                height: 22px;
+                background: #0d6efd;
+                border: 4px solid white;
+                border-radius: 50%;
+                box-shadow: 0 0 0 6px rgba(13,110,253,0.25);
+            "></div>
+        `,
+        iconSize: [22, 22],
+        iconAnchor: [11, 11],
+    });
+};
+
 function FlyToPlace({ selectedPlace }) {
     const map = useMap();
 
@@ -52,22 +70,6 @@ function LocateUserButton() {
     const map = useMap();
     const [userPosition, setUserPosition] = useState(null);
 
-    const userIcon = L.divIcon({
-        className: "",
-        html: `
-            <div style="
-                width: 22px;
-                height: 22px;
-                background: #0d6efd;
-                border: 4px solid white;
-                border-radius: 50%;
-                box-shadow: 0 0 0 6px rgba(13,110,253,0.25);
-            "></div>
-        `,
-        iconSize: [22, 22],
-        iconAnchor: [11, 11],
-    });
-
     const locateUser = () => {
         if (!navigator.geolocation) {
             alert("Tu navegador no soporta geolocalización.");
@@ -83,7 +85,7 @@ function LocateUserButton() {
 
                 map.flyTo([lat, lng], 16, {
                     animate: true,
-                    duration: 1.5
+                    duration: 1.5,
                 });
             },
             () => {
@@ -101,7 +103,7 @@ function LocateUserButton() {
                     position: "absolute",
                     top: "15px",
                     right: "15px",
-                    zIndex: 1000
+                    zIndex: 1000,
                 }}
                 onClick={locateUser}
             >
@@ -109,28 +111,11 @@ function LocateUserButton() {
             </button>
 
             {userPosition && (
-                <Marker position={userPosition} icon={userIcon}>
+                <Marker position={userPosition} icon={getUserLocationIcon()}>
                     <Popup>Estás aquí</Popup>
                 </Marker>
             )}
         </>
-    );
-}
-
-    return (
-        <button
-            type="button"
-            className="view-btn"
-            style={{
-                position: "absolute",
-                top: "15px",
-                right: "15px",
-                zIndex: 1000
-            }}
-            onClick={locateUser}
-        >
-            📍 Mi ubicación
-        </button>
     );
 }
 
@@ -142,39 +127,42 @@ function Places() {
     const [places, setPlaces] = useState([]);
     const [view, setView] = useState("list");
     const [search, setSearch] = useState(searchParams.get("search") || "");
-    const [categoryFilter, setCategoryFilter] = useState(searchParams.get("category") || "ALL");
+    const [categoryFilter, setCategoryFilter] = useState(
+        searchParams.get("category") || "ALL"
+    );
     const [sortBy, setSortBy] = useState(searchParams.get("sort") || "name");
     const [selectedPlace, setSelectedPlace] = useState(null);
     const [message, setMessage] = useState("");
 
-   useEffect(() => {
-       loadPlaces();
-   }, [id]);
+    useEffect(() => {
+        loadPlaces();
+    }, [id]);
 
-   useEffect(() => {
-       const params = {};
+    useEffect(() => {
+        const params = {};
 
-       if (search.trim() !== "") {
-           params.search = search;
-       }
+        if (search.trim() !== "") {
+            params.search = search;
+        }
 
-       if (categoryFilter !== "ALL") {
-           params.category = categoryFilter;
-       }
+        if (categoryFilter !== "ALL") {
+            params.category = categoryFilter;
+        }
 
-       if (sortBy !== "name") {
-           params.sort = sortBy;
-       }
+        if (sortBy !== "name") {
+            params.sort = sortBy;
+        }
 
-       setSearchParams(params);
-   }, [search, categoryFilter, sortBy, setSearchParams]);
+        setSearchParams(params);
+    }, [search, categoryFilter, sortBy, setSearchParams]);
+
     const loadPlaces = async () => {
         try {
             setMessage("");
 
             const [townRes, placesRes] = await Promise.all([
                 api.get(`/towns/${id}`),
-                api.get(`/places/town/${id}`)
+                api.get(`/places/town/${id}`),
             ]);
 
             if (!townRes.data || townRes.data.active === false) {
@@ -207,7 +195,7 @@ function Places() {
             places
                 .filter((place) => place.category && place.category.active !== false)
                 .map((place) => [place.category.id, place.category])
-        ).values()
+        ).values(),
     ];
 
     const filteredPlaces = places
@@ -262,9 +250,7 @@ function Places() {
         <>
             <section className="places-banner">
                 <div className="container">
-                    <span className="places-tag">
-                        Lugares para visitar
-                    </span>
+                    <span className="places-tag">Lugares para visitar</span>
 
                     <h1>
                         {town
@@ -363,7 +349,7 @@ function Places() {
                                                     alt={place.name}
                                                     style={{
                                                         height: "220px",
-                                                        objectFit: "cover"
+                                                        objectFit: "cover",
                                                     }}
                                                 />
 
@@ -373,7 +359,8 @@ function Places() {
                                                         style={{
                                                             fontSize: "0.8rem",
                                                             textTransform: "uppercase",
-                                                            backgroundColor: place.category?.color || "#064635"
+                                                            backgroundColor:
+                                                                place.category?.color || "#064635",
                                                         }}
                                                     >
                                                         {place.category?.name || "Turístico"}
@@ -392,7 +379,7 @@ function Places() {
                                                         className="card-text text-secondary"
                                                         style={{
                                                             fontSize: "0.9rem",
-                                                            lineHeight: "1.5"
+                                                            lineHeight: "1.5",
                                                         }}
                                                     >
                                                         {place.description}
@@ -451,7 +438,7 @@ function Places() {
                                                             display: "flex",
                                                             alignItems: "center",
                                                             gap: "8px",
-                                                            marginTop: "6px"
+                                                            marginTop: "6px",
                                                         }}
                                                     >
                                                         <div
@@ -459,19 +446,21 @@ function Places() {
                                                                 width: "12px",
                                                                 height: "12px",
                                                                 borderRadius: "50%",
-                                                                backgroundColor: place.category?.color || "#064635"
+                                                                backgroundColor:
+                                                                    place.category?.color || "#064635",
                                                             }}
                                                         ></div>
 
                                                         <span
                                                             style={{
-                                                                backgroundColor: place.category?.color || "#064635",
+                                                                backgroundColor:
+                                                                    place.category?.color || "#064635",
                                                                 color: "white",
                                                                 padding: "3px 10px",
                                                                 borderRadius: "20px",
                                                                 fontSize: "0.8rem",
                                                                 fontWeight: "800",
-                                                                textTransform: "uppercase"
+                                                                textTransform: "uppercase",
                                                             }}
                                                         >
                                                             {place.category?.name || "Turístico"}
@@ -495,7 +484,7 @@ function Places() {
                                         <LocateUserButton />
 
                                         <TileLayer
-                                            attribution='&copy; OpenStreetMap contributors'
+                                            attribution="&copy; OpenStreetMap contributors"
                                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                         />
 
@@ -521,7 +510,7 @@ function Places() {
                                                                 height: "110px",
                                                                 objectFit: "cover",
                                                                 borderRadius: "10px",
-                                                                marginBottom: "10px"
+                                                                marginBottom: "10px",
                                                             }}
                                                         />
 
@@ -529,7 +518,7 @@ function Places() {
                                                             style={{
                                                                 fontWeight: "800",
                                                                 marginBottom: "8px",
-                                                                color: "#064635"
+                                                                color: "#064635",
                                                             }}
                                                         >
                                                             {place.name}
@@ -538,14 +527,15 @@ function Places() {
                                                         <span
                                                             style={{
                                                                 display: "inline-block",
-                                                                backgroundColor: place.category?.color || "#064635",
+                                                                backgroundColor:
+                                                                    place.category?.color || "#064635",
                                                                 color: "white",
                                                                 padding: "4px 10px",
                                                                 borderRadius: "20px",
                                                                 fontSize: "0.75rem",
                                                                 fontWeight: "800",
                                                                 marginBottom: "10px",
-                                                                textTransform: "uppercase"
+                                                                textTransform: "uppercase",
                                                             }}
                                                         >
                                                             {place.category?.name || "Turístico"}
@@ -555,7 +545,7 @@ function Places() {
                                                             style={{
                                                                 fontSize: "0.85rem",
                                                                 color: "#6c757d",
-                                                                marginBottom: "8px"
+                                                                marginBottom: "8px",
                                                             }}
                                                         >
                                                             {place.description?.substring(0, 80)}...
@@ -565,7 +555,7 @@ function Places() {
                                                             style={{
                                                                 fontSize: "0.8rem",
                                                                 color: "#495057",
-                                                                marginBottom: "10px"
+                                                                marginBottom: "10px",
                                                             }}
                                                         >
                                                             📍 {place.address}
@@ -579,7 +569,7 @@ function Places() {
                                                                 width: "100%",
                                                                 textAlign: "center",
                                                                 padding: "8px 12px",
-                                                                fontSize: "0.8rem"
+                                                                fontSize: "0.8rem",
                                                             }}
                                                         >
                                                             Ver información completa
