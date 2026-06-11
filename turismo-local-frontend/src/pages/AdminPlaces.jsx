@@ -35,6 +35,7 @@ function LocationMarker({ position, setPosition, setForm }) {
 }
 
 function AdminPlaces() {
+    const currentUser = JSON.parse(localStorage.getItem("user"));
     const [places, setPlaces] = useState([]);
     const [towns, setTowns] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -188,7 +189,9 @@ function AdminPlaces() {
                <Link to="/admin/towns">Pueblos</Link>
                <Link className="active" to="/admin/places">Lugares</Link>
                <Link to="/admin/categories">Categorías</Link>
-               <Link to="/admin/users">Usuarios</Link>
+               {currentUser?.role === "SUPER_ADMIN" && (
+                   <Link to="/admin/users">Usuarios</Link>
+               )}
               <Link to="/admin/stats">Estadísticas</Link>
            </aside>
 

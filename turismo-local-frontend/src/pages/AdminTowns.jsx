@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import api from "../api/api";
 
 function AdminTowns() {
+    const currentUser = JSON.parse(localStorage.getItem("user"));
     const [towns, setTowns] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState(null);
@@ -144,7 +145,9 @@ function AdminTowns() {
                 <Link className="active" to="/admin/towns">Pueblos</Link>
                 <Link to="/admin/places">Lugares</Link>
                 <Link to="/admin/categories">Categorías</Link>
-                <Link to="/admin/users">Usuarios</Link>
+                {currentUser?.role === "SUPER_ADMIN" && (
+                    <Link to="/admin/users">Usuarios</Link>
+                )}
                 <Link to="/admin/stats">Estadísticas</Link>
             </aside>
 

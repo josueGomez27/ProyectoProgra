@@ -2,7 +2,11 @@ import { Link } from "react-router-dom";
 
 function Navbar() {
     const user = JSON.parse(localStorage.getItem("user"));
-    const isAdmin = user?.role === "ADMIN" || user?.role === "SUPER_ADMIN";
+    const role = user?.role?.trim();
+    const isAdmin = role === "ADMIN" || role === "SUPER_ADMIN";
+
+    console.log("Usuario navbar:", user);
+    console.log("Es admin:", isAdmin);
 
     return (
         <nav className="custom-navbar travel-navbar">
@@ -35,17 +39,17 @@ function Navbar() {
                     {user && (
                         <div className="user-pill">
                             <img
-                                src={user.picture}
+                                src={user.picture || user.pictureUrl}
                                 alt="Perfil"
                                 className="user-avatar"
                             />
 
                             <div>
-                                <strong>Hola, {user.name.split(" ")[0]}</strong>
+                                <strong>Hola, {user.name?.split(" ")[0]}</strong>
 
-                               {isAdmin && (
-                                   <span>{user.role}</span>
-                               )}
+                                {isAdmin && (
+                                    <span>{role}</span>
+                                )}
                             </div>
                         </div>
                     )}

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import api from "../api/api";
 
 function AdminCategories() {
+    const currentUser = JSON.parse(localStorage.getItem("user"));
     const [categories, setCategories] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [editingCategory, setEditingCategory] = useState(null);
@@ -107,7 +108,9 @@ function AdminCategories() {
                 <Link to="/admin/towns">Pueblos</Link>
                 <Link to="/admin/places">Lugares</Link>
                 <Link className="active" to="/admin/categories">Categorías</Link>
-                <Link to="/admin/users">Usuarios</Link>
+                {currentUser?.role === "SUPER_ADMIN" && (
+                    <Link to="/admin/users">Usuarios</Link>
+                )}
                 <Link to="/admin/stats">Estadísticas</Link>
             </aside>
 

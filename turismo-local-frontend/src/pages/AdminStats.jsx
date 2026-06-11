@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import api from "../api/api";
 
 function AdminStats() {
+
+    const currentUser = JSON.parse(localStorage.getItem("user"));
     const [stats, setStats] = useState({
         towns: 0,
         places: 0,
@@ -41,7 +43,9 @@ function AdminStats() {
                 categories: activeCategories.length,
                 users: users.length,
                 activeUsers: users.filter((u) => u.active === true).length,
-                admins: users.filter((u) => u.role === "ADMIN").length
+               admins: users.filter(
+                   (u) => u.role === "ADMIN" || u.role === "SUPER_ADMIN"
+               ).length
             });
         } catch (error) {
             console.error("Error cargando estadísticas:", error);
@@ -58,7 +62,9 @@ function AdminStats() {
                 <Link to="/admin/towns">Pueblos</Link>
                 <Link to="/admin/places">Lugares</Link>
                 <Link to="/admin/categories">Categorías</Link>
-                <Link to="/admin/users">Usuarios</Link>
+               {currentUser?.role === "SUPER_ADMIN" && (
+                   <Link to="/admin/users">Usuarios</Link>
+               )}
                 <Link className="active" to="/admin/stats">Estadísticas</Link>
             </aside>
 

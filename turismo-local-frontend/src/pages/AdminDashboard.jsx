@@ -33,6 +33,7 @@ function AdminDashboard() {
         normalUsers: 0
     });
 
+const currentUser = JSON.parse(localStorage.getItem("user"));
     const [placesByCategory, setPlacesByCategory] = useState({});
     const [placesByTown, setPlacesByTown] = useState({});
     const [latestPlaces, setLatestPlaces] = useState([]);
@@ -143,8 +144,11 @@ function AdminDashboard() {
                 <Link to="/admin/towns">Pueblos</Link>
                 <Link to="/admin/places">Lugares</Link>
                 <Link to="/admin/categories">Categorías</Link>
-                <Link to="/admin/users">Usuarios</Link>
+                <{currentUser?.role === "SUPER_ADMIN" && (
+                     <Link to="/admin/users">Usuarios</Link>
+                 )}
                 <Link to="/admin/stats">Estadísticas</Link>
+
             </aside>
 
             <main className="admin-content">
