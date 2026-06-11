@@ -28,6 +28,18 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/error").permitAll()
                         .requestMatchers("/api/users/me").permitAll()
+
+                        // Solo ADMIN puede gestionar usuarios
+                        .requestMatchers("/api/users/**").hasRole("ADMIN")
+
+                        // Rutas públicas necesarias para mostrar lugares
+                        .requestMatchers(
+                                "/api/towns/**",
+                                "/api/places/**",
+                                "/api/categories/**",
+                                "/api/qrcodes/**"
+                        ).permitAll()
+
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth -> oauth

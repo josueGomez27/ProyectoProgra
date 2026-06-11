@@ -50,6 +50,23 @@ function FlyToPlace({ selectedPlace }) {
 
 function LocateUserButton() {
     const map = useMap();
+    const [userPosition, setUserPosition] = useState(null);
+
+    const userIcon = L.divIcon({
+        className: "",
+        html: `
+            <div style="
+                width: 22px;
+                height: 22px;
+                background: #0d6efd;
+                border: 4px solid white;
+                border-radius: 50%;
+                box-shadow: 0 0 0 6px rgba(13,110,253,0.25);
+            "></div>
+        `,
+        iconSize: [22, 22],
+        iconAnchor: [11, 11],
+    });
 
     const locateUser = () => {
         if (!navigator.geolocation) {
@@ -62,6 +79,8 @@ function LocateUserButton() {
                 const lat = position.coords.latitude;
                 const lng = position.coords.longitude;
 
+                setUserPosition([lat, lng]);
+
                 map.flyTo([lat, lng], 16, {
                     animate: true,
                     duration: 1.5
@@ -72,6 +91,31 @@ function LocateUserButton() {
             }
         );
     };
+
+    return (
+        <>
+            <button
+                type="button"
+                className="view-btn"
+                style={{
+                    position: "absolute",
+                    top: "15px",
+                    right: "15px",
+                    zIndex: 1000
+                }}
+                onClick={locateUser}
+            >
+                📍 Mi ubicación
+            </button>
+
+            {userPosition && (
+                <Marker position={userPosition} icon={userIcon}>
+                    <Popup>Estás aquí</Popup>
+                </Marker>
+            )}
+        </>
+    );
+}
 
     return (
         <button

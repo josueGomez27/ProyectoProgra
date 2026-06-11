@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import api from "../api/api";
 
 function AdminUsers() {
+    const currentUser = JSON.parse(localStorage.getItem("user"));
+
+    if (!currentUser || currentUser.role !== "SUPER_ADMIN") {
+        return <Navigate to="/admin" replace />;
+    }
+
     const [users, setUsers] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState(null);
@@ -73,12 +79,12 @@ function AdminUsers() {
             <aside className="admin-sidebar">
                 <h3>Administración</h3>
 
-            <Link to="/admin">Dashboard</Link>
-            <Link to="/admin/towns">Pueblos</Link>
-            <Link to="/admin/places">Lugares</Link>
-            <Link to="/admin/categories">Categorías</Link>
-            <Link className="active" to="/admin/users">Usuarios</Link>
-           <Link to="/admin/stats">Estadísticas</Link>
+                <Link to="/admin">Dashboard</Link>
+                <Link to="/admin/towns">Pueblos</Link>
+                <Link to="/admin/places">Lugares</Link>
+                <Link to="/admin/categories">Categorías</Link>
+                <Link className="active" to="/admin/users">Usuarios</Link>
+                <Link to="/admin/stats">Estadísticas</Link>
             </aside>
 
             <main className="admin-content">
@@ -132,9 +138,11 @@ function AdminUsers() {
                                             className="admin-badge"
                                             style={{
                                                 backgroundColor:
-                                                    user.role === "ADMIN"
-                                                        ? "#064635"
-                                                        : "#d89b3d",
+                                                    user.role === "SUPER_ADMIN"
+                                                        ? "#6f42c1"
+                                                        : user.role === "ADMIN"
+                                                            ? "#064635"
+                                                            : "#d89b3d",
                                                 color: "#ffffff"
                                             }}
                                         >
@@ -214,6 +222,7 @@ function AdminUsers() {
                             >
                                 <option value="USER">USER</option>
                                 <option value="ADMIN">ADMIN</option>
+                                <option value="SUPER_ADMIN">SUPER_ADMIN</option>
                             </select>
 
                             <label>Estado</label>
