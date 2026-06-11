@@ -56,6 +56,7 @@ function Places() {
     const [view, setView] = useState("list");
     const [search, setSearch] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("ALL");
+    const [sortBy, setSortBy] = useState("name");
     const [selectedPlace, setSelectedPlace] = useState(null);
     const [message, setMessage] = useState("");
 
@@ -105,21 +106,39 @@ function Places() {
         ).values()
     ];
 
-    const filteredPlaces = places.filter((place) => {
-        const text = search.toLowerCase();
+    const filteredPlaces = places
+        .filter((place) => {
+            const text = search.toLowerCase();
 
-        const matchesSearch =
-            place.name?.toLowerCase().includes(text) ||
-            place.address?.toLowerCase().includes(text) ||
-            place.description?.toLowerCase().includes(text) ||
-            place.category?.name?.toLowerCase().includes(text);
+            const matchesSearch =
+                place.name?.toLowerCase().includes(text) ||
+                place.address?.toLowerCase().includes(text) ||
+                place.description?.toLowerCase().includes(text) ||
+                place.category?.name?.toLowerCase().includes(text);
 
-        const matchesCategory =
-            categoryFilter === "ALL" ||
-            String(place.category?.id) === String(categoryFilter);
+            const matchesCategory =
+                categoryFilter === "ALL" ||
+                String(place.category?.id) === String(categoryFilter);
 
-        return matchesSearch && matchesCategory;
-    });
+            return matchesSearch && matchesCategory;
+        })
+        .sort((a, b) => {
+            if (sortBy === "name") {
+                return (a.name || "").localeCompare(b.name || "");
+            }
+
+            if (sortBy === "category") {
+                return (a.category?.name || "").localeCompare(
+                    b.category?.name || ""
+                );
+            }
+
+            if (sortBy === "createdAt") {
+                return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+            }
+
+            return 0;
+        });
 
     const validPlaces = filteredPlaces.filter(
         (place) => place.latitude && place.longitude
@@ -168,7 +187,7 @@ function Places() {
                         <div className="places-filter-box">
                             <input
                                 type="text"
-                                placeholder="Buscar lugar, dirección o categoría..."
+                                placeholder="Buscar lugar, dirección, descripción o categoría..."
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                             />
@@ -185,7 +204,20 @@ function Places() {
                                     </option>
                                 ))}
                             </select>
+
+                            <select
+                                value={sortBy}
+                                onChange={(e) => setSortBy(e.target.value)}
+                            >
+                                <option value="name">Ordenar por nombre</option>
+                                <option value="category">Ordenar por categoría</option>
+                                <option value="createdAt">Ordenar por fecha de creación</option>
+                            </select>
                         </div>
+
+                        <p className="text-center text-muted mt-3">
+                            {filteredPlaces.length} lugares encontrados
+                        </p>
 
                         <div className="places-actions">
                             <button

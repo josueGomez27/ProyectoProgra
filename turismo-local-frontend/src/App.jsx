@@ -21,7 +21,7 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Login />} />
+                <Route path="/" element={<Login />} />-
                 <Route path="/login/town/:townId" element={<Login />} />
 
                 <Route path="/oauth-success" element={<OAuthSuccess />} />
