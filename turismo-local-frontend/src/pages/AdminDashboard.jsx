@@ -61,7 +61,9 @@ const currentUser = JSON.parse(localStorage.getItem("user"));
             const activeTowns = towns.filter((town) => town.active === true);
             const activeCategories = categories.filter((category) => category.active === true);
 
-            const admins = users.filter((user) => user.role === "ADMIN").length;
+            const admins = users.filter(
+                (user) => user.role === "ADMIN" || user.role === "SUPER_ADMIN"
+            ).length;
             const normalUsers = users.filter((user) => user.role === "USER").length;
 
             const categoryCounter = {};
@@ -144,7 +146,7 @@ const currentUser = JSON.parse(localStorage.getItem("user"));
                 <Link to="/admin/towns">Pueblos</Link>
                 <Link to="/admin/places">Lugares</Link>
                 <Link to="/admin/categories">Categorías</Link>
-                <{currentUser?.role === "SUPER_ADMIN" && (
+                {currentUser?.role === "SUPER_ADMIN" && (
                      <Link to="/admin/users">Usuarios</Link>
                  )}
                 <Link to="/admin/stats">Estadísticas</Link>
