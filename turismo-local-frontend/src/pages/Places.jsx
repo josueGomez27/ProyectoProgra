@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import api from "../api/api";
@@ -48,22 +48,82 @@ function FlyToPlace({ selectedPlace }) {
     return null;
 }
 
+function LocateUserButton() {
+    const map = useMap();
+
+    const locateUser = () => {
+        if (!navigator.geolocation) {
+            alert("Tu navegador no soporta geolocalización.");
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+
+                map.flyTo([lat, lng], 16, {
+                    animate: true,
+                    duration: 1.5
+                });
+            },
+            () => {
+                alert("No se pudo obtener tu ubicación. Revisa los permisos del navegador.");
+            }
+        );
+    };
+
+    return (
+        <button
+            type="button"
+            className="view-btn"
+            style={{
+                position: "absolute",
+                top: "15px",
+                right: "15px",
+                zIndex: 1000
+            }}
+            onClick={locateUser}
+        >
+            📍 Mi ubicación
+        </button>
+    );
+}
+
 function Places() {
     const { id } = useParams();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const [town, setTown] = useState(null);
     const [places, setPlaces] = useState([]);
     const [view, setView] = useState("list");
-    const [search, setSearch] = useState("");
-    const [categoryFilter, setCategoryFilter] = useState("ALL");
-    const [sortBy, setSortBy] = useState("name");
+    const [search, setSearch] = useState(searchParams.get("search") || "");
+    const [categoryFilter, setCategoryFilter] = useState(searchParams.get("category") || "ALL");
+    const [sortBy, setSortBy] = useState(searchParams.get("sort") || "name");
     const [selectedPlace, setSelectedPlace] = useState(null);
     const [message, setMessage] = useState("");
 
-    useEffect(() => {
-        loadPlaces();
-    }, [id]);
+   useEffect(() => {
+       loadPlaces();
+   }, [id]);
 
+   useEffect(() => {
+       const params = {};
+
+       if (search.trim() !== "") {
+           params.search = search;
+       }
+
+       if (categoryFilter !== "ALL") {
+           params.category = categoryFilter;
+       }
+
+       if (sortBy !== "name") {
+           params.sort = sortBy;
+       }
+
+       setSearchParams(params);
+   }, [search, categoryFilter, sortBy, setSearchParams]);
     const loadPlaces = async () => {
         try {
             setMessage("");
@@ -221,6 +281,7 @@ function Places() {
 
                         <div className="places-actions">
                             <button
+                                type="button"
                                 className={view === "list" ? "view-btn active" : "view-btn"}
                                 onClick={() => setView("list")}
                             >
@@ -228,6 +289,7 @@ function Places() {
                             </button>
 
                             <button
+                                type="button"
                                 className={view === "map" ? "view-btn active" : "view-btn"}
                                 onClick={() => setView("map")}
                             >
@@ -385,6 +447,8 @@ function Places() {
                                         className="leaflet-map"
                                     >
                                         <FlyToPlace selectedPlace={selectedPlace} />
+
+                                        <LocateUserButton />
 
                                         <TileLayer
                                             attribution='&copy; OpenStreetMap contributors'
