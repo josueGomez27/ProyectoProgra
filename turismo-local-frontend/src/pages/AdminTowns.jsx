@@ -120,7 +120,10 @@ function AdminTowns() {
             description: form.description,
             imageUrl: form.imageUrl,
             slug: form.name.toLowerCase().replaceAll(" ", "-"),
-            active: form.active
+            active: form.active,
+
+            // Auditoría
+            createdBy: currentUser?.name
         };
 
         try {
@@ -151,7 +154,10 @@ function AdminTowns() {
             description: town.description,
             imageUrl: town.imageUrl,
             slug: town.slug || town.name.toLowerCase().replaceAll(" ", "-"),
-            active: !town.active
+            active: !town.active,
+
+            // Auditoría
+            createdBy: town.createdBy
         };
 
         try {

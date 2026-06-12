@@ -26,11 +26,29 @@ public class TownController {
 
     @PostMapping
     public Town saveTown(@RequestBody Town town) {
+
+        if (town.getCreatedBy() == null) {
+            town.setCreatedBy("Sistema");
+        }
+
         return townService.saveTown(town);
     }
 
     @PutMapping("/{id}")
     public Town updateTown(@PathVariable Long id, @RequestBody Town town) {
+
+        Town existingTown = townService.getTownById(id);
+
+        if (existingTown != null) {
+
+            // Mantener el autor original si no viene uno nuevo
+            town.setCreatedBy(
+                    town.getCreatedBy() != null
+                            ? town.getCreatedBy()
+                            : existingTown.getCreatedBy()
+            );
+        }
+
         return townService.updateTown(id, town);
     }
 

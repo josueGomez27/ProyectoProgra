@@ -174,7 +174,10 @@ function AdminPlaces() {
             townId: parseInt(form.townId),
             categoryId: parseInt(form.categoryId),
             latitude: form.latitude ? parseFloat(form.latitude) : null,
-            longitude: form.longitude ? parseFloat(form.longitude) : null
+            longitude: form.longitude ? parseFloat(form.longitude) : null,
+
+            // Auditoría
+            createdBy: currentUser?.email
         };
 
         try {
@@ -213,7 +216,10 @@ function AdminPlaces() {
                 townId: place.town?.id || null,
                 categoryId: place.category?.id || null,
                 latitude: place.latitude || null,
-                longitude: place.longitude || null
+                longitude: place.longitude || null,
+
+                // Auditoría
+                createdBy: place.createdBy
             };
 
             await api.put(`/places/${place.id}`, payload);

@@ -27,6 +27,7 @@ public class TownServiceImpl implements TownService {
 
     @Override
     public Town saveTown(Town town) {
+
         town.setCreatedAt(LocalDateTime.now());
         town.setUpdatedAt(LocalDateTime.now());
 
@@ -39,9 +40,11 @@ public class TownServiceImpl implements TownService {
 
     @Override
     public Town updateTown(Long id, Town town) {
+
         Town existingTown = townRepository.findById(id).orElse(null);
 
         if (existingTown != null) {
+
             existingTown.setName(town.getName());
             existingTown.setSlug(town.getSlug());
             existingTown.setDescription(town.getDescription());
@@ -50,6 +53,15 @@ public class TownServiceImpl implements TownService {
             existingTown.setDistrict(town.getDistrict());
             existingTown.setImageUrl(town.getImageUrl());
             existingTown.setActive(town.getActive());
+
+            // Mantener o actualizar el autor
+            existingTown.setCreatedBy(
+                    town.getCreatedBy() != null
+                            ? town.getCreatedBy()
+                            : existingTown.getCreatedBy()
+            );
+
+            // Actualizar fecha de modificación
             existingTown.setUpdatedAt(LocalDateTime.now());
 
             return townRepository.save(existingTown);

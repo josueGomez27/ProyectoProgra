@@ -43,9 +43,12 @@ public class Town {
 
     private Boolean active;
 
+    // Auditoría
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    private String createdBy;
 
     @JsonIgnore
     @OneToMany(mappedBy = "town")
@@ -54,4 +57,19 @@ public class Town {
     @JsonManagedReference(value = "town-qrcodes")
     @OneToMany(mappedBy = "town")
     private List<QrCode> qrCodes;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+
+        if (this.active == null) {
+            this.active = true;
+        }
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

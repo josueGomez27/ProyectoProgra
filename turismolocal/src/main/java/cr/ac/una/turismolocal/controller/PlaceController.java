@@ -29,8 +29,10 @@ public class PlaceController {
         private Long categoryId;
         private Double latitude;
         private Double longitude;
+
+        private String createdBy;
     }
-//hola bro
+    //hola bro
     @GetMapping
     public List<Place> getAllPlaces() {
         return placeService.getAllPlaces();
@@ -65,6 +67,7 @@ public class PlaceController {
         p.setLatitude(input.getLatitude());
         p.setLongitude(input.getLongitude());
         p.setActive(input.getActive() != null ? input.getActive() : true);
+        p.setCreatedBy(input.getCreatedBy());
 
         if (input.getTownId() != null) {
             p.setTown(townRepository.findById(input.getTownId()).orElse(null));
@@ -105,6 +108,12 @@ public class PlaceController {
                     input.getActive() != null
                             ? input.getActive()
                             : existingPlace.getActive()
+            );
+
+            existingPlace.setCreatedBy(
+                    input.getCreatedBy() != null
+                            ? input.getCreatedBy()
+                            : existingPlace.getCreatedBy()
             );
 
             if (input.getTownId() != null) {
