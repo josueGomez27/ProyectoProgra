@@ -177,7 +177,7 @@ function AdminPlaces() {
             longitude: form.longitude ? parseFloat(form.longitude) : null,
 
             // Auditoría
-            createdBy: currentUser?.email
+            createdBy: currentUser?.name
         };
 
         try {
@@ -264,16 +264,21 @@ function AdminPlaces() {
 
                 <div className="admin-table-card">
                     <table className="admin-table places-table">
-                        <thead>
-                            <tr>
-                                <th>Imagen</th>
-                                <th>Nombre</th>
-                                <th>Pueblo</th>
-                                <th>Categoría</th>
-                                <th>Dirección</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
+
+                            <thead>
+                                <tr>
+                                    <th>Imagen</th>
+                                    <th>Nombre</th>
+                                    <th>Pueblo</th>
+                                    <th>Categoría</th>
+                                    <th>Dirección</th>
+                                    <th>Creado por</th>
+                                    <th>Creado</th>
+                                    <th>Modificado</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+
                         </thead>
 
                         <tbody>
@@ -302,6 +307,21 @@ function AdminPlaces() {
                                     </td>
 
                                     <td>{place.address}</td>
+                                    <td>{place.createdBy || "Sistema"}</td>
+
+                                    <td>
+                                        {place.createdAt
+                                            ? new Date(place.createdAt).toLocaleString()
+                                            : "-"}
+                                    </td>
+
+                                    <td>
+                                        {place.updatedAt
+                                            ? new Date(place.updatedAt).toLocaleString()
+                                            : "-"}
+                                    </td>
+
+
 
                                     <td>
                                         <button

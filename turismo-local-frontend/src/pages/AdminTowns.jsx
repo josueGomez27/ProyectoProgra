@@ -220,16 +220,21 @@ function AdminTowns() {
 
                 <div className="admin-table-card">
                     <table className="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Imagen</th>
-                                <th>Nombre</th>
-                                <th>Provincia</th>
-                                <th>Cantón</th>
-                                <th>Distrito</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
+
+                            <thead>
+                                <tr>
+                                    <th>Imagen</th>
+                                    <th>Nombre</th>
+                                    <th>Provincia</th>
+                                    <th>Cantón</th>
+                                    <th>Distrito</th>
+                                    <th>Creado por</th>
+                                    <th>Creado</th>
+                                    <th>Modificado</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+
                         </thead>
 
                         <tbody>
@@ -246,6 +251,19 @@ function AdminTowns() {
                                     <td>{town.province}</td>
                                     <td>{town.canton}</td>
                                     <td>{town.district}</td>
+                                    <td>{town.createdBy || "Sistema"}</td>
+
+                                    <td>
+                                        {town.createdAt
+                                            ? new Date(town.createdAt).toLocaleString()
+                                            : "-"}
+                                    </td>
+
+                                    <td>
+                                        {town.updatedAt
+                                            ? new Date(town.updatedAt).toLocaleString()
+                                            : "-"}
+                                    </td>
 
                                     <td>
                                         <button
