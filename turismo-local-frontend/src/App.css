@@ -1851,3 +1851,196 @@ img {
         font-size: 2.35rem !important;
     }
 }
+
+/* =========================================
+   HOME MOBILE CARDS FIX
+   Categorías + pueblos registrados
+   ========================================= */
+
+@media (max-width: 768px) {
+    /* Sección de categorías: Playas, Bosques, Cultura, Volcanes */
+    .travel-categories,
+    .image-categories {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 14px !important;
+        padding: 24px 16px !important;
+        margin-top: 0 !important;
+    }
+
+    .travel-category-card,
+    .image-category-card {
+        width: 100% !important;
+        min-height: auto !important;
+        padding: 14px !important;
+        border-radius: 22px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        align-items: flex-start !important;
+    }
+
+    .travel-category-card img,
+    .image-category-card img {
+        width: 100% !important;
+        height: 115px !important;
+        object-fit: cover !important;
+        border-radius: 18px !important;
+        margin: 0 !important;
+    }
+
+    .travel-category-card span,
+    .image-category-card span {
+        font-size: 0.68rem !important;
+        letter-spacing: 1px !important;
+        line-height: 1.2 !important;
+    }
+
+    .travel-category-card h3,
+    .image-category-card h3 {
+        font-size: 1.25rem !important;
+        line-height: 1.1 !important;
+        margin: 2px 0 !important;
+    }
+
+    .travel-category-card p,
+    .image-category-card p {
+        font-size: 0.82rem !important;
+        line-height: 1.35 !important;
+        margin: 0 !important;
+    }
+
+    /* Sección de pueblos registrados */
+    #pueblos {
+        padding-inline: 16px !important;
+        padding-top: 42px !important;
+    }
+
+    #pueblos .section-header {
+        margin-bottom: 26px !important;
+        padding-inline: 0 !important;
+    }
+
+    #pueblos .section-kicker {
+        font-size: 0.72rem !important;
+        letter-spacing: 1.5px !important;
+    }
+
+    #pueblos .section-title {
+        font-size: 2rem !important;
+        line-height: 1.08 !important;
+        margin-bottom: 10px !important;
+    }
+
+    #pueblos .section-subtitle {
+        font-size: 0.95rem !important;
+        line-height: 1.45 !important;
+        max-width: 330px !important;
+        margin-inline: auto !important;
+    }
+
+    #pueblos .row {
+        gap: 22px !important;
+    }
+
+    #pueblos .row > [class*="col-"] {
+        margin-bottom: 0 !important;
+    }
+
+    /* Esta regla compacta la tarjeta aunque el componente tenga otro nombre */
+    #pueblos .row > [class*="col-"] > * {
+        max-width: 100% !important;
+        border-radius: 28px !important;
+        overflow: hidden !important;
+    }
+
+    #pueblos img {
+        height: 245px !important;
+        max-height: 245px !important;
+        object-fit: cover !important;
+    }
+
+    #pueblos h3,
+    #pueblos h4,
+    #pueblos h5 {
+        font-size: 1.75rem !important;
+        line-height: 1.1 !important;
+        margin-bottom: 12px !important;
+    }
+
+    #pueblos p {
+        font-size: 1rem !important;
+        line-height: 1.55 !important;
+    }
+
+    #pueblos a,
+    #pueblos button,
+    #pueblos .btn-tour {
+        min-height: 48px !important;
+        padding: 12px 20px !important;
+        font-size: 0.95rem !important;
+        border-radius: 999px !important;
+    }
+}
+
+@media (max-width: 430px) {
+    .travel-categories,
+    .image-categories {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+        padding: 22px 18px !important;
+    }
+
+    .travel-category-card,
+    .image-category-card {
+        display: grid !important;
+        grid-template-columns: 105px 1fr !important;
+        align-items: center !important;
+        padding: 14px !important;
+        border-radius: 22px !important;
+    }
+
+    .travel-category-card img,
+    .image-category-card img {
+        width: 105px !important;
+        height: 105px !important;
+        border-radius: 18px !important;
+    }
+
+    .travel-category-card h3,
+    .image-category-card h3 {
+        font-size: 1.25rem !important;
+    }
+
+    .travel-category-card p,
+    .image-category-card p {
+        font-size: 0.82rem !important;
+    }
+
+    #pueblos {
+        padding-inline: 18px !important;
+    }
+
+    #pueblos img {
+        height: 220px !important;
+        max-height: 220px !important;
+    }
+
+    #pueblos h3,
+    #pueblos h4,
+    #pueblos h5 {
+        font-size: 1.55rem !important;
+    }
+
+    #pueblos p {
+        font-size: 0.95rem !important;
+    }
+
+    #pueblos a,
+    #pueblos button,
+    #pueblos .btn-tour {
+        width: 100% !important;
+        justify-content: center !important;
+        font-size: 0.92rem !important;
+    }
+}
