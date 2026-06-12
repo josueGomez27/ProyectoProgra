@@ -7,6 +7,7 @@ function AdminTowns() {
     const [towns, setTowns] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState(null);
+    const [uploadingImage, setUploadingImage] = useState(false);
 
     const [form, setForm] = useState({
         name: "",
@@ -41,6 +42,7 @@ function AdminTowns() {
             imageUrl: "",
             active: true
         });
+        setUploadingImage(false);
     };
 
     const openCreateForm = () => {
@@ -51,6 +53,7 @@ function AdminTowns() {
 
     const openEditForm = (town) => {
         setEditingId(town.id);
+        setUploadingImage(false);
 
         setForm({
             name: town.name || "",
@@ -65,8 +68,49 @@ function AdminTowns() {
         setShowForm(true);
     };
 
+    const uploadImage = async (e) => {
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            setUploadingImage(true);
+
+            const response = await api.post("/images/upload", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            setForm((prev) => ({
+                ...prev,
+                imageUrl: response.data.imageUrl,
+            }));
+
+            alert("Imagen subida correctamente.");
+        } catch (error) {
+            console.error("Error subiendo imagen:", error);
+            alert("No se pudo subir la imagen.");
+        } finally {
+            setUploadingImage(false);
+        }
+    };
+
     const saveTown = async (e) => {
         e.preventDefault();
+
+        if (uploadingImage) {
+            alert("Espere a que termine de subir la imagen.");
+            return;
+        }
+
+        if (!form.imageUrl) {
+            alert("Debe subir una imagen o ingresar una URL.");
+            return;
+        }
 
         const payload = {
             name: form.name,
@@ -145,9 +189,11 @@ function AdminTowns() {
                 <Link className="active" to="/admin/towns">Pueblos</Link>
                 <Link to="/admin/places">Lugares</Link>
                 <Link to="/admin/categories">Categorías</Link>
+
                 {currentUser?.role === "SUPER_ADMIN" && (
                     <Link to="/admin/users">Usuarios</Link>
                 )}
+
                 <Link to="/admin/stats">Estadísticas</Link>
             </aside>
 
@@ -279,6 +325,17 @@ function AdminTowns() {
                                 }
                             />
 
+                            <label>Imagen del pueblo</label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={uploadImage}
+                            />
+
+                            {uploadingImage && (
+                                <small>Subiendo imagen...</small>
+                            )}
+
                             <label>URL de imagen del pueblo</label>
                             <input
                                 type="text"
@@ -289,6 +346,20 @@ function AdminTowns() {
                                 placeholder="https://ejemplo.com/imagen.jpg"
                                 required
                             />
+
+                            {form.imageUrl && (
+                                <img
+                                    src={form.imageUrl}
+                                    alt="Vista previa"
+                                    style={{
+                                        width: "100%",
+                                        height: "140px",
+                                        objectFit: "cover",
+                                        borderRadius: "8px",
+                                        marginTop: "10px"
+                                    }}
+                                />
+                            )}
 
                             <label>Estado</label>
                             <select
@@ -316,8 +387,12 @@ function AdminTowns() {
                                     Cancelar
                                 </button>
 
-                                <button type="submit">
-                                    {editingId ? "Actualizar" : "Guardar"}
+                                <button type="submit" disabled={uploadingImage}>
+                                    {uploadingImage
+                                        ? "Subiendo..."
+                                        : editingId
+                                            ? "Actualizar"
+                                            : "Guardar"}
                                 </button>
                             </div>
                         </form>
