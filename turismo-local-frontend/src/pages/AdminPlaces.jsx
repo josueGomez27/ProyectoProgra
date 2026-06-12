@@ -4,7 +4,7 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import api from "../api/api";
 import "leaflet/dist/leaflet.css";
-
+// Icono que se usa para marcar la ubicación en el mapa
 const markerIcon = new L.Icon({
     iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
     shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
@@ -13,14 +13,14 @@ const markerIcon = new L.Icon({
     popupAnchor: [1, -34],
     shadowSize: [41, 41],
 });
-
+// Componente que permite marcar una ubicación al hacer clic en el mapa
 function LocationMarker({ position, setPosition, setForm }) {
     useMapEvents({
         click(e) {
             const { lat, lng } = e.latlng;
-
+        // Guarda la posición del marcador
             setPosition([lat, lng]);
-
+        // Guarda latitud y longitud en el formulario
             setForm((prev) => ({
                 ...prev,
                 latitude: lat.toFixed(6),
@@ -35,17 +35,18 @@ function LocationMarker({ position, setPosition, setForm }) {
 }
 
 function AdminPlaces() {
+    // Usuario actual guardado cuando se inicia sesión
     const currentUser = JSON.parse(localStorage.getItem("user"));
-
+    // Estados principales para cargar datos de la base de datos
     const [places, setPlaces] = useState([]);
     const [towns, setTowns] = useState([]);
     const [categories, setCategories] = useState([]);
-
+    // Estados para controlar formulario, edición, mapa y carga de imagen
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [mapMarkerPos, setMapMarkerPos] = useState(null);
     const [uploadingImage, setUploadingImage] = useState(false);
-
+    // Datos del formulario de lugares
     const [form, setForm] = useState({
         name: "",
         categoryId: "",
@@ -55,7 +56,7 @@ function AdminPlaces() {
         latitude: "",
         longitude: ""
     });
-
+    // Carga lugares, pueblos y categorías desde el backend
     const loadData = async () => {
         try {
             const [placesRes, townsRes, categoriesRes] = await Promise.all([
@@ -75,7 +76,7 @@ function AdminPlaces() {
     useEffect(() => {
         loadData();
     }, []);
-
+    // Abre el formulario para agregar un lugar nuevo
     const openAddForm = () => {
         setEditingId(null);
         setMapMarkerPos(null);
@@ -93,11 +94,11 @@ function AdminPlaces() {
 
         setShowForm(true);
     };
-
+    // Abre el formulario con los datos del lugar seleccionado
     const openEditForm = (place) => {
         setEditingId(place.id);
         setUploadingImage(false);
-
+    // Si el lugar tiene coordenadas, se muestran en el mapa
         if (place.latitude && place.longitude) {
             setMapMarkerPos([
                 Number(place.latitude),
@@ -119,7 +120,7 @@ function AdminPlaces() {
 
         setShowForm(true);
     };
-
+    // Sube la imagen al backend para que se guarde en Cloudinary
     const uploadImage = async (e) => {
         const file = e.target.files[0];
 
@@ -136,7 +137,7 @@ function AdminPlaces() {
                     "Content-Type": "multipart/form-data",
                 },
             });
-
+    // La URL que devuelve Cloudinary se guarda en el formulario
             setForm((prev) => ({
                 ...prev,
                 imageUrl: response.data.imageUrl,
@@ -150,7 +151,7 @@ function AdminPlaces() {
             setUploadingImage(false);
         }
     };
-
+    // Guarda un lugar nuevo o actualiza uno existente
     const savePlace = async (e) => {
         e.preventDefault();
 
@@ -176,7 +177,7 @@ function AdminPlaces() {
             latitude: form.latitude ? parseFloat(form.latitude) : null,
             longitude: form.longitude ? parseFloat(form.longitude) : null,
 
-            // Auditoría
+           // Auditoría: guarda quién creó el registro
             createdBy: currentUser?.name
         };
 
@@ -194,7 +195,7 @@ function AdminPlaces() {
             alert("No se pudo guardar el lugar.");
         }
     };
-
+// Elimina un lugar con confirmación antes de borrar
     const deletePlace = async (id) => {
         if (confirm("¿Seguro que desea eliminar este lugar?")) {
             try {
@@ -205,7 +206,7 @@ function AdminPlaces() {
             }
         }
     };
-
+    // Cambia el estado del lugar entre activo e inactivo
     const toggleStatus = async (place) => {
         try {
             const payload = {
@@ -218,7 +219,7 @@ function AdminPlaces() {
                 latitude: place.latitude || null,
                 longitude: place.longitude || null,
 
-                // Auditoría
+                // Auditoría Se conserva el usuario que creó el registro
                 createdBy: place.createdBy
             };
 
@@ -228,7 +229,7 @@ function AdminPlaces() {
             console.error("Error al cambiar estado:", error);
         }
     };
-
+    // Centro inicial del mapa
     const defaultCenter = mapMarkerPos || [10.6346, -85.4377];
 
     return (
@@ -263,6 +264,7 @@ function AdminPlaces() {
                 </div>
 
                 <div className="admin-table-card">
+
                     <table className="admin-table places-table">
 
                             <thead>
@@ -422,6 +424,7 @@ function AdminPlaces() {
                                     />
 
                                     <label>Imagen del lugar</label>
+                                    {/* Se selecciona una imagen del equipo y se envía al backend para subirla a Cloudinary */}
                                     <input
                                         type="file"
                                         accept="image/*"

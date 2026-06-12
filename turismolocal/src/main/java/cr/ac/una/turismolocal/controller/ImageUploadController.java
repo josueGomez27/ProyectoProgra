@@ -14,19 +14,20 @@ import java.util.Map;
 public class ImageUploadController {
 
     private final Cloudinary cloudinary;
-
+    // Endpoint que recibe una imagen desde el frontend y la sube a Cloudinary
     @PostMapping("/upload")
     public Map<String, String> uploadImage(@RequestParam("file") MultipartFile file) {
         try {
+            // Se sube el archivo a Cloudinary dentro de la carpeta del proyecto
             Map uploadResult = cloudinary.uploader().upload(
                     file.getBytes(),
                     ObjectUtils.asMap(
                             "folder", "turismo-local"
                     )
             );
-
+            // Cloudinary devuelve una URL segura de la imagen subida
             String imageUrl = uploadResult.get("secure_url").toString();
-
+            // Se devuelve la URL al frontend para guardarla en el formulario
             return Map.of("imageUrl", imageUrl);
 
         } catch (Exception e) {
