@@ -1,0 +1,276 @@
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+
+const resources = {
+    es: {
+        translation: {
+            nav: {
+                home: "Inicio",
+                admin: "Administración",
+                qr: "Generar QR",
+                logout: "Salir",
+                hello: "Hola"
+            },
+            buttons: {
+                retry: "Reintentar conexión",
+                search: "Buscar",
+                backHome: "Volver al inicio",
+                myLocation: "Mi ubicación"
+            },
+            home: {
+                kicker: "Turismo local · Costa Rica",
+                title: "Encuentra tu próximo destino en Costa Rica",
+                description: "Explora pueblos llenos de cultura, naturaleza, playas, historia y experiencias auténticas.",
+                searchLabel: "Buscar destino",
+                searchPlaceholder: "Buscar pueblo, provincia o cantón...",
+                featuredLabel: "Destino destacado",
+                featuredTitle: "Explora naturaleza, playas y cultura",
+                featuredText: "Descubre lugares turísticos seleccionados por pueblo.",
+                beachSpan: "Experiencias costeras",
+                beachTitle: "Playas",
+                beachText: "Costas, sol y arena para disfrutar Costa Rica.",
+                forestSpan: "Naturaleza viva",
+                forestTitle: "Bosques",
+                forestText: "Senderos, reservas naturales y paisajes verdes.",
+                cultureSpan: "Historia local",
+                cultureTitle: "Cultura",
+                cultureText: "Tradiciones, arquitectura e identidad del pueblo.",
+                mountainSpan: "Aventura natural",
+                mountainTitle: "Volcanes",
+                mountainText: "Volcán Arenal, Rincón de la Vieja y paisajes únicos.",
+                destinationKicker: "Destinos disponibles",
+                destinationTitle: "Pueblos registrados",
+                destinationSubtitle: "Seleccioná un destino para conocer sus principales lugares turísticos.",
+                loadError: "No se pudieron cargar los pueblos turísticos.",
+                loading: "Cargando pueblos turísticos...",
+                noTowns: "No hay pueblos activos disponibles o no se encontraron resultados."
+            },
+            places: {
+                tag: "Lugares para visitar",
+                titleWithTown: "Lugares turísticos en {{town}}",
+                unavailableTitle: "Destino no disponible",
+                description: "Descubrí los sitios más representativos, su ubicación y la información principal para visitarlos.",
+                loading: "Cargando lugares turísticos...",
+                inactiveTown: "Este pueblo no está activo o no se encuentra disponible.",
+                noActivePlaces: "Este pueblo no tiene lugares turísticos activos disponibles.",
+                loadError: "No se pudieron cargar los lugares turísticos.",
+                filterPlaceholder: "Buscar lugar, dirección, descripción o categoría...",
+                allCategories: "Todas las categorías",
+                sortName: "Ordenar por nombre",
+                sortCategory: "Ordenar por categoría",
+                sortCreatedAt: "Ordenar por fecha de creación",
+                count: "{{count}} lugares encontrados",
+                listView: "Vista Lista",
+                mapView: "Vista Mapa",
+                noPlaces: "No hay lugares activos que coincidan con la búsqueda o categoría.",
+                viewOnMap: "Ver en mapa",
+                locatedPlaces: "Lugares ubicados",
+                noCoordinates: "No hay coordenadas registradas para esta búsqueda.",
+                defaultCategory: "Turístico",
+                fullInfo: "Ver información completa",
+                geoUnsupported: "Tu navegador no soporta geolocalización.",
+                geoError: "No se pudo obtener tu ubicación. Revisa los permisos del navegador.",
+                youAreHere: "Estás aquí"
+            },
+            admin: {
+                section: "Panel de administración",
+                sidebarTitle: "Administración",
+                dashboard: "Dashboard",
+                towns: "Pueblos",
+                places: "Lugares",
+                categories: "Categorías",
+                users: "Usuarios",
+                stats: "Estadísticas",
+                loading: "Cargando panel administrativo...",
+                loadError: "No se pudo cargar la información del dashboard.",
+                activePlaces: "Lugares turísticos activos",
+                activeTowns: "Pueblos activos",
+                activeCategories: "Categorías activas",
+                admins: "Administradores",
+                normalUsers: "Usuarios normales",
+                addPlace: "+ Agregar Lugar",
+                addTown: "+ Crear Pueblo",
+                addCategory: "+ Crear Categoría",
+                manageUsers: "Administrar Usuarios",
+                viewStats: "Ver Estadísticas",
+                placesByCategory: "Lugares activos por categoría",
+                usersByRole: "Usuarios por rol",
+                placesByTown: "Lugares activos por pueblo",
+                latestPlaces: "Últimos lugares activos agregados",
+                noLatestPlaces: "No hay lugares activos registrados.",
+                noTown: "Sin pueblo",
+                noCategory: "Sin categoría"
+            },
+            login: {
+                brand: "Turismo local · Costa Rica",
+                appName: "Turismo Local UNA",
+                subtitle: "Explora destinos únicos",
+                welcomeTown: "Bienvenido a {{town}}",
+                start: "Comienza tu aventura",
+                defaultText: "Inicia sesión para descubrir pueblos, cultura, naturaleza y lugares turísticos únicos.",
+                google: "Continuar con Google",
+                secure: "Acceso seguro con cuenta de Google",
+                loadingTown: "Cargando destino turístico...",
+                floatingTitle: "Descubre lugares increíbles",
+                floatingText: "Playas, montañas, pueblos y cultura local.",
+                beach: "🌊 Playas",
+                forest: "🌿 Bosques",
+                towns: "🏘️ Pueblos",
+                mountains: "⛰️ Montañas",
+                imageTitle: "Descubre Costa Rica",
+                imageText: "Playas • Bosques • Cultura • Aventuras"
+            },
+            oauth: {
+                title: "Iniciando sesión...",
+                text: "Cargando información del usuario."
+            },
+            notFound: {
+                kicker: "Ruta no encontrada",
+                title: "¡Ups! Pueblo no encontrado",
+                text: "El código QR escaneado no corresponde a un pueblo registrado, la ruta no existe o la sesión pudo haber expirado.",
+                warning: "⚠️ Posibles causas: QR inválido, pueblo eliminado, sin conexión a internet o sesión expirada."
+            }
+        }
+    },
+    en: {
+        translation: {
+            nav: {
+                home: "Home",
+                admin: "Administration",
+                qr: "Generate QR",
+                logout: "Log out",
+                hello: "Hello"
+            },
+            buttons: {
+                retry: "Retry connection",
+                search: "Search",
+                backHome: "Back to home",
+                myLocation: "My location"
+            },
+            home: {
+                kicker: "Local tourism · Costa Rica",
+                title: "Find your next destination in Costa Rica",
+                description: "Explore towns full of culture, nature, beaches, history and authentic experiences.",
+                searchLabel: "Search destination",
+                searchPlaceholder: "Search town, province or canton...",
+                featuredLabel: "Featured destination",
+                featuredTitle: "Explore nature, beaches and culture",
+                featuredText: "Discover tourist places selected by town.",
+                beachSpan: "Coastal experiences",
+                beachTitle: "Beaches",
+                beachText: "Coasts, sun and sand to enjoy Costa Rica.",
+                forestSpan: "Living nature",
+                forestTitle: "Forests",
+                forestText: "Trails, natural reserves and green landscapes.",
+                cultureSpan: "Local history",
+                cultureTitle: "Culture",
+                cultureText: "Traditions, architecture and town identity.",
+                mountainSpan: "Natural adventure",
+                mountainTitle: "Volcanoes",
+                mountainText: "Arenal Volcano, Rincón de la Vieja and unique landscapes.",
+                destinationKicker: "Available destinations",
+                destinationTitle: "Registered towns",
+                destinationSubtitle: "Select a destination to discover its main tourist places.",
+                loadError: "Tourist towns could not be loaded.",
+                loading: "Loading tourist towns...",
+                noTowns: "There are no active towns available or no results were found."
+            },
+            places: {
+                tag: "Places to visit",
+                titleWithTown: "Tourist places in {{town}}",
+                unavailableTitle: "Destination unavailable",
+                description: "Discover the most representative places, their location and main visitor information.",
+                loading: "Loading tourist places...",
+                inactiveTown: "This town is not active or is not available.",
+                noActivePlaces: "This town does not have active tourist places available.",
+                loadError: "Tourist places could not be loaded.",
+                filterPlaceholder: "Search place, address, description or category...",
+                allCategories: "All categories",
+                sortName: "Sort by name",
+                sortCategory: "Sort by category",
+                sortCreatedAt: "Sort by creation date",
+                count: "{{count}} places found",
+                listView: "List View",
+                mapView: "Map View",
+                noPlaces: "There are no active places matching the search or category.",
+                viewOnMap: "View on map",
+                locatedPlaces: "Located places",
+                noCoordinates: "There are no coordinates registered for this search.",
+                defaultCategory: "Tourist",
+                fullInfo: "View full information",
+                geoUnsupported: "Your browser does not support geolocation.",
+                geoError: "Your location could not be obtained. Check browser permissions.",
+                youAreHere: "You are here"
+            },
+            admin: {
+                section: "Administration panel",
+                sidebarTitle: "Administration",
+                dashboard: "Dashboard",
+                towns: "Towns",
+                places: "Places",
+                categories: "Categories",
+                users: "Users",
+                stats: "Statistics",
+                loading: "Loading administration panel...",
+                loadError: "Dashboard information could not be loaded.",
+                activePlaces: "Active tourist places",
+                activeTowns: "Active towns",
+                activeCategories: "Active categories",
+                admins: "Administrators",
+                normalUsers: "Regular users",
+                addPlace: "+ Add Place",
+                addTown: "+ Create Town",
+                addCategory: "+ Create Category",
+                manageUsers: "Manage Users",
+                viewStats: "View Statistics",
+                placesByCategory: "Active places by category",
+                usersByRole: "Users by role",
+                placesByTown: "Active places by town",
+                latestPlaces: "Latest active places added",
+                noLatestPlaces: "There are no active places registered.",
+                noTown: "No town",
+                noCategory: "No category"
+            },
+            login: {
+                brand: "Local tourism · Costa Rica",
+                appName: "Turismo Local UNA",
+                subtitle: "Explore unique destinations",
+                welcomeTown: "Welcome to {{town}}",
+                start: "Start your adventure",
+                defaultText: "Sign in to discover towns, culture, nature and unique tourist places.",
+                google: "Continue with Google",
+                secure: "Secure access with Google account",
+                loadingTown: "Loading tourist destination...",
+                floatingTitle: "Discover amazing places",
+                floatingText: "Beaches, mountains, towns and local culture.",
+                beach: "🌊 Beaches",
+                forest: "🌿 Forests",
+                towns: "🏘️ Towns",
+                mountains: "⛰️ Mountains",
+                imageTitle: "Discover Costa Rica",
+                imageText: "Beaches • Forests • Culture • Adventures"
+            },
+            oauth: {
+                title: "Signing in...",
+                text: "Loading user information."
+            },
+            notFound: {
+                kicker: "Route not found",
+                title: "Oops! Town not found",
+                text: "The scanned QR code does not match a registered town, the route does not exist or the session may have expired.",
+                warning: "⚠️ Possible causes: invalid QR, deleted town, no internet connection or expired session."
+            }
+        }
+    }
+};
+
+i18n.use(initReactI18next).init({
+    resources,
+    lng: localStorage.getItem("language") || "es",
+    fallbackLng: "es",
+    interpolation: {
+        escapeValue: false
+    }
+});
+
+export default i18n;
