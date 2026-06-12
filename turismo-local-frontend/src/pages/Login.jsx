@@ -1,20 +1,26 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import api from "../api/api";
+import LoadingSpinner from "../components/LoadingSpinner";
 import "./login.css";
 
 function Login() {
+    const { t } = useTranslation();
     const { townId } = useParams();
     const navigate = useNavigate();
     const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
     const [town, setTown] = useState(null);
+    const [loadingTown, setLoadingTown] = useState(false);
 
     useEffect(() => {
         if (townId) {
+            setLoadingTown(true);
+
             api.get(`/towns/${townId}`)
                 .then((response) => {
-                    if (!response.data) {
+                    if (!response.data || response.data.active === false) {
                         navigate("/error");
                         return;
                     }
@@ -23,6 +29,9 @@ function Login() {
                 })
                 .catch(() => {
                     navigate("/error");
+                })
+                .finally(() => {
+                    setLoadingTown(false);
                 });
         }
     }, [townId, navigate]);
@@ -32,66 +41,76 @@ function Login() {
             localStorage.setItem("qrTownId", townId);
         }
 
-        window.location.href = `${backendUrl}/oauth2/authorization/google`;
+        window.location.href = `${backendUrl.replace(/\/$/, "")}/oauth2/authorization/google`;
     };
 
     return (
-        <div className="login-page">
+        <main className="login-page">
             <div className="login-overlay"></div>
 
             <div className="login-container">
-                <section className="login-left">
-                    <div className="brand-badge">Turismo local · Costa Rica</div>
+                <section className="login-left" aria-label="Inicio de sesión">
+                    <div className="brand-badge">{t("login.brand")}</div>
 
-                    <h2>Turismo Local UNA</h2>
-                    <span>Explora destinos únicos</span>
+                    <h2>{t("login.appName")}</h2>
+                    <span>{t("login.subtitle")}</span>
 
-                    <h1>
-                        {town ? `Bienvenido a ${town.name}` : "Comienza tu aventura"}
-                    </h1>
+                    {loadingTown ? (
+                        <LoadingSpinner text={t("login.loadingTown")} />
+                    ) : (
+                        <>
+                            <h1>
+                                {town
+                                    ? t("login.welcomeTown", { town: town.name })
+                                    : t("login.start")}
+                            </h1>
 
-                    <p>
-                        {town
-                            ? town.description
-                            : "Inicia sesión para descubrir pueblos, cultura, naturaleza y lugares turísticos únicos."}
-                    </p>
+                            <p>
+                                {town
+                                    ? town.description
+                                    : t("login.defaultText")}
+                            </p>
+                        </>
+                    )}
 
                     <button
                         type="button"
                         className="login-google-btn"
                         onClick={handleGoogleLogin}
+                        aria-label={t("login.google")}
                     >
                         <img
                             src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
-                            alt="Google"
+                            alt=""
                             className="google-icon"
+                            aria-hidden="true"
                         />
-                        <span className="google-text">Continuar con Google</span>
+                        <span className="google-text">{t("login.google")}</span>
                     </button>
 
-                    <small>Acceso seguro con cuenta de Google</small>
+                    <small>{t("login.secure")}</small>
                 </section>
 
-                <section className="login-right">
+                <section className="login-right" aria-label="Imagen promocional">
                     <div className="image-card">
                         <div className="floating-box floating-main">
-                            <strong>Descubre lugares increíbles</strong>
-                            <p>Playas, montañas, pueblos y cultura local.</p>
+                            <strong>{t("login.floatingTitle")}</strong>
+                            <p>{t("login.floatingText")}</p>
                         </div>
 
-                        <div className="floating-pill floating-one">🌊 Playas</div>
-                        <div className="floating-pill floating-two">🌿 Bosques</div>
-                        <div className="floating-pill floating-three">🏘️ Pueblos</div>
-                        <div className="floating-pill floating-four">⛰️ Montañas</div>
+                        <div className="floating-pill floating-one">{t("login.beach")}</div>
+                        <div className="floating-pill floating-two">{t("login.forest")}</div>
+                        <div className="floating-pill floating-three">{t("login.towns")}</div>
+                        <div className="floating-pill floating-four">{t("login.mountains")}</div>
 
                         <div className="image-text">
-                            <h3>Descubre Costa Rica</h3>
-                            <p>Playas • Bosques • Cultura • Aventuras</p>
+                            <h3>{t("login.imageTitle")}</h3>
+                            <p>{t("login.imageText")}</p>
                         </div>
                     </div>
                 </section>
             </div>
-        </div>
+        </main>
     );
 }
 

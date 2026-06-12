@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import api from "../api/api";
+import LoadingSpinner from "../components/LoadingSpinner";
+import ErrorMessage from "../components/ErrorMessage";
 
 import {
     Chart as ChartJS,
@@ -24,6 +27,8 @@ ChartJS.register(
 );
 
 function AdminDashboard() {
+    const { t } = useTranslation();
+
     const [stats, setStats] = useState({
         places: 0,
         towns: 0,
@@ -33,10 +38,12 @@ function AdminDashboard() {
         normalUsers: 0
     });
 
-const currentUser = JSON.parse(localStorage.getItem("user"));
+    const currentUser = JSON.parse(localStorage.getItem("user"));
     const [placesByCategory, setPlacesByCategory] = useState({});
     const [placesByTown, setPlacesByTown] = useState({});
     const [latestPlaces, setLatestPlaces] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
         loadDashboard();
@@ -44,6 +51,9 @@ const currentUser = JSON.parse(localStorage.getItem("user"));
 
     const loadDashboard = async () => {
         try {
+            setLoading(true);
+            setErrorMessage("");
+
             const [placesRes, townsRes, categoriesRes, usersRes] =
                 await Promise.all([
                     api.get("/places"),
@@ -64,17 +74,20 @@ const currentUser = JSON.parse(localStorage.getItem("user"));
             const admins = users.filter(
                 (user) => user.role === "ADMIN" || user.role === "SUPER_ADMIN"
             ).length;
-            const normalUsers = users.filter((user) => user.role === "USER").length;
+
+            const normalUsers = users.filter(
+                (user) => user.role === "USER" || user.role === "CLIENT"
+            ).length;
 
             const categoryCounter = {};
             activePlaces.forEach((place) => {
-                const categoryName = place.category?.name || "Sin categoría";
+                const categoryName = place.category?.name || t("admin.noCategory");
                 categoryCounter[categoryName] = (categoryCounter[categoryName] || 0) + 1;
             });
 
             const townCounter = {};
             activePlaces.forEach((place) => {
-                const townName = place.town?.name || "Sin pueblo";
+                const townName = place.town?.name || t("admin.noTown");
                 townCounter[townName] = (townCounter[townName] || 0) + 1;
             });
 
@@ -89,11 +102,13 @@ const currentUser = JSON.parse(localStorage.getItem("user"));
 
             setPlacesByCategory(categoryCounter);
             setPlacesByTown(townCounter);
-
             setLatestPlaces([...activePlaces].slice(-4).reverse());
 
         } catch (error) {
             console.error("Error cargando dashboard:", error);
+            setErrorMessage(t("admin.loadError"));
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -101,7 +116,7 @@ const currentUser = JSON.parse(localStorage.getItem("user"));
         labels: Object.keys(placesByCategory),
         datasets: [
             {
-                label: "Lugares por categoría",
+                label: t("admin.placesByCategory"),
                 data: Object.values(placesByCategory),
                 backgroundColor: [
                     "#4CAF50",
@@ -119,7 +134,7 @@ const currentUser = JSON.parse(localStorage.getItem("user"));
         labels: Object.keys(placesByTown),
         datasets: [
             {
-                label: "Lugares por pueblo",
+                label: t("admin.placesByTown"),
                 data: Object.values(placesByTown),
                 backgroundColor: "#064635"
             }
@@ -127,10 +142,10 @@ const currentUser = JSON.parse(localStorage.getItem("user"));
     };
 
     const usersChartData = {
-        labels: ["Administradores", "Usuarios normales"],
+        labels: [t("admin.admins"), t("admin.normalUsers")],
         datasets: [
             {
-                label: "Usuarios por rol",
+                label: t("admin.usersByRole"),
                 data: [stats.admins, stats.normalUsers],
                 backgroundColor: ["#064635", "#d89b3d"]
             }
@@ -139,131 +154,150 @@ const currentUser = JSON.parse(localStorage.getItem("user"));
 
     return (
         <div className="admin-page">
-            <aside className="admin-sidebar">
-                <h3>Administración</h3>
+            <aside className="admin-sidebar" aria-label="Menú de administración">
+                <h3>{t("admin.sidebarTitle")}</h3>
 
-                <Link className="active" to="/admin">Dashboard</Link>
-                <Link to="/admin/towns">Pueblos</Link>
-                <Link to="/admin/places">Lugares</Link>
-                <Link to="/admin/categories">Categorías</Link>
+                <Link className="active" to="/admin">{t("admin.dashboard")}</Link>
+                <Link to="/admin/towns">{t("admin.towns")}</Link>
+                <Link to="/admin/places">{t("admin.places")}</Link>
+                <Link to="/admin/categories">{t("admin.categories")}</Link>
+
                 {currentUser?.role === "SUPER_ADMIN" && (
-                     <Link to="/admin/users">Usuarios</Link>
-                 )}
-                <Link to="/admin/stats">Estadísticas</Link>
+                    <Link to="/admin/users">{t("admin.users")}</Link>
+                )}
 
+                <Link to="/admin/stats">{t("admin.stats")}</Link>
             </aside>
 
             <main className="admin-content">
                 <div className="admin-header">
                     <div>
                         <span className="section-kicker">
-                            Panel de administración
+                            {t("admin.section")}
                         </span>
 
-                        <h1>Dashboard</h1>
+                        <h1>{t("admin.dashboard")}</h1>
                     </div>
                 </div>
 
-                <div className="dashboard-grid">
-                    <div className="dashboard-card">
-                        <h3>Lugares turísticos activos</h3>
-                        <h2>{stats.places}</h2>
-                    </div>
+                {loading && (
+                    <LoadingSpinner text={t("admin.loading")} />
+                )}
 
-                    <div className="dashboard-card">
-                        <h3>Pueblos activos</h3>
-                        <h2>{stats.towns}</h2>
-                    </div>
+                {!loading && errorMessage && (
+                    <ErrorMessage
+                        message={errorMessage}
+                        onRetry={loadDashboard}
+                        retryText={t("buttons.retry")}
+                    />
+                )}
 
-                    <div className="dashboard-card">
-                        <h3>Categorías activas</h3>
-                        <h2>{stats.categories}</h2>
-                    </div>
+                {!loading && !errorMessage && (
+                    <>
+                        <div className="dashboard-grid">
+                            <div className="dashboard-card">
+                                <h3>{t("admin.activePlaces")}</h3>
+                                <h2>{stats.places}</h2>
+                            </div>
 
-                    <div className="dashboard-card">
-                        <h3>Usuarios</h3>
-                        <h2>{stats.users}</h2>
-                    </div>
+                            <div className="dashboard-card">
+                                <h3>{t("admin.activeTowns")}</h3>
+                                <h2>{stats.towns}</h2>
+                            </div>
 
-                    <div className="dashboard-card">
-                        <h3>Administradores</h3>
-                        <h2>{stats.admins}</h2>
-                    </div>
+                            <div className="dashboard-card">
+                                <h3>{t("admin.activeCategories")}</h3>
+                                <h2>{stats.categories}</h2>
+                            </div>
 
-                    <div className="dashboard-card">
-                        <h3>Usuarios normales</h3>
-                        <h2>{stats.normalUsers}</h2>
-                    </div>
-                </div>
+                            <div className="dashboard-card">
+                                <h3>{t("admin.users")}</h3>
+                                <h2>{stats.users}</h2>
+                            </div>
 
-                <div className="quick-actions">
-                    <Link to="/admin/places" className="quick-action-btn">
-                        + Agregar Lugar
-                    </Link>
+                            <div className="dashboard-card">
+                                <h3>{t("admin.admins")}</h3>
+                                <h2>{stats.admins}</h2>
+                            </div>
 
-                    <Link to="/admin/towns" className="quick-action-btn">
-                        + Crear Pueblo
-                    </Link>
-
-                    <Link to="/admin/categories" className="quick-action-btn">
-                        + Crear Categoría
-                    </Link>
-
-                    <Link to="/admin/users" className="quick-action-btn">
-                        Administrar Usuarios
-                    </Link>
-
-                    <Link to="/admin/stats" className="quick-action-btn">
-                        Ver Estadísticas
-                    </Link>
-                </div>
-
-                <div className="dashboard-charts">
-                    <div className="chart-card">
-                        <h3>Lugares activos por categoría</h3>
-                        <Pie data={categoryChartData} />
-                    </div>
-
-                    <div className="chart-card">
-                        <h3>Usuarios por rol</h3>
-                        <Pie data={usersChartData} />
-                    </div>
-
-                    <div className="chart-card chart-wide">
-                        <h3>Lugares activos por pueblo</h3>
-                        <Bar data={townChartData} />
-                    </div>
-                </div>
-
-                <div className="latest-card">
-                    <h3>Últimos lugares activos agregados</h3>
-
-                    {latestPlaces.length === 0 ? (
-                        <p>No hay lugares activos registrados.</p>
-                    ) : (
-                        <div className="latest-list">
-                            {latestPlaces.map((place) => (
-                                <div className="latest-item" key={place.id}>
-                                    <img
-                                        src={
-                                            place.imageUrl ||
-                                            "https://placehold.co/100x100"
-                                        }
-                                        alt={place.name}
-                                    />
-
-                                    <div>
-                                        <strong>{place.name}</strong>
-                                        <p>
-                                            {place.town?.name || "Sin pueblo"} ·{" "}
-                                            {place.category?.name || "Sin categoría"}
-                                        </p>
-                                    </div>
-                                </div>
-                            ))}
+                            <div className="dashboard-card">
+                                <h3>{t("admin.normalUsers")}</h3>
+                                <h2>{stats.normalUsers}</h2>
+                            </div>
                         </div>
-                    )}
-                </div>
+
+                        <div className="quick-actions">
+                            <Link to="/admin/places" className="quick-action-btn">
+                                {t("admin.addPlace")}
+                            </Link>
+
+                            <Link to="/admin/towns" className="quick-action-btn">
+                                {t("admin.addTown")}
+                            </Link>
+
+                            <Link to="/admin/categories" className="quick-action-btn">
+                                {t("admin.addCategory")}
+                            </Link>
+
+                            {currentUser?.role === "SUPER_ADMIN" && (
+                                <Link to="/admin/users" className="quick-action-btn">
+                                    {t("admin.manageUsers")}
+                                </Link>
+                            )}
+
+                            <Link to="/admin/stats" className="quick-action-btn">
+                                {t("admin.viewStats")}
+                            </Link>
+                        </div>
+
+                        <div className="dashboard-charts">
+                            <div className="chart-card">
+                                <h3>{t("admin.placesByCategory")}</h3>
+                                <Pie data={categoryChartData} />
+                            </div>
+
+                            <div className="chart-card">
+                                <h3>{t("admin.usersByRole")}</h3>
+                                <Pie data={usersChartData} />
+                            </div>
+
+                            <div className="chart-card chart-wide">
+                                <h3>{t("admin.placesByTown")}</h3>
+                                <Bar data={townChartData} />
+                            </div>
+                        </div>
+
+                        <div className="latest-card">
+                            <h3>{t("admin.latestPlaces")}</h3>
+
+                            {latestPlaces.length === 0 ? (
+                                <p>{t("admin.noLatestPlaces")}</p>
+                            ) : (
+                                <div className="latest-list">
+                                    {latestPlaces.map((place) => (
+                                        <div className="latest-item" key={place.id}>
+                                            <img
+                                                src={
+                                                    place.imageUrl ||
+                                                    "https://placehold.co/100x100"
+                                                }
+                                                alt={`Imagen de ${place.name}`}
+                                            />
+
+                                            <div>
+                                                <strong>{place.name}</strong>
+                                                <p>
+                                                    {place.town?.name || t("admin.noTown")} ·{" "}
+                                                    {place.category?.name || t("admin.noCategory")}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </>
+                )}
             </main>
         </div>
     );

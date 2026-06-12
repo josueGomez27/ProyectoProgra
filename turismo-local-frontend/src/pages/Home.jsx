@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { getAllTowns } from "../services/townService";
 import PlaceCard from "../components/PlaceCard";
+import LoadingSpinner from "../components/LoadingSpinner";
+import ErrorMessage from "../components/ErrorMessage";
 
 function Home() {
+    const { t } = useTranslation();
+
     const [towns, setTowns] = useState([]);
     const [error, setError] = useState("");
     const [search, setSearch] = useState("");
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         loadTowns();
@@ -13,6 +19,9 @@ function Home() {
 
     const loadTowns = async () => {
         try {
+            setLoading(true);
+            setError("");
+
             const data = await getAllTowns();
 
             const activeTowns = Array.isArray(data)
@@ -22,7 +31,9 @@ function Home() {
             setTowns(activeTowns);
         } catch (error) {
             console.error("Error cargando pueblos", error);
-            setError("No se pudieron cargar los pueblos turísticos.");
+            setError(t("home.loadError"));
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -45,29 +56,30 @@ function Home() {
                 <div className="container travel-hero-content">
                     <div className="hero-left">
                         <span className="travel-kicker">
-                            Turismo local · Costa Rica
+                            {t("home.kicker")}
                         </span>
 
-                        <h1>Encuentra tu próximo destino en Costa Rica</h1>
+                        <h1>{t("home.title")}</h1>
 
-                        <p>
-                            Explora pueblos llenos de cultura, naturaleza, playas,
-                            historia y experiencias auténticas.
-                        </p>
+                        <p>{t("home.description")}</p>
 
                         <div className="hero-search-card">
-                            <label>Buscar destino</label>
+                            <label htmlFor="town-search">
+                                {t("home.searchLabel")}
+                            </label>
 
                             <div className="hero-search-row">
                                 <input
+                                    id="town-search"
                                     type="text"
-                                    placeholder="Buscar pueblo, provincia o cantón..."
+                                    placeholder={t("home.searchPlaceholder")}
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
+                                    aria-label={t("home.searchLabel")}
                                 />
 
                                 <a href="#pueblos" className="hero-search-btn">
-                                    Buscar
+                                    {t("buttons.search")}
                                 </a>
                             </div>
                         </div>
@@ -76,13 +88,13 @@ function Home() {
                     <div className="hero-feature-card">
                         <img
                             src="https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?auto=format&fit=crop&w=1200&q=90"
-                            alt="Costa Rica"
+                            alt="Paisaje natural de Costa Rica"
                         />
 
                         <div className="hero-feature-info">
-                            <span>Destino destacado</span>
-                            <h3>Explora naturaleza, playas y cultura</h3>
-                            <p>Descubre lugares turísticos seleccionados por pueblo.</p>
+                            <span>{t("home.featuredLabel")}</span>
+                            <h3>{t("home.featuredTitle")}</h3>
+                            <p>{t("home.featuredText")}</p>
                         </div>
                     </div>
                 </div>
@@ -92,52 +104,52 @@ function Home() {
                 <div className="travel-category-card image-category-card beach-card">
                     <img
                         src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=90"
-                        alt="Playas"
+                        alt={t("home.beachTitle")}
                     />
 
                     <div>
-                        <span>Experiencias costeras</span>
-                        <h3>Playas</h3>
-                        <p>Costas, sol y arena para disfrutar Costa Rica.</p>
+                        <span>{t("home.beachSpan")}</span>
+                        <h3>{t("home.beachTitle")}</h3>
+                        <p>{t("home.beachText")}</p>
                     </div>
                 </div>
 
                 <div className="travel-category-card image-category-card forest-card">
                     <img
                         src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=600&q=90"
-                        alt="Bosques"
+                        alt={t("home.forestTitle")}
                     />
 
                     <div>
-                        <span>Naturaleza viva</span>
-                        <h3>Bosques</h3>
-                        <p>Senderos, reservas naturales y paisajes verdes.</p>
+                        <span>{t("home.forestSpan")}</span>
+                        <h3>{t("home.forestTitle")}</h3>
+                        <p>{t("home.forestText")}</p>
                     </div>
                 </div>
 
                 <div className="travel-category-card image-category-card culture-card">
                     <img
                         src="https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=600&q=90"
-                        alt="Cultura"
+                        alt={t("home.cultureTitle")}
                     />
 
                     <div>
-                        <span>Historia local</span>
-                        <h3>Cultura</h3>
-                        <p>Tradiciones, arquitectura e identidad del pueblo.</p>
+                        <span>{t("home.cultureSpan")}</span>
+                        <h3>{t("home.cultureTitle")}</h3>
+                        <p>{t("home.cultureText")}</p>
                     </div>
                 </div>
 
                 <div className="travel-category-card image-category-card mountain-card">
                     <img
                         src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=600&q=90"
-                        alt="Volcanes"
+                        alt={t("home.mountainTitle")}
                     />
 
                     <div>
-                        <span>Aventura natural</span>
-                        <h3>Volcanes</h3>
-                        <p>Volcán Arenal, Rincón de la Vieja y paisajes únicos.</p>
+                        <span>{t("home.mountainSpan")}</span>
+                        <h3>{t("home.mountainTitle")}</h3>
+                        <p>{t("home.mountainText")}</p>
                     </div>
                 </div>
             </section>
@@ -145,40 +157,48 @@ function Home() {
             <main className="container" id="pueblos">
                 <div className="section-header">
                     <span className="section-kicker">
-                        Destinos disponibles
+                        {t("home.destinationKicker")}
                     </span>
 
                     <h2 className="section-title">
-                        Pueblos registrados
+                        {t("home.destinationTitle")}
                     </h2>
 
                     <p className="section-subtitle">
-                        Seleccioná un destino para conocer sus principales lugares turísticos.
+                        {t("home.destinationSubtitle")}
                     </p>
                 </div>
 
-                {error && (
-                    <div className="alert alert-danger text-center">
-                        {error}
-                    </div>
+                {loading && (
+                    <LoadingSpinner text={t("home.loading")} />
                 )}
 
-                <div className="row justify-content-center">
-                    {filteredTowns.length > 0 ? (
-                        filteredTowns.map((town) => (
-                            <div
-                                className="col-md-6 col-lg-4 mb-4"
-                                key={town.id}
-                            >
-                                <PlaceCard town={town} />
-                            </div>
-                        ))
-                    ) : (
-                        <p className="text-center text-muted">
-                            No hay pueblos activos disponibles o no se encontraron resultados.
-                        </p>
-                    )}
-                </div>
+                {!loading && error && (
+                    <ErrorMessage
+                        message={error}
+                        onRetry={loadTowns}
+                        retryText={t("buttons.retry")}
+                    />
+                )}
+
+                {!loading && !error && (
+                    <div className="row justify-content-center">
+                        {filteredTowns.length > 0 ? (
+                            filteredTowns.map((town) => (
+                                <div
+                                    className="col-12 col-md-6 col-lg-4 mb-4"
+                                    key={town.id}
+                                >
+                                    <PlaceCard town={town} />
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-center text-muted">
+                                {t("home.noTowns")}
+                            </p>
+                        )}
+                    </div>
+                )}
             </main>
         </>
     );

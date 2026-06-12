@@ -1,41 +1,50 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function Error404() {
+    const { t } = useTranslation();
+
     return (
-        <div className="error-page">
-            <div className="glass-card">
-                <span className="section-kicker">Ruta no encontrada</span>
+        <main className="error-page">
+            <div className="glass-card" role="alert">
+                <span className="section-kicker">{t("notFound.kicker")}</span>
 
                 <h1 className="section-title mt-2">
                     404
                 </h1>
 
-                <h3>¡Ups! Pueblo no encontrado</h3>
+                <h3>{t("notFound.title")}</h3>
 
                 <p className="section-subtitle mb-4">
-                    El código QR escaneado no corresponde a un pueblo registrado,
-                    la ruta no existe o la sesión pudo haber expirado.
+                    {t("notFound.text")}
                 </p>
 
                 <div className="alert alert-warning">
-                    ⚠️ Posibles causas: QR inválido, pueblo eliminado, sin conexión
-                    a internet o sesión expirada.
+                    {t("notFound.warning")}
                 </div>
 
-                <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
+                <div
+                    style={{
+                        display: "flex",
+                        gap: "12px",
+                        justifyContent: "center",
+                        flexWrap: "wrap"
+                    }}
+                >
                     <Link className="btn-tour" to="/">
-                        Volver al inicio
+                        {t("buttons.backHome")}
                     </Link>
 
                     <button
+                        type="button"
                         className="btn-tour"
                         onClick={() => window.location.reload()}
                     >
-                        Reintentar conexión
+                        {t("buttons.retry")}
                     </button>
                 </div>
             </div>
-        </div>
+        </main>
     );
 }
 

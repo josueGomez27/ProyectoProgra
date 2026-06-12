@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import api from "../api/api";
+import LoadingSpinner from "../components/LoadingSpinner";
+import ErrorMessage from "../components/ErrorMessage";
 
 const getCategoryIcon = (color = "#064635") => {
     return L.divIcon({
@@ -67,12 +70,16 @@ function FlyToPlace({ selectedPlace }) {
 }
 
 function LocateUserButton() {
+    const { t } = useTranslation();
     const map = useMap();
     const [userPosition, setUserPosition] = useState(null);
+    const [locationError, setLocationError] = useState("");
 
     const locateUser = () => {
+        setLocationError("");
+
         if (!navigator.geolocation) {
-            alert("Tu navegador no soporta geolocalización.");
+            setLocationError(t("places.geoUnsupported"));
             return;
         }
 
@@ -89,7 +96,7 @@ function LocateUserButton() {
                 });
             },
             () => {
-                alert("No se pudo obtener tu ubicación. Revisa los permisos del navegador.");
+                setLocationError(t("places.geoError"));
             }
         );
     };
@@ -106,13 +113,31 @@ function LocateUserButton() {
                     zIndex: 1000,
                 }}
                 onClick={locateUser}
+                aria-label={t("buttons.myLocation")}
             >
-                📍 Mi ubicación
+                📍 {t("buttons.myLocation")}
             </button>
+
+            {locationError && (
+                <div
+                    className="alert alert-warning py-2 px-3"
+                    style={{
+                        position: "absolute",
+                        top: "65px",
+                        right: "15px",
+                        zIndex: 1000,
+                        maxWidth: "280px",
+                        fontSize: "0.85rem",
+                    }}
+                    role="alert"
+                >
+                    {locationError}
+                </div>
+            )}
 
             {userPosition && (
                 <Marker position={userPosition} icon={getUserLocationIcon()}>
-                    <Popup>Estás aquí</Popup>
+                    <Popup>{t("places.youAreHere")}</Popup>
                 </Marker>
             )}
         </>
@@ -120,6 +145,7 @@ function LocateUserButton() {
 }
 
 function Places() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -133,6 +159,8 @@ function Places() {
     const [sortBy, setSortBy] = useState(searchParams.get("sort") || "name");
     const [selectedPlace, setSelectedPlace] = useState(null);
     const [message, setMessage] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         loadPlaces();
@@ -158,7 +186,9 @@ function Places() {
 
     const loadPlaces = async () => {
         try {
+            setLoading(true);
             setMessage("");
+            setError("");
 
             const [townRes, placesRes] = await Promise.all([
                 api.get(`/towns/${id}`),
@@ -168,7 +198,7 @@ function Places() {
             if (!townRes.data || townRes.data.active === false) {
                 setTown(null);
                 setPlaces([]);
-                setMessage("Este pueblo no está activo o no se encuentra disponible.");
+                setMessage(t("places.inactiveTown"));
                 return;
             }
 
@@ -180,13 +210,15 @@ function Places() {
             setPlaces(activePlaces);
 
             if (activePlaces.length === 0) {
-                setMessage("Este pueblo no tiene lugares turísticos activos disponibles.");
+                setMessage(t("places.noActivePlaces"));
             }
         } catch (error) {
             console.error("Error cargando lugares", error);
             setTown(null);
             setPlaces([]);
-            setMessage("No se pudieron cargar los lugares turísticos.");
+            setError(t("places.loadError"));
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -250,43 +282,64 @@ function Places() {
         <>
             <section className="places-banner">
                 <div className="container">
-                    <span className="places-tag">Lugares para visitar</span>
+                    <span className="places-tag">{t("places.tag")}</span>
 
                     <h1>
                         {town
-                            ? `Lugares turísticos en ${town.name}`
-                            : "Destino no disponible"}
+                            ? t("places.titleWithTown", { town: town.name })
+                            : t("places.unavailableTitle")}
                     </h1>
 
-                    <p>
-                        Descubrí los sitios más representativos, su ubicación y la
-                        información principal para visitarlos.
-                    </p>
+                    <p>{t("places.description")}</p>
                 </div>
             </section>
 
             <main className="container places-section">
-                {message && (
-                    <div className="alert alert-warning text-center">
+                {loading && (
+                    <LoadingSpinner text={t("places.loading")} />
+                )}
+
+                {!loading && error && (
+                    <ErrorMessage
+                        message={error}
+                        onRetry={loadPlaces}
+                        retryText={t("buttons.retry")}
+                    />
+                )}
+
+                {!loading && !error && message && (
+                    <div className="alert alert-warning text-center" role="alert">
                         {message}
                     </div>
                 )}
 
-                {town && (
+                {!loading && !error && town && (
                     <>
                         <div className="places-filter-box">
+                            <label htmlFor="place-search" className="visually-hidden">
+                                {t("places.filterPlaceholder")}
+                            </label>
+
                             <input
+                                id="place-search"
                                 type="text"
-                                placeholder="Buscar lugar, dirección, descripción o categoría..."
+                                placeholder={t("places.filterPlaceholder")}
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
+                                aria-label={t("places.filterPlaceholder")}
                             />
 
+                            <label htmlFor="category-filter" className="visually-hidden">
+                                {t("places.allCategories")}
+                            </label>
+
                             <select
+                                id="category-filter"
                                 value={categoryFilter}
                                 onChange={(e) => setCategoryFilter(e.target.value)}
+                                aria-label={t("places.allCategories")}
                             >
-                                <option value="ALL">Todas las categorías</option>
+                                <option value="ALL">{t("places.allCategories")}</option>
 
                                 {categories.map((category) => (
                                     <option key={category.id} value={category.id}>
@@ -295,18 +348,24 @@ function Places() {
                                 ))}
                             </select>
 
+                            <label htmlFor="sort-filter" className="visually-hidden">
+                                {t("places.sortName")}
+                            </label>
+
                             <select
+                                id="sort-filter"
                                 value={sortBy}
                                 onChange={(e) => setSortBy(e.target.value)}
+                                aria-label={t("places.sortName")}
                             >
-                                <option value="name">Ordenar por nombre</option>
-                                <option value="category">Ordenar por categoría</option>
-                                <option value="createdAt">Ordenar por fecha de creación</option>
+                                <option value="name">{t("places.sortName")}</option>
+                                <option value="category">{t("places.sortCategory")}</option>
+                                <option value="createdAt">{t("places.sortCreatedAt")}</option>
                             </select>
                         </div>
 
                         <p className="text-center text-muted mt-3">
-                            {filteredPlaces.length} lugares encontrados
+                            {t("places.count", { count: filteredPlaces.length })}
                         </p>
 
                         <div className="places-actions">
@@ -315,7 +374,7 @@ function Places() {
                                 className={view === "list" ? "view-btn active" : "view-btn"}
                                 onClick={() => setView("list")}
                             >
-                                Vista Lista
+                                {t("places.listView")}
                             </button>
 
                             <button
@@ -323,7 +382,7 @@ function Places() {
                                 className={view === "map" ? "view-btn active" : "view-btn"}
                                 onClick={() => setView("map")}
                             >
-                                Vista Mapa
+                                {t("places.mapView")}
                             </button>
                         </div>
 
@@ -331,12 +390,12 @@ function Places() {
                             <div className="row">
                                 {filteredPlaces.length === 0 ? (
                                     <p className="text-center text-muted">
-                                        No hay lugares activos que coincidan con la búsqueda o categoría.
+                                        {t("places.noPlaces")}
                                     </p>
                                 ) : (
                                     filteredPlaces.map((place) => (
                                         <div
-                                            className="col-md-6 col-lg-4 mb-4"
+                                            className="col-12 col-md-6 col-lg-4 mb-4"
                                             key={place.id}
                                         >
                                             <div className="place-tour-card h-100 card shadow-sm border-0">
@@ -346,7 +405,7 @@ function Places() {
                                                         "https://www.travelexcellence.com/wp-content/uploads/2020/09/liberia-guanacaste-01.jpg"
                                                     }
                                                     className="card-img-top"
-                                                    alt={place.name}
+                                                    alt={`Imagen de ${place.name}`}
                                                     style={{
                                                         height: "220px",
                                                         objectFit: "cover",
@@ -363,7 +422,7 @@ function Places() {
                                                                 place.category?.color || "#064635",
                                                         }}
                                                     >
-                                                        {place.category?.name || "Turístico"}
+                                                        {place.category?.name || t("places.defaultCategory")}
                                                     </span>
 
                                                     <h3 className="card-title h5 mb-2 fw-bold text-dark">
@@ -392,7 +451,7 @@ function Places() {
                                                             onClick={() => handlePlaceClick(place)}
                                                             style={{ alignSelf: "flex-start" }}
                                                         >
-                                                            Ver en mapa
+                                                            {t("places.viewOnMap")}
                                                         </button>
                                                     )}
                                                 </div>
@@ -406,26 +465,32 @@ function Places() {
                         {view === "map" && (
                             <div className="map-layout">
                                 <div className="map-list">
-                                    <h3>Lugares ubicados</h3>
+                                    <h3>{t("places.locatedPlaces")}</h3>
 
                                     {validPlaces.length === 0 ? (
                                         <p className="text-muted">
-                                            No hay coordenadas registradas para esta búsqueda.
+                                            {t("places.noCoordinates")}
                                         </p>
                                     ) : (
                                         validPlaces.map((place, index) => (
-                                            <div
+                                            <button
+                                                type="button"
                                                 className="map-place-item"
                                                 key={place.id}
                                                 onClick={() => handlePlaceClick(place)}
-                                                style={{ cursor: "pointer" }}
+                                                style={{
+                                                    cursor: "pointer",
+                                                    width: "100%",
+                                                    textAlign: "left",
+                                                    border: "none",
+                                                }}
                                             >
                                                 <img
                                                     src={
                                                         place.imageUrl ||
                                                         "https://www.travelexcellence.com/wp-content/uploads/2020/09/liberia-guanacaste-01.jpg"
                                                     }
-                                                    alt={place.name}
+                                                    alt={`Imagen de ${place.name}`}
                                                 />
 
                                                 <div>
@@ -442,6 +507,7 @@ function Places() {
                                                         }}
                                                     >
                                                         <div
+                                                            aria-hidden="true"
                                                             style={{
                                                                 width: "12px",
                                                                 height: "12px",
@@ -463,11 +529,11 @@ function Places() {
                                                                 textTransform: "uppercase",
                                                             }}
                                                         >
-                                                            {place.category?.name || "Turístico"}
+                                                            {place.category?.name || t("places.defaultCategory")}
                                                         </span>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </button>
                                         ))
                                     )}
                                 </div>
@@ -504,7 +570,7 @@ function Places() {
                                                                 place.imageUrl ||
                                                                 "https://www.travelexcellence.com/wp-content/uploads/2020/09/liberia-guanacaste-01.jpg"
                                                             }
-                                                            alt={place.name}
+                                                            alt={`Imagen de ${place.name}`}
                                                             style={{
                                                                 width: "100%",
                                                                 height: "110px",
@@ -538,7 +604,7 @@ function Places() {
                                                                 textTransform: "uppercase",
                                                             }}
                                                         >
-                                                            {place.category?.name || "Turístico"}
+                                                            {place.category?.name || t("places.defaultCategory")}
                                                         </span>
 
                                                         <p
@@ -572,7 +638,7 @@ function Places() {
                                                                 fontSize: "0.8rem",
                                                             }}
                                                         >
-                                                            Ver información completa
+                                                            {t("places.fullInfo")}
                                                         </Link>
                                                     </div>
                                                 </Popup>
