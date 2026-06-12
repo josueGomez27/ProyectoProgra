@@ -1438,3 +1438,204 @@ img {
         padding: 35px 18px;
     }
 }
+/* =========================
+   RESPONSIVE MOBILE FIX
+   ========================= */
+
+@media (max-width: 768px) {
+    body {
+        overflow-x: hidden;
+    }
+
+    .custom-navbar.travel-navbar {
+        padding: 12px 14px;
+    }
+
+    .nav-content {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .brand-logo {
+        width: 100%;
+        justify-content: center;
+        font-size: 1.55rem;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .brand-icon {
+        width: 52px;
+        height: 52px;
+        font-size: 1.4rem;
+        flex-shrink: 0;
+    }
+
+    .nav-links {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        align-items: stretch;
+    }
+
+    .nav-pill,
+    .logout-pill,
+    .nav-pill-gold {
+        width: 100%;
+        justify-content: center;
+        font-size: 0.95rem;
+        padding: 11px 12px;
+        border-radius: 18px;
+        white-space: nowrap;
+    }
+
+    .user-pill {
+        grid-column: 1 / -1;
+        width: 100%;
+        justify-content: center;
+        padding: 10px 12px;
+        border-radius: 22px;
+    }
+
+    .user-avatar {
+        width: 46px;
+        height: 46px;
+    }
+
+    .user-pill strong {
+        font-size: 0.95rem;
+    }
+
+    .user-pill span {
+        font-size: 0.8rem;
+    }
+
+    .nav-links .d-flex {
+        grid-column: 1 / -1;
+        justify-content: center;
+        gap: 12px !important;
+    }
+
+    .nav-links .btn-outline-light {
+        min-width: 58px;
+        padding: 8px 12px;
+        font-size: 0.95rem;
+        border-radius: 12px;
+    }
+
+    .travel-hero {
+        min-height: auto;
+        padding: 70px 0 45px;
+    }
+
+    .travel-hero-content {
+        display: flex;
+        flex-direction: column;
+        gap: 26px;
+        padding-inline: 18px;
+    }
+
+    .hero-left {
+        width: 100%;
+        text-align: left;
+    }
+
+    .travel-kicker {
+        font-size: 0.95rem;
+        padding: 10px 18px;
+        border-radius: 999px;
+        max-width: 100%;
+    }
+
+    .hero-left h1 {
+        font-size: clamp(2.3rem, 12vw, 3.4rem);
+        line-height: 1.02;
+        margin-top: 22px;
+        margin-bottom: 18px;
+        letter-spacing: -1.5px;
+    }
+
+    .hero-left p {
+        font-size: 1.05rem;
+        line-height: 1.6;
+        max-width: 100%;
+    }
+
+    .hero-search-card {
+        width: 100%;
+        padding: 18px;
+        border-radius: 22px;
+        margin-top: 24px;
+    }
+
+    .hero-search-row {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .hero-search-row input,
+    .hero-search-btn {
+        width: 100%;
+        font-size: 0.95rem;
+    }
+
+    .hero-feature-card {
+        display: none;
+    }
+
+    .travel-categories {
+        padding-inline: 18px;
+    }
+
+    .image-categories {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .section-header {
+        padding-inline: 12px;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        line-height: 1.1;
+    }
+
+    .section-subtitle {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 430px) {
+    .brand-logo {
+        font-size: 1.35rem;
+    }
+
+    .brand-icon {
+        width: 46px;
+        height: 46px;
+    }
+
+    .nav-pill,
+    .logout-pill,
+    .nav-pill-gold {
+        font-size: 0.88rem;
+        padding: 10px 8px;
+    }
+
+    .hero-left h1 {
+        font-size: 2.55rem;
+    }
+
+    .hero-left p {
+        font-size: 1rem;
+    }
+
+    .travel-hero {
+        padding-top: 55px;
+    }
+}
