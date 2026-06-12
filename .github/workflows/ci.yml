@@ -1,48 +1,80 @@
 name: CI Proyecto Turismo Local
 
+# El pipeline se ejecuta cuando hay push o pull request
+# hacia las ramas principales del proyecto
 on:
   push:
-    branches: [ main, master, develop ]
+    branches:
+      - main
+      - master
+      - develop
+
   pull_request:
-    branches: [ main, master, develop ]
+    branches:
+      - main
+      - master
+      - develop
+
+# Rutas de las carpetas principales del proyecto
+env:
+  FRONTEND_DIR: turismo-local-frontend
+  BACKEND_DIR: turismolocal
 
 jobs:
-  backend:
+  # FRONTEND: React + Vite
+  frontend:
+    name: Frontend - Lint y Build
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: ./turismolocal
+    steps:
+      # Descarga el código del repositorio
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      # Configura Node.js para compilar el frontend
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ${{ env.FRONTEND_DIR }}/package-lock.json
+
+      # Instala dependencias exactas desde package-lock.json
+      - name: Instalar dependencias del frontend
+        working-directory: ${{ env.FRONTEND_DIR }}
+        run: npm ci
+
+      # Ejecuta ESLint para revisar errores de código
+      - name: Ejecutar linter del frontend
+        working-directory: ${{ env.FRONTEND_DIR }}
+        run: npm run lint
+
+      # Genera el build final del frontend
+      - name: Construir frontend
+        working-directory: ${{ env.FRONTEND_DIR }}
+        run: npm run build
+
+  # BACKEND: Spring Boot
+  backend:
+    name: Backend - Build
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      # Descarga el código del repositorio
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
 
-      - name: Configurar Java 17
+      # Configura Java para el backend
+      - name: Configurar Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
+          cache: maven
 
+      # Compila y empaqueta el backend
+      # Se omiten tests porque el backend depende de variables externas
+      # como base de datos, OAuth y configuración de producción.
       - name: Compilar backend
+        working-directory: ${{ env.BACKEND_DIR }}
         run: mvn clean package -DskipTests
-
-  frontend:
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: ./turismo-local-frontend
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Configurar Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Instalar dependencias
-        run: npm install
-
-      - name: Compilar frontend
-        run: npm run build
