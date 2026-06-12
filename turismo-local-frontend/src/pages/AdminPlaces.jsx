@@ -280,7 +280,6 @@ function AdminPlaces() {
                                     <th>Estado</th>
                                     <th>Acciones</th>
                                 </tr>
-
                         </thead>
 
                         <tbody>
