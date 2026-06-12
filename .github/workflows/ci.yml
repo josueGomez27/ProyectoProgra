@@ -1,48 +1,79 @@
 name: CI Proyecto Turismo Local
 
+# Define cuándo se ejecuta el pipeline
+# En este caso corre cuando se hace push o pull request hacia ramas principales
 on:
   push:
-    branches: [ main, master, develop ]
+    branches:
+      - main
+      - master
+      - develop
+
   pull_request:
-    branches: [ main, master, develop ]
+    branches:
+      - main
+      - master
+      - develop
+
+# Variables globales para no repetir las rutas de las carpetas
+env:
+  FRONTEND_DIR: turismo-local-frontend
+  BACKEND_DIR: turismolocal
 
 jobs:
-  backend:
+  # JOB DEL FRONTEND
+  frontend:
+    name: Frontend - Lint y Build
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: ./turismolocal
+    steps:
+      # Descarga el código del repositorio
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      # Configura Node.js para poder compilar el proyecto React + Vite
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ${{ env.FRONTEND_DIR }}/package-lock.json
+
+      # Instala las dependencias usando package-lock.json
+      # npm ci es más estable para pipelines que npm install
+      - name: Instalar dependencias del frontend
+        working-directory: ${{ env.FRONTEND_DIR }}
+        run: npm ci
+
+      # Ejecuta ESLint para revisar errores de código en React
+      - name: Ejecutar linter del frontend
+        working-directory: ${{ env.FRONTEND_DIR }}
+        run: npm run lint
+
+      # Genera el build de producción del frontend
+      - name: Construir frontend
+        working-directory: ${{ env.FRONTEND_DIR }}
+        run: npm run build
+
+  # JOB DEL BACKEND
+  backend:
+    name: Backend - Build y Tests
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      # Descarga el código del repositorio
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
 
-      - name: Configurar Java 17
+      # Configura Java para compilar el backend Spring Boot.
+      - name: Configurar Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
+          cache: maven
 
-      - name: Compilar backend
-        run: mvn clean package -DskipTests
-
-  frontend:
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: ./turismo-local-frontend
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Configurar Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Instalar dependencias
-        run: npm install
-
-      - name: Compilar frontend
-        run: npm run build
+      # Compila el backend y ejecuta las pruebas configuradas
+      - name: Compilar y probar backend
+        working-directory: ${{ env.BACKEND_DIR }}
+        run: mvn clean verify
