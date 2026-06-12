@@ -28,15 +28,14 @@ public class SecurityConfig {
                         .requestMatchers("/", "/login", "/error").permitAll()
                         .requestMatchers("/api/users/me").permitAll()
 
-                        // Se permite temporalmente para que el panel admin funcione con OAuth
                         .requestMatchers("/api/users/**").permitAll()
 
-                        // Rutas necesarias del sistema
                         .requestMatchers(
                                 "/api/towns/**",
                                 "/api/places/**",
                                 "/api/categories/**",
-                                "/api/qrcodes/**"
+                                "/api/qrcodes/**",
+                                "/api/images/**"
                         ).permitAll()
 
                         .anyRequest().permitAll()

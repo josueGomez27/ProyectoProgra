@@ -38,3 +38,8 @@ spring:
               - profile
             client-name: Cliente web 1
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
