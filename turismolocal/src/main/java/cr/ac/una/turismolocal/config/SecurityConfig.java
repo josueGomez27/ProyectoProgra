@@ -18,7 +18,6 @@ public class SecurityConfig {
     private static final String FRONTEND_PROD =
             "https://proyecto-progra-three.vercel.app";
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -29,15 +28,14 @@ public class SecurityConfig {
                         .requestMatchers("/", "/login", "/error").permitAll()
                         .requestMatchers("/api/users/me").permitAll()
 
-                        // Solo ADMIN puede gestionar usuarios
-                        .requestMatchers("/api/users/**").hasRole("ADMIN")
+                        .requestMatchers("/api/users/**").permitAll()
 
-                        // Rutas públicas necesarias para mostrar lugares
                         .requestMatchers(
                                 "/api/towns/**",
                                 "/api/places/**",
                                 "/api/categories/**",
-                                "/api/qrcodes/**"
+                                "/api/qrcodes/**",
+                                "/api/images/**"
                         ).permitAll()
 
                         .anyRequest().permitAll()

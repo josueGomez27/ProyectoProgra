@@ -5,12 +5,17 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "places")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Place {
 
     @Id
@@ -52,7 +57,10 @@ public class Place {
     private Boolean active;
 
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
+
+    private String createdBy;
 
     @JsonManagedReference(value = "place-images")
     @OneToMany(mappedBy = "place")
@@ -61,6 +69,15 @@ public class Place {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
-        if (this.active == null) this.active = true;
+        this.updatedAt = LocalDateTime.now();
+
+        if (this.active == null) {
+            this.active = true;
+        }
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 }

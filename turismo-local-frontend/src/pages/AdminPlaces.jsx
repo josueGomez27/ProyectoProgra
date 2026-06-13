@@ -4,7 +4,7 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import api from "../api/api";
 import "leaflet/dist/leaflet.css";
-
+// Icono que se usa para marcar la ubicación en el mapa
 const markerIcon = new L.Icon({
     iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
     shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
@@ -13,14 +13,14 @@ const markerIcon = new L.Icon({
     popupAnchor: [1, -34],
     shadowSize: [41, 41],
 });
-
+// Componente que permite marcar una ubicación al hacer clic en el mapa
 function LocationMarker({ position, setPosition, setForm }) {
     useMapEvents({
         click(e) {
             const { lat, lng } = e.latlng;
-
+        // Guarda la posición del marcador
             setPosition([lat, lng]);
-
+        // Guarda latitud y longitud en el formulario
             setForm((prev) => ({
                 ...prev,
                 latitude: lat.toFixed(6),
@@ -35,15 +35,18 @@ function LocationMarker({ position, setPosition, setForm }) {
 }
 
 function AdminPlaces() {
+    // Usuario actual guardado cuando se inicia sesión
     const currentUser = JSON.parse(localStorage.getItem("user"));
+    // Estados principales para cargar datos de la base de datos
     const [places, setPlaces] = useState([]);
     const [towns, setTowns] = useState([]);
     const [categories, setCategories] = useState([]);
-
+    // Estados para controlar formulario, edición, mapa y carga de imagen
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [mapMarkerPos, setMapMarkerPos] = useState(null);
-
+    const [uploadingImage, setUploadingImage] = useState(false);
+    // Datos del formulario de lugares
     const [form, setForm] = useState({
         name: "",
         categoryId: "",
@@ -53,7 +56,7 @@ function AdminPlaces() {
         latitude: "",
         longitude: ""
     });
-
+    // Carga lugares, pueblos y categorías desde el backend
     const loadData = async () => {
         try {
             const [placesRes, townsRes, categoriesRes] = await Promise.all([
@@ -73,10 +76,11 @@ function AdminPlaces() {
     useEffect(() => {
         loadData();
     }, []);
-
+    // Abre el formulario para agregar un lugar nuevo
     const openAddForm = () => {
         setEditingId(null);
         setMapMarkerPos(null);
+        setUploadingImage(false);
 
         setForm({
             name: "",
@@ -90,10 +94,11 @@ function AdminPlaces() {
 
         setShowForm(true);
     };
-
+    // Abre el formulario con los datos del lugar seleccionado
     const openEditForm = (place) => {
         setEditingId(place.id);
-
+        setUploadingImage(false);
+    // Si el lugar tiene coordenadas, se muestran en el mapa
         if (place.latitude && place.longitude) {
             setMapMarkerPos([
                 Number(place.latitude),
@@ -104,9 +109,9 @@ function AdminPlaces() {
         }
 
         setForm({
-            name: place.name,
+            name: place.name || "",
             categoryId: place.category?.id || "",
-            address: place.address,
+            address: place.address || "",
             imageUrl: place.imageUrl || "",
             townId: place.town?.id || "",
             latitude: place.latitude || "",
@@ -115,9 +120,50 @@ function AdminPlaces() {
 
         setShowForm(true);
     };
+    // Sube la imagen al backend para que se guarde en Cloudinary
+    const uploadImage = async (e) => {
+        const file = e.target.files[0];
 
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            setUploadingImage(true);
+
+            const response = await api.post("/images/upload", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+    // La URL que devuelve Cloudinary se guarda en el formulario
+            setForm((prev) => ({
+                ...prev,
+                imageUrl: response.data.imageUrl,
+            }));
+
+            alert("Imagen subida correctamente.");
+        } catch (error) {
+            console.error("Error subiendo imagen:", error);
+            alert("No se pudo subir la imagen.");
+        } finally {
+            setUploadingImage(false);
+        }
+    };
+    // Guarda un lugar nuevo o actualiza uno existente
     const savePlace = async (e) => {
         e.preventDefault();
+
+        if (uploadingImage) {
+            alert("Espere a que termine de subir la imagen.");
+            return;
+        }
+
+        if (!form.imageUrl) {
+            alert("Debe subir una imagen o ingresar una URL.");
+            return;
+        }
 
         const payload = {
             name: form.name,
@@ -129,7 +175,10 @@ function AdminPlaces() {
             townId: parseInt(form.townId),
             categoryId: parseInt(form.categoryId),
             latitude: form.latitude ? parseFloat(form.latitude) : null,
-            longitude: form.longitude ? parseFloat(form.longitude) : null
+            longitude: form.longitude ? parseFloat(form.longitude) : null,
+
+           // Auditoría: guarda quién creó el registro
+            createdBy: currentUser?.name
         };
 
         try {
@@ -146,7 +195,7 @@ function AdminPlaces() {
             alert("No se pudo guardar el lugar.");
         }
     };
-
+// Elimina un lugar con confirmación antes de borrar
     const deletePlace = async (id) => {
         if (confirm("¿Seguro que desea eliminar este lugar?")) {
             try {
@@ -157,7 +206,7 @@ function AdminPlaces() {
             }
         }
     };
-
+    // Cambia el estado del lugar entre activo e inactivo
     const toggleStatus = async (place) => {
         try {
             const payload = {
@@ -168,7 +217,10 @@ function AdminPlaces() {
                 townId: place.town?.id || null,
                 categoryId: place.category?.id || null,
                 latitude: place.latitude || null,
-                longitude: place.longitude || null
+                longitude: place.longitude || null,
+
+                // Auditoría Se conserva el usuario que creó el registro
+                createdBy: place.createdBy
             };
 
             await api.put(`/places/${place.id}`, payload);
@@ -177,28 +229,32 @@ function AdminPlaces() {
             console.error("Error al cambiar estado:", error);
         }
     };
-
+    // Centro inicial del mapa
     const defaultCenter = mapMarkerPos || [10.6346, -85.4377];
 
     return (
         <div className="admin-page">
-           <aside className="admin-sidebar">
-               <h3>Administración</h3>
+            <aside className="admin-sidebar">
+                <h3>Administración</h3>
 
-               <Link to="/admin">Dashboard</Link>
-               <Link to="/admin/towns">Pueblos</Link>
-               <Link className="active" to="/admin/places">Lugares</Link>
-               <Link to="/admin/categories">Categorías</Link>
-               {currentUser?.role === "SUPER_ADMIN" && (
-                   <Link to="/admin/users">Usuarios</Link>
-               )}
-              <Link to="/admin/stats">Estadísticas</Link>
-           </aside>
+                <Link to="/admin">Dashboard</Link>
+                <Link to="/admin/towns">Pueblos</Link>
+                <Link className="active" to="/admin/places">Lugares</Link>
+                <Link to="/admin/categories">Categorías</Link>
+
+                {currentUser?.role === "SUPER_ADMIN" && (
+                    <Link to="/admin/users">Usuarios</Link>
+                )}
+
+                <Link to="/admin/stats">Estadísticas</Link>
+            </aside>
 
             <main className="admin-content">
                 <div className="admin-header">
                     <div>
-                        <span className="section-kicker">Panel de administración</span>
+                        <span className="section-kicker">
+                            Panel de administración
+                        </span>
                         <h1>Gestión de lugares turísticos</h1>
                     </div>
 
@@ -208,17 +264,22 @@ function AdminPlaces() {
                 </div>
 
                 <div className="admin-table-card">
+
                     <table className="admin-table places-table">
-                        <thead>
-                            <tr>
-                                <th>Imagen</th>
-                                <th>Nombre</th>
-                                <th>Pueblo</th>
-                                <th>Categoría</th>
-                                <th>Dirección</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
+
+                            <thead>
+                                <tr>
+                                    <th>Imagen</th>
+                                    <th>Nombre</th>
+                                    <th>Pueblo</th>
+                                    <th>Categoría</th>
+                                    <th>Dirección</th>
+                                    <th>Creado por</th>
+                                    <th>Creado</th>
+                                    <th>Modificado</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
                         </thead>
 
                         <tbody>
@@ -247,6 +308,21 @@ function AdminPlaces() {
                                     </td>
 
                                     <td>{place.address}</td>
+                                    <td>{place.createdBy || "Sistema"}</td>
+
+                                    <td>
+                                        {place.createdAt
+                                            ? new Date(place.createdAt).toLocaleString()
+                                            : "-"}
+                                    </td>
+
+                                    <td>
+                                        {place.updatedAt
+                                            ? new Date(place.updatedAt).toLocaleString()
+                                            : "-"}
+                                    </td>
+
+
 
                                     <td>
                                         <button
@@ -258,11 +334,17 @@ function AdminPlaces() {
                                     </td>
 
                                     <td>
-                                        <button className="edit-btn" onClick={() => openEditForm(place)}>
+                                        <button
+                                            className="edit-btn"
+                                            onClick={() => openEditForm(place)}
+                                        >
                                             Editar
                                         </button>
 
-                                        <button className="delete-btn" onClick={() => deletePlace(place.id)}>
+                                        <button
+                                            className="delete-btn"
+                                            onClick={() => deletePlace(place.id)}
+                                        >
                                             Eliminar
                                         </button>
                                     </td>
@@ -275,27 +357,36 @@ function AdminPlaces() {
 
             {showForm && (
                 <div className="modal-backdrop-custom">
-                    <div className="admin-modal" style={{ maxWidth: "900px", width: "90%" }}>
+                    <div
+                        className="admin-modal"
+                        style={{ maxWidth: "900px", width: "90%" }}
+                    >
                         <h2>{editingId ? "Editar lugar" : "Agregar nuevo lugar"}</h2>
 
                         <form onSubmit={savePlace}>
-                            <div style={{
-                                display: "grid",
-                                gridTemplateColumns: "1fr 1fr",
-                                gap: "20px"
-                            }}>
+                            <div
+                                style={{
+                                    display: "grid",
+                                    gridTemplateColumns: "1fr 1fr",
+                                    gap: "20px"
+                                }}
+                            >
                                 <div>
                                     <label>Nombre</label>
                                     <input
                                         value={form.name}
-                                        onChange={(e) => setForm({ ...form, name: e.target.value })}
+                                        onChange={(e) =>
+                                            setForm({ ...form, name: e.target.value })
+                                        }
                                         required
                                     />
 
                                     <label>Pueblo</label>
                                     <select
                                         value={form.townId}
-                                        onChange={(e) => setForm({ ...form, townId: e.target.value })}
+                                        onChange={(e) =>
+                                            setForm({ ...form, townId: e.target.value })
+                                        }
                                         required
                                     >
                                         <option value="">Seleccione un pueblo...</option>
@@ -309,7 +400,9 @@ function AdminPlaces() {
                                     <label>Categoría</label>
                                     <select
                                         value={form.categoryId}
-                                        onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
+                                        onChange={(e) =>
+                                            setForm({ ...form, categoryId: e.target.value })
+                                        }
                                         required
                                     >
                                         <option value="">Seleccione una categoría...</option>
@@ -323,28 +416,60 @@ function AdminPlaces() {
                                     <label>Dirección</label>
                                     <input
                                         value={form.address}
-                                        onChange={(e) => setForm({ ...form, address: e.target.value })}
+                                        onChange={(e) =>
+                                            setForm({ ...form, address: e.target.value })
+                                        }
                                         required
                                     />
+
+                                    <label>Imagen del lugar</label>
+                                    {/* Se selecciona una imagen del equipo y se envía al backend para subirla a Cloudinary */}
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={uploadImage}
+                                    />
+
+                                    {uploadingImage && (
+                                        <small>Subiendo imagen...</small>
+                                    )}
 
                                     <label>URL de imagen</label>
                                     <input
                                         value={form.imageUrl}
-                                        onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+                                        onChange={(e) =>
+                                            setForm({ ...form, imageUrl: e.target.value })
+                                        }
                                         required
                                     />
+
+                                    {form.imageUrl && (
+                                        <img
+                                            src={form.imageUrl}
+                                            alt="Vista previa"
+                                            style={{
+                                                width: "100%",
+                                                height: "140px",
+                                                objectFit: "cover",
+                                                borderRadius: "8px",
+                                                marginTop: "10px"
+                                            }}
+                                        />
+                                    )}
                                 </div>
 
                                 <div>
                                     <label>Ubicación Geográfica</label>
 
-                                    <div style={{
-                                        height: "260px",
-                                        borderRadius: "8px",
-                                        overflow: "hidden",
-                                        border: "1px solid #ccc",
-                                        marginBottom: "12px"
-                                    }}>
+                                    <div
+                                        style={{
+                                            height: "260px",
+                                            borderRadius: "8px",
+                                            overflow: "hidden",
+                                            border: "1px solid #ccc",
+                                            marginBottom: "12px"
+                                        }}
+                                    >
                                         <MapContainer
                                             center={defaultCenter}
                                             zoom={13}
@@ -360,14 +485,18 @@ function AdminPlaces() {
                                         </MapContainer>
                                     </div>
 
-                                    <small>Haz clic en el mapa para marcar el punto exacto.</small>
+                                    <small>
+                                        Haz clic en el mapa para marcar el punto exacto.
+                                    </small>
 
                                     <label>Latitud</label>
                                     <input
                                         type="number"
                                         step="any"
                                         value={form.latitude}
-                                        onChange={(e) => setForm({ ...form, latitude: e.target.value })}
+                                        onChange={(e) =>
+                                            setForm({ ...form, latitude: e.target.value })
+                                        }
                                         required
                                     />
 
@@ -376,19 +505,27 @@ function AdminPlaces() {
                                         type="number"
                                         step="any"
                                         value={form.longitude}
-                                        onChange={(e) => setForm({ ...form, longitude: e.target.value })}
+                                        onChange={(e) =>
+                                            setForm({ ...form, longitude: e.target.value })
+                                        }
                                         required
                                     />
                                 </div>
                             </div>
 
-                            <div className="modal-actions" style={{ marginTop: "20px" }}>
-                                <button type="button" onClick={() => setShowForm(false)}>
+                            <div
+                                className="modal-actions"
+                                style={{ marginTop: "20px" }}
+                            >
+                                <button
+                                    type="button"
+                                    onClick={() => setShowForm(false)}
+                                >
                                     Cancelar
                                 </button>
 
-                                <button type="submit">
-                                    Guardar
+                                <button type="submit" disabled={uploadingImage}>
+                                    {uploadingImage ? "Subiendo..." : "Guardar"}
                                 </button>
                             </div>
                         </form>
