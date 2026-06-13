@@ -314,9 +314,9 @@ SONAR_TOKEN
 ## Integrantes
 
 * Josue Gómez
-* Tammy Rosales
+* Tammy Astua
 * Melany Rosales
-* Adrian
+* Adrian Acevedo
 
 ---
 
