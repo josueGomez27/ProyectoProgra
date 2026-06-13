@@ -21,9 +21,9 @@ env:
   BACKEND_DIR: turismolocal
 
 jobs:
-  # FRONTEND: React + Vite
+  # FRONTEND
   frontend:
-    name: Frontend - Lint y Build
+    name: Frontend - Lint, Tests y Build
     runs-on: ubuntu-latest
 
     steps:
@@ -31,7 +31,7 @@ jobs:
       - name: Descargar repositorio
         uses: actions/checkout@v4
 
-      # Configura Node.js para compilar el frontend
+      # Configura Node.js para compilar y probar el frontend
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
@@ -44,19 +44,38 @@ jobs:
         working-directory: ${{ env.FRONTEND_DIR }}
         run: npm ci
 
-      # Ejecuta ESLint para revisar errores de código
+      # Ejecuta ESLint para revisar errores de código en React
       - name: Ejecutar linter del frontend
         working-directory: ${{ env.FRONTEND_DIR }}
         run: npm run lint
+
+      # Ejecuta pruebas del frontend si existen
+      - name: Ejecutar tests del frontend
+        working-directory: ${{ env.FRONTEND_DIR }}
+        run: npm run test --if-present -- --run
+
+      # Genera reporte de cobertura si existe script coverage
+      - name: Generar cobertura del frontend
+        working-directory: ${{ env.FRONTEND_DIR }}
+        run: npm run coverage --if-present
 
       # Genera el build final del frontend
       - name: Construir frontend
         working-directory: ${{ env.FRONTEND_DIR }}
         run: npm run build
 
-  # BACKEND: Spring Boot
+      # Guarda cobertura del frontend como evidencia del pipeline
+      - name: Guardar cobertura frontend
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: ${{ env.FRONTEND_DIR }}/coverage
+          if-no-files-found: ignore
+
+  # BACKEND
   backend:
-    name: Backend - Build
+    name: Backend - Tests y Build
     runs-on: ubuntu-latest
 
     steps:
@@ -72,9 +91,81 @@ jobs:
           java-version: 17
           cache: maven
 
-      # Compila y empaqueta el backend
-      # Se omiten tests porque el backend depende de variables externas
-      # como base de datos, OAuth y configuración de producción.
-      - name: Compilar backend
+      # Compila el backend y ejecuta pruebas con Maven
+      # clean verify ejecuta el ciclo completo de validación
+      - name: Ejecutar tests y build del backend
         working-directory: ${{ env.BACKEND_DIR }}
-        run: mvn clean package -DskipTests
+        run: mvn clean verify
+
+      # Guarda cobertura JaCoCo si el backend la genera
+      - name: Guardar cobertura backend
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: ${{ env.BACKEND_DIR }}/target/site/jacoco
+          if-no-files-found: ignore
+
+  # SONARCLOUD: Análisis de calidad
+  sonarcloud:
+    name: SonarCloud - Quality Gate
+    runs-on: ubuntu-latest
+
+    # SonarCloud se ejecuta después de validar frontend y backend
+    needs:
+      - frontend
+      - backend
+
+    steps:
+      # Descarga el repositorio completo
+      # fetch-depth 0 permite que SonarCloud analice mejor el historial
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Configura Java porque SonarCloud necesita analizar el backend Java
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: maven
+
+      # Configura Node.js porque también se analiza el frontend
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ${{ env.FRONTEND_DIR }}/package-lock.json
+
+      # Instala dependencias del frontend para poder generar cobertura si aplica
+      - name: Instalar dependencias del frontend
+        working-directory: ${{ env.FRONTEND_DIR }}
+        run: npm ci
+
+      # Genera cobertura del frontend si existe el script
+      - name: Generar cobertura frontend para SonarCloud
+        working-directory: ${{ env.FRONTEND_DIR }}
+        run: npm run coverage --if-present
+
+      # Ejecuta pruebas/build del backend para generar clases y cobertura
+      - name: Generar build y cobertura backend para SonarCloud
+        working-directory: ${{ env.BACKEND_DIR }}
+        run: mvn clean verify
+
+      # Ejecuta análisis de SonarCloud.
+      # SONAR_TOKEN esta guardado en GitHub Secrets.
+      - name: Ejecutar análisis SonarCloud
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      # Falla el pipeline si el Quality Gate no cumple.
+      # Esto hace que el criterio de calidad sea obligatorio.
+      - name: Verificar Quality Gate
+        uses: SonarSource/sonarqube-quality-gate-action@v1
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
