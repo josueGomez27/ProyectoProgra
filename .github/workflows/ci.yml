@@ -27,11 +27,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Descarga el código del repositorio
       - name: Descargar repositorio
         uses: actions/checkout@v4
 
-      # Configura Node.js para compilar el frontend
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
@@ -39,32 +37,29 @@ jobs:
           cache: npm
           cache-dependency-path: ${{ env.FRONTEND_DIR }}/package-lock.json
 
-      # Instala dependencias exactas desde package-lock.json
       - name: Instalar dependencias del frontend
         working-directory: ${{ env.FRONTEND_DIR }}
         run: npm ci
 
-      # Ejecuta ESLint para revisar errores de código
       - name: Ejecutar linter del frontend
         working-directory: ${{ env.FRONTEND_DIR }}
         run: npm run lint
 
-      # Genera el build final del frontend
       - name: Construir frontend
         working-directory: ${{ env.FRONTEND_DIR }}
         run: npm run build
 
-  # BACKEND: Spring Boot
+  # BACKEND: Spring Boot + Tests + Cobertura + SonarCloud
   backend:
-    name: Backend - Build
+    name: Backend - Tests, Cobertura y SonarCloud
     runs-on: ubuntu-latest
 
     steps:
-      # Descarga el código del repositorio
       - name: Descargar repositorio
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      # Configura Java para el backend
       - name: Configurar Java
         uses: actions/setup-java@v4
         with:
@@ -72,9 +67,13 @@ jobs:
           java-version: 17
           cache: maven
 
-      # Compila y empaqueta el backend
-      # Se omiten tests porque el backend depende de variables externas
-      # como base de datos, OAuth y configuración de producción.
-      - name: Compilar backend
+      # Ejecuta pruebas y genera reporte JaCoCo
+      - name: Ejecutar tests del backend con cobertura
         working-directory: ${{ env.BACKEND_DIR }}
-        run: mvn clean package -DskipTests
+        run: mvn clean verify
+
+      # Envía el análisis a SonarCloud usando sonar-project.properties
+      - name: Analizar con SonarCloud
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
